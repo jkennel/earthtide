@@ -1,0 +1,10 @@
+language: r
+cache: packages
+sudo: required
+apt_packages:
+  - libgsl0-dev
+r_packages:
+  - devtools
+  - covr
+after_success:
+  - Rscript -e 'covr::codecov()'

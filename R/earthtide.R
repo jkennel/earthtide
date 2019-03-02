@@ -1,0 +1,377 @@
+#' Earthtide class
+#'
+#' Class to generate synthetic earthtide signals.
+#' 
+#' @section Usage:
+#' \preformatted{et <- Earthtide$new(
+#'   utc = as.POSIXct("2019-01-01", tz = "UTC") + 0:24 * 3600, 
+#'   latitude = 52.3868,
+#'   longitude = 9.7144,
+#'   elevation = 110,
+#'   gravity = 9.8127, 
+#'   cutoff = 1.0e-10,
+#'   catalog = "ksm03",
+#'   freq_range = data.frame(start = 0.0, end = 6.0))
+#' 
+#' et$predict(method = "gravity", astro_update = 1)
+#' et$analyze(method = "gravity", astro_update = 1)
+#' et$lod_tide()
+#' et$pole_tide()
+#' }
+#' 
+#' @section Arguments:
+#' \describe{
+#'   \item{et}{An \code{Earthtide} object.}
+#'   \item{utc}{The time in UTC (POSIXct vector).}
+#'   \item{latitude}{The station latitude (numeric).}
+#'   \item{longitude}{The station longitude (numeric).}
+#'   \item{elevation}{The station elevation (m) (numeric)  0 to use default.}
+#'   \item{azimuth}{Earth azimuth (numeric) 0 to use default.}
+#'   \item{earth_radius}{Radius of earth (m) (numeric) defaults to 6378136.3 }
+#'   \item{earth_eccen}{Eccentricity of earth (numeric) defaults to 
+#'     6.69439795140e-3}
+#'   \item{cutoff}{Cutoff amplitude for constituents (numeric) defaults to 1e-6}
+#'   \item{freq_range}{Two column data.table having start and end of frequency 
+#'     groups (data.frame).}
+#'   \item{wave_names}{Names of the constituent groups (character vector).}
+#'   \item{catalog}{Use the "hw95s" catalog or "ksm03" catalog(character).}
+#'   \item{...}{Currently not used.}
+#'   
+#'   
+#'   \item{method}{For \code{predict} and \code{analyze}. One of "gravity", 
+#'     "tidal_potential", "tidal_tilt", "vertical_displacement", 
+#'     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
+#'   \item{astro_update}{For \code{predict} and \code{analyze}. Integer that
+#'     determines how often to phases are updated in number of samples. Defaults
+#'     to 1 (every sample), but speed gains are realized with larger values.
+#'     Typically updating every hour will have speed gains and keep precision 
+#'     (ie 3600 for one second data, 60 for minute data, 1 for hourly data).}
+#' }
+#' 
+#' @section Details:
+#' \code{Earthtide$new} create a new \code{Earthtide} object and initialize catalog, station and
+#' times.
+#' 
+#' \code{et$predict(method, astro_argument)} generate a combined synthetic Earth tide.
+#' \code{et$analyze(method, astro_argument)} generate components of the Earth tide for analysis.
+#' \code{et$lod_tide()} generate components of the LOD tide (length of day).
+#' \code{et$pole_tide()} generate components of the pole tide.
+#' 
+#' @docType class
+#' @aliases Earthtide-class
+#' @importFrom R6 R6Class
+#' @importFrom stats approx
+#' @importFrom utils read.table
+#' @importFrom utils download.file
+#' @importFrom utils data
+#' @format An \code{\link{R6Class}} generator object
+#' @examples
+#' \dontrun{
+#' 
+#' et <- Earthtide$new(
+#'   utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24*31) * 3600, 
+#'   latitude = 52.3868,
+#'   longitude = 9.7144,
+#'   catalog = "ksm03",
+#'   freq_range = data.frame(start = 0.0, end = 6.0))
+#' 
+#' et$predict(method = "gravity", astro_update = 1)
+#' et$lod_tide()
+#' et$pole_tide()
+#' grav <- et$output
+#' 
+#' plot(gravity~datetime, grav, type='l')
+#' plot(lod_tide~datetime, grav, type='l')
+#' plot(pole_tide~datetime, grav, type='l')
+#' 
+#' }
+#' @name Earthtide
+NULL
+
+#' @export
+
+Earthtide <- R6Class("et",
+  public = list(
+
+
+    
+    # initialization
+    initialize = function(utc,
+                          latitude = 0,
+                          longitude = 0, 
+                          elevation = 0,
+                          azimuth = 0,
+                          gravity = 0,
+                          earth_radius = 6378136.3,
+                          earth_eccen = 6.69439795140e-3,
+                          cutoff = 1e-6,
+                          freq_range = NA_real_,
+                          catalog = 'ksm03',
+                          ...) {
+      
+      # Initialize class using input values
+      self$prepare_datetime(utc)
+      
+      self$prepare_station(latitude, longitude, elevation, azimuth, gravity,
+                           earth_radius, earth_eccen)
+
+      self$prepare_astro()
+
+      self$prepare_catalog(cutoff, freq_range, catalog)
+
+      self$love_params <- love(latitude, elevation)
+      
+      invisible(self)
+    },
+    
+    # Initialize class using input values
+    prepare_datetime = function(utc) {
+      self$datetime <- .prepare_datetime(utc)
+      self$output <- data.frame(datetime = utc)
+    },
+    
+    # Calculate the astronical arguments and derivative
+    prepare_astro = function() {
+      self$astro <- .prepare_astro(self)
+    },
+    
+    # Subset values based using a cutoff amplitude and 
+    # cutoff frequencies
+    prepare_catalog = function(cutoff, freq_range, catalog = 'ksm03') {
+      
+      self$catalog <- .prepare_catalog(cutoff, freq_range, catalog = catalog)
+      
+    },
+    
+    # Calculate properties based on the location of station
+    prepare_station = function(latitude, longitude, elevation, azimuth, 
+                               gravity, earth_radius, earth_eccen) {
+      
+      self$station <- .prepare_station(self, latitude, longitude, elevation,
+                                       azimuth, gravity, earth_radius,
+                                       earth_eccen)
+      self$pole_quotient = 1.16 #1.1788, # Ducarme et al. 2006
+      self$pk     = rep(0, 25)
+      self$delta  = rep(1.0, 25)
+      self$deltar = 0.0
+      
+    }, 
+    check_time_increment = function(astro_update) { 
+      
+      dt <- unique(diff(as.numeric(self$datetime$utc)))
+      
+      if(length(self$datetime$utc) == 1) {
+        self$update_coef <- 0.0
+        return(1L)
+      }
+      
+      if (length(dt) != 1) {
+        warning('Times are not regularly spaced, setting astro_update to 1') 
+        astro_update <- 1L
+        self$update_coef <- 0.0
+      } else {
+        self$update_coef <- pi / 180.0 * dt / 3600.0
+        astro_update <- astro_update
+      }
+      
+      astro_update
+      
+    },
+    
+    gravity = function(){
+
+      self$station$dgk <- self$station$dgz
+      self$pk[] <- 180 
+      
+      self$delta[1:12] <- self$love_params$dglat
+      self$deltar <- self$love_params$dgr
+      
+    },
+    tidal_potential = function() {
+      
+      self$delta[1:12] <- self$love_params$dklat
+      self$deltar <- self$love_params$dkr
+
+    },
+    tidal_tilt = function() {
+      
+      cos_azimuth <- cos(self$station$azimuth)
+      sin_azimuth <- sin(self$station$azimuth)
+      x_comp <- self$station$dgx[1:12] * cos_azimuth
+      y_comp <- self$station$dgy[1:12] * sin_azimuth
+      self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) * self$station$df
+      wh <- which(x_comp != 0 | y_comp != 0)
+      self$pk[wh] <- 180 / pi * atan2(y_comp, x_comp)
+      
+      # from etpots
+      self$delta[1:12] <- self$love_params$dtlat
+      self$deltar = self$love_params$dkr - self$love_params$dhr
+      
+    }, 
+    
+    vertical_displacement = function() {
+      dfak <- 1e3 / self$station$gravity
+      self$station$dgk[1:12] <- self$station$dgk[1:12] * 
+        self$love_params$dhlat[1:12] * dfak
+      self$pk[] <- 0.0
+    },
+    # This number is way to big from eterna - currently must be an error
+    # horizontal_displacement = function() {
+    #   
+    #   #dfak <- 1e3 *  self$station$geo_radius / self$station$gravity
+    #   
+    #   dfak <- 1
+    #   cos_azimuth <- cos(self$station$azimuth)
+    #   sin_azimuth <- sin(self$station$azimuth)
+    #   x_comp <- self$station$dgx[1:12] * cos_azimuth
+    #   y_comp <- self$station$dgy[1:12] * sin_azimuth
+    #   self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) * 
+    #     self$love_params$dllat[1:12] * dfak
+    #   self$pk[] <- 0.0
+    #   wh <- which(x_comp != 0 | y_comp != 0)
+    #   self$pk[wh] <- 180 / pi * atan2(y_comp, x_comp)
+    #   
+    # },
+    
+    vertical_strain = function(poisson = 0.25) {
+      dfak <- 1.e9 * poisson / (poisson - 1.0)
+      self$strain(dfak)
+    },
+    areal_strain = function() {
+      dfak <- 1.e9
+      self$strain(dfak)
+    },
+    volume_strain = function(poisson = 0.25) {
+      dfak <- 1.e9 * (1.0 - 2.0 * poisson) / (1.0 - poisson)
+      self$strain(dfak)
+    },
+    strain = function(dfak) {
+      
+      scale <- c(rep(-6, 3), rep(-12, 4), rep(-20, 5))
+      
+      self$station$dgk[1:12] <- self$station$dgk[1:12] * dfak *
+        (2.0 * self$love_params$dhlat[1:12] + scale * self$love_params$dllat[1:12]) / 
+        (self$station$gravity * self$station$geo_radius)
+      
+    },
+    ocean_tides = function() {
+      dfak <- 1e3 / self$station$gravity
+      self$station$dgk <- self$station$dgk * dfak
+      self$pk[] <- 0.0
+    },
+    
+    
+    
+
+    predict = function(method = 'gravity', astro_update = 1L) {
+      
+      self$apply_method(method) 
+      astro_update <- self$check_time_increment(astro_update)
+      self$output[[method]] <- 
+        as.numeric(self$calculate(astro_update = astro_update, predict = TRUE))
+      
+      self$prepare_station(self$station$latitude, 
+                           self$station$longitude, 
+                           self$station$elevation,
+                           self$station$azimuth, 
+                           self$station$gravity, 
+                           self$station$earth_radius,
+                           self$station$earth_eccen)
+      invisible(self$output)
+    },
+
+    analyze = function(method = 'gravity', astro_update = 1L) {
+      
+      self$apply_method(method)
+      astro_update <- self$check_time_increment(astro_update)
+      self$output[self$catalog$col_names] <- 
+        self$calculate(astro_update = astro_update, predict = FALSE)
+      
+      invisible(self$output)
+    },
+    apply_method = function(method) {
+      
+      if (method == 'gravity') {
+        self$gravity()
+      } else if (method == 'ocean_tides') {
+        self$ocean_tides()
+      } else if (method == 'tidal_potential') {
+        self$tidal_potential()
+      } else if (method == 'tidal_tilt') {
+        self$tidal_tilt()
+      } else if (method == 'vertical_displacement') {
+        self$vertical_displacement()
+      # } else if (method == 'horizontal_displacement') {
+      #   self$horizontal_displacement()
+      } else if (method == 'vertical_strain') {
+        self$vertical_strain()
+      } else if (method == 'areal_strain') {
+        self$areal_strain()
+      } else if (method == 'volume_strain') {
+        self$volume_strain()
+      } 
+      
+    },
+    calculate = function(astro_update = 1L, predict = TRUE) {
+      et_calculate(self$astro$astro,
+                 self$astro$astro_der,
+                 self$catalog$k,
+                 self$pk,
+                 self$delta,
+                 self$deltar,
+                 self$catalog$c0,
+                 self$catalog$s0,
+                 self$catalog$c1,
+                 self$catalog$s1,
+                 self$catalog$c2,
+                 self$catalog$s2,
+                 self$station$dgk,
+                 self$catalog$jcof-1,
+                 self$datetime$j2000,
+                 self$love_params$dom0,
+                 self$love_params$domr,
+                 self$catalog$id,
+                 astro_update,
+                 self$update_coef, 
+                 predict)
+    },
+    pole_tide = function() {
+      self$output$pole_tide <- self$pole_t
+      invisible(self$output)
+    },
+    lod_tide = function() {
+      self$output$lod_tide <- self$lod_t
+      invisible(self$output)
+    },
+    # time variables
+    datetime = list(),
+    update_coef = NA_real_, 
+    
+    # astro arguments
+    astro = list(),
+    
+    # wavegroup catalog
+    catalog = list(),
+    
+    # geodetic coeficients
+    station = list(),
+    
+    # love and shida numbers
+    love_params = list(),
+    
+    pole_quotient = 1.16, #1.1788, # Ducarme et al. 2006
+    pk     = rep(0, 25),
+    delta  = rep(1.0, 25),
+    deltar = 0.0,
+    
+    # outputs
+    lod_t = NA_real_,
+    pole_t = NA_real_,
+    output = list()
+    
+  )
+)
+
+
+
+

@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.Rbuildignore
+.RData
+.Ruserdata
+src/*.o
+src/*.so
+src/*.dll
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.Rproj\.user$
+earthtide\.Rproj
