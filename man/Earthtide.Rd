@@ -19,7 +19,7 @@ Class to generate synthetic earthtide signals.
   gravity = 9.8127, 
   cutoff = 1.0e-10,
   catalog = "ksm03",
-  freq_range = data.frame(start = 0.0, end = 6.0))
+  wave_groups = data.frame(start = 0.0, end = 6.0))
 
 et$predict(method = "gravity", astro_update = 1)
 et$analyze(method = "gravity", astro_update = 1)
@@ -41,7 +41,7 @@ et$pole_tide()
   \item{earth_eccen}{Eccentricity of earth (numeric) defaults to 
     6.69439795140e-3}
   \item{cutoff}{Cutoff amplitude for constituents (numeric) defaults to 1e-6}
-  \item{freq_range}{Two column data.table having start and end of frequency 
+  \item{wave_groups}{Two column data.table having start and end of frequency 
     groups (data.frame).}
   \item{wave_names}{Names of the constituent groups (character vector).}
   \item{catalog}{Use the "hw95s" catalog or "ksm03" catalog(character).}
@@ -68,6 +68,8 @@ times.
 \code{et$analyze(method, astro_argument)} generate components of the Earth tide for analysis.
 \code{et$lod_tide()} generate components of the LOD tide (length of day).
 \code{et$pole_tide()} generate components of the pole tide.
+\code{et$tide()} get the tide \code{data.frame}.
+\code{et$print()} print the \code{Earthtide} object.
 }
 
 \examples{
@@ -78,12 +80,13 @@ et <- Earthtide$new(
   latitude = 52.3868,
   longitude = 9.7144,
   catalog = "ksm03",
-  freq_range = data.frame(start = 0.0, end = 6.0))
+  wave_groups = data.frame(start = 0.0, end = 6.0))
 
 et$predict(method = "gravity", astro_update = 1)
 et$lod_tide()
 et$pole_tide()
-grav <- et$output
+
+grav <- et$tide
 
 plot(gravity~datetime, grav, type='l')
 plot(lod_tide~datetime, grav, type='l')

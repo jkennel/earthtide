@@ -3,7 +3,7 @@ context("test-et_analyze")
 test_that("dimensions correct", {
   tms <- as.POSIXct('1990-01-01', tz = 'UTC') + c(0, 3600)
   
-  freq_range = data.frame(start = 0, end = 8)
+  wave_groups = data.frame(start = 0, end = 8)
   
   et <- Earthtide$new(utc = tms, 
                       latitude = 52.3868,
@@ -12,15 +12,15 @@ test_that("dimensions correct", {
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
                       catalog = 'hw95s',
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   
-  out <- et$analyze(method = 'gravity')
+  out <- et$analyze(method = 'gravity')$tide()
   expect_equal(NROW(out), length(tms))
   expect_equal(NCOL(out), 3)
   
   
   tms <- as.POSIXct('1990-01-01', tz = 'UTC')
-  freq_range = data.frame(start = c(0, 1.5), end = c(1.4, 8))
+  wave_groups = data.frame(start = c(0, 1.5), end = c(1.4, 8))
   et <- Earthtide$new(utc = tms, 
                       latitude = 52.3868,
                       longitude = 9.7144,
@@ -28,9 +28,9 @@ test_that("dimensions correct", {
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
                       catalog = 'ksm03',
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   
-  out <- et$analyze(method = 'gravity')
+  out <- et$analyze(method = 'gravity')$tide()
   expect_equal(nrow(out), length(tms))
   expect_equal(ncol(out), 5)
   
@@ -45,9 +45,9 @@ test_that("dimensions correct", {
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
                       catalog = 'ksm03',
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   
-  out <- et$analyze(method = 'gravity', astro_update = 24)
+  out <- et$analyze(method = 'gravity', astro_update = 24)$tide()
   expect_equal(nrow(out), length(tms))
   expect_equal(ncol(out), 5)
   

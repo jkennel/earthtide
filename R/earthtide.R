@@ -11,7 +11,7 @@
 #'   gravity = 9.8127, 
 #'   cutoff = 1.0e-10,
 #'   catalog = "ksm03",
-#'   freq_range = data.frame(start = 0.0, end = 6.0))
+#'   wave_groups = data.frame(start = 0.0, end = 6.0))
 #' 
 #' et$predict(method = "gravity", astro_update = 1)
 #' et$analyze(method = "gravity", astro_update = 1)
@@ -31,7 +31,7 @@
 #'   \item{earth_eccen}{Eccentricity of earth (numeric) defaults to 
 #'     6.69439795140e-3}
 #'   \item{cutoff}{Cutoff amplitude for constituents (numeric) defaults to 1e-6}
-#'   \item{freq_range}{Two column data.table having start and end of frequency 
+#'   \item{wave_groups}{Two column data.table having start and end of frequency 
 #'     groups (data.frame).}
 #'   \item{wave_names}{Names of the constituent groups (character vector).}
 #'   \item{catalog}{Use the "hw95s" catalog or "ksm03" catalog(character).}
@@ -56,6 +56,8 @@
 #' \code{et$analyze(method, astro_argument)} generate components of the Earth tide for analysis.
 #' \code{et$lod_tide()} generate components of the LOD tide (length of day).
 #' \code{et$pole_tide()} generate components of the pole tide.
+#' \code{et$tide()} get the tide \code{data.frame}.
+#' \code{et$print()} print the \code{Earthtide} object.
 #' 
 #' @docType class
 #' @aliases Earthtide-class
@@ -73,12 +75,13 @@
 #'   latitude = 52.3868,
 #'   longitude = 9.7144,
 #'   catalog = "ksm03",
-#'   freq_range = data.frame(start = 0.0, end = 6.0))
+#'   wave_groups = data.frame(start = 0.0, end = 6.0))
 #' 
 #' et$predict(method = "gravity", astro_update = 1)
 #' et$lod_tide()
 #' et$pole_tide()
-#' grav <- et$output
+#' 
+#' grav <- et$tide
 #' 
 #' plot(gravity~datetime, grav, type='l')
 #' plot(lod_tide~datetime, grav, type='l')
@@ -93,8 +96,6 @@ NULL
 Earthtide <- R6Class("et",
   public = list(
 
-
-    
     # initialization
     initialize = function(utc,
                           latitude = 0,
@@ -105,7 +106,7 @@ Earthtide <- R6Class("et",
                           earth_radius = 6378136.3,
                           earth_eccen = 6.69439795140e-3,
                           cutoff = 1e-6,
-                          freq_range = NA_real_,
+                          wave_groups = NA_real_,
                           catalog = 'ksm03',
                           ...) {
       
@@ -117,7 +118,7 @@ Earthtide <- R6Class("et",
 
       self$prepare_astro()
 
-      self$prepare_catalog(cutoff, freq_range, catalog)
+      self$prepare_catalog(cutoff, wave_groups, catalog)
 
       self$love_params <- love(latitude, elevation)
       
@@ -127,7 +128,7 @@ Earthtide <- R6Class("et",
     # Initialize class using input values
     prepare_datetime = function(utc) {
       self$datetime <- .prepare_datetime(utc)
-      self$output <- data.frame(datetime = utc)
+      self$tides <- data.frame(datetime = utc)
     },
     
     # Calculate the astronical arguments and derivative
@@ -137,9 +138,9 @@ Earthtide <- R6Class("et",
     
     # Subset values based using a cutoff amplitude and 
     # cutoff frequencies
-    prepare_catalog = function(cutoff, freq_range, catalog = 'ksm03') {
+    prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm03') {
       
-      self$catalog <- .prepare_catalog(cutoff, freq_range, catalog = catalog)
+      self$catalog <- .prepare_catalog(cutoff, wave_groups, catalog = catalog)
       
     },
     
@@ -259,15 +260,12 @@ Earthtide <- R6Class("et",
       self$station$dgk <- self$station$dgk * dfak
       self$pk[] <- 0.0
     },
-    
-    
-    
 
     predict = function(method = 'gravity', astro_update = 1L) {
       
       self$apply_method(method) 
       astro_update <- self$check_time_increment(astro_update)
-      self$output[[method]] <- 
+      self$tides[[method]] <- 
         as.numeric(self$calculate(astro_update = astro_update, predict = TRUE))
       
       self$prepare_station(self$station$latitude, 
@@ -277,17 +275,17 @@ Earthtide <- R6Class("et",
                            self$station$gravity, 
                            self$station$earth_radius,
                            self$station$earth_eccen)
-      invisible(self$output)
+      invisible(self)
     },
 
     analyze = function(method = 'gravity', astro_update = 1L) {
       
       self$apply_method(method)
       astro_update <- self$check_time_increment(astro_update)
-      self$output[self$catalog$col_names] <- 
+      self$tides[self$catalog$col_names] <- 
         self$calculate(astro_update = astro_update, predict = FALSE)
       
-      invisible(self$output)
+      invisible(self)
     },
     apply_method = function(method) {
       
@@ -336,13 +334,42 @@ Earthtide <- R6Class("et",
                  predict)
     },
     pole_tide = function() {
-      self$output$pole_tide <- self$pole_t
-      invisible(self$output)
+      self$tides$pole_tide <- self$pole_t
+      invisible(self)
     },
     lod_tide = function() {
-      self$output$lod_tide <- self$lod_t
-      invisible(self$output)
+      self$tides$lod_tide <- self$lod_t
+      invisible(self)
     },
+    tide = function() {
+      invisible(self$tides)
+    },
+    print = function(...) {
+      cat("Earthtide: \n")
+      cat("  Times: ", length(self$datetime$utc), "\n", sep = '')
+      cat("    range (utc): ", as.character(head(self$datetime$utc, 1)), ' to ', 
+                               as.character(tail(self$datetime$utc, 1)), "\n", sep = "")
+      cat("    dt[1] (sec): ", as.numeric(self$datetime$utc[2]) -
+                               as.numeric(self$datetime$utc[1]), "\n", sep = '')
+      cat("  Station: \n")
+      cat("    latitude:    ", head(self$station$latitude), "\n", sep = "")
+      cat("    longitude:   ", head(self$station$longitude), "\n", sep = "")
+      cat("    elevation:   ", head(self$station$elevation), "\n", sep = "")
+      cat("    gravity:     ", head(self$station$gravity), "\n", sep = "")
+      cat("    azimuth:     ", head(self$station$azimuth), "\n", sep = "")
+      cat("  Wave groups: \n")
+      cat("    catalog:     ", head(self$catalog$catalog), "\n", sep = "")
+      cat("    cutoff:      ", head(self$catalog$cutoff), "\n", sep = "")
+      cat("    n waves:     ", head(self$catalog$n_constituents), "\n", sep = "")
+      cat("    n groups:    ", nrow(self$catalog$wave_groups), "\n", sep = "")
+      # cat("    wave groups: \n")
+      # print(self$catalog$wave_groups, row.names = FALSE)
+      # cat("  Tides: \n")
+      # print(head(self$tides), row.names = FALSE)
+      
+      invisible(self)
+    },
+    
     # time variables
     datetime = list(),
     update_coef = NA_real_, 
@@ -367,7 +394,7 @@ Earthtide <- R6Class("et",
     # outputs
     lod_t = NA_real_,
     pole_t = NA_real_,
-    output = list()
+    tides = list()
     
   )
 )

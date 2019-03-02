@@ -1,4 +1,4 @@
-.prepare_catalog = function(cutoff, freq_range, catalog = 'ksm03') {
+.prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm03') {
   
   
   utils::data(list = catalog, package = 'earthtide')
@@ -19,14 +19,14 @@
                  data = sub, FUN = sum)
   
   
-  if (!all(is.na(freq_range))) {
-    freq_range <- freq_range[order(freq_range[, 1]),]
+  if (!all(is.na(wave_groups))) {
+    wave_groups <- wave_groups[order(wave_groups[, 1]),]
     
     freq_sub <- data.frame(
-      freq_range, 
+      wave_groups, 
       wave_names = paste0('group_', 
-                          sprintf("%02d", 1:nrow(freq_range))), 
-      id = 1:nrow(freq_range)
+                          sprintf("%02d", 1:nrow(wave_groups))), 
+      id = 1:nrow(wave_groups)
     )
     
     # create constituent subgroups
@@ -56,6 +56,8 @@
   
   
   list(
+    catalog = catalog,
+    wave_groups = wave_groups,
     k = as.matrix(sub[, c('order', 'k02', 'k03', 'k04',
                               'k05', 'k06', 'k07', 'k08', 'k09',
                               'k10', 'k11')]),

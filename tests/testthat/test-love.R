@@ -3,7 +3,7 @@ context("love")
 test_that("love works", {
   tms <- as.POSIXct('1995-01-01', tz = 'UTC')
   
-  freq_range = data.frame(start = 0, end = 8)
+  wave_groups = data.frame(start = 0, end = 8)
   
   et <- Earthtide$new(utc = tms, 
                       latitude = 49.00937,
@@ -11,7 +11,7 @@ test_that("love works", {
                       elevation = 120,
                       gravity = 9.8127, 
                       cutoff = 1e-10,
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   
   love_dat <- et$love_params
 

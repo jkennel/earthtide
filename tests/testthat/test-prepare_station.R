@@ -3,7 +3,7 @@ context("test-prepare_station")
 test_that("prepare_station works", {
   tms <- as.POSIXct('1995-01-01', tz = 'UTC')
   
-  freq_range = data.frame(start = 0, end = 8)
+  wave_groups = data.frame(start = 0, end = 8)
   
   et <- Earthtide$new(utc = tms, 
                       latitude = 49.00937,
@@ -11,7 +11,7 @@ test_that("prepare_station works", {
                       elevation = 120,
                       gravity = 9.8127, 
                       cutoff = 1e-10,
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   
   geodetic <- et$station$dgz
   eterna_result <- c(
@@ -50,7 +50,7 @@ test_that("prepare_station works", {
                       elevation = 120,
                       gravity = 0, 
                       cutoff = 1e-10,
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   grav <- et$station$gravity
   expect_equal(grav,  gravity_station(49.00937, 120))
 })

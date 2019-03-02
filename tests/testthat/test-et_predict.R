@@ -4,7 +4,7 @@ test_that("et_predict works", {
   
   tms <- as.POSIXct('1990-01-01', tz = 'UTC') + c(0, 3600)
   
-  freq_range = data.frame(start = 0, end = 8)
+  wave_groups = data.frame(start = 0, end = 8)
   
   et <- Earthtide$new(utc = tms, 
                       latitude = 52.3868,
@@ -13,9 +13,11 @@ test_that("et_predict works", {
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
                       catalog = 'hw95s',
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   et$predict(method = 'gravity')
-  expect_equal(et$output$gravity, 
+  tide <- et$tide()
+  
+  expect_equal(tide$gravity, 
                c(-448.580, -564.521), 
                tolerance = .0001) 
   
@@ -26,9 +28,11 @@ test_that("et_predict works", {
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
                       catalog = 'ksm03',
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   et$predict(method = 'gravity')
-  expect_equal(et$output$gravity, 
+  tide <- et$tide()
+  
+  expect_equal(tide$gravity, 
                c(-448.648, -564.549), 
                tolerance = .0001)
   
@@ -42,10 +46,12 @@ test_that("et_predict works", {
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
                       catalog = 'ksm03',
-                      freq_range = freq_range)
+                      wave_groups = wave_groups)
   
   et$predict(method = 'gravity', astro_update = 24)
-  expect_equal(et$output$gravity[1:2], 
+  tide <- et$tide()
+  
+  expect_equal(tide$gravity[1:2], 
                c(-448.648, -564.549), 
                tolerance = 0.01)
   
