@@ -116,19 +116,6 @@
 'dut1'
 
 
-#' @title ddt 
-#' @format A \code{data.frame} The columns are:
-#' \describe{
-#'  \item{\code{year}}{year}
-#'  \item{\code{month}}{month}
-#'  \item{\code{day}}{day}
-#'  \item{\code{ddt}}{ddt}
-#' }
-#' @examples
-#' \dontrun{
-#' utils::data(ddt)
-#' }
-'ddt'
 
 #' get_dut1
 #'

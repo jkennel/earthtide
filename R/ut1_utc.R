@@ -1,6 +1,6 @@
 #' ut1_utc
 #'
-#' \code{tai_ut1} gets seconds difference UT1-UTC (valid after 1992)
+#' \code{tai_ut1} gets seconds difference UT1-UTC (valid after 1962)
 #' 
 #' @param utc datetime in utc
 #'
@@ -8,7 +8,8 @@
 #'
 ut1_utc <- function(utc){
   
-  approx(dut1$datetime, dut1$ut1_utc, utc, ties = 'ordered')$y
+  #approx(dut1$datetime, dut1$ut1_utc, xout = utc, ties = 'ordered')$y
+  stats::spline(dut1$datetime, dut1$ut1_utc, xout = utc, ties = 'ordered')$y
   
 }
 

@@ -13,5 +13,5 @@ ut1_utc(utc)
 seconds difference UT1-UTC
 }
 \description{
-\code{tai_ut1} gets seconds difference UT1-UTC (valid after 1992)
+\code{tai_ut1} gets seconds difference UT1-UTC (valid after 1962)
 }
