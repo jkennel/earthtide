@@ -50,7 +50,7 @@ et_analyze(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x0,
 synthetic gravity
 }
 \description{
-Calculate tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 }
 \references{
 Wenzel, H.-G. (1996): The nanogal software: Earth tide data

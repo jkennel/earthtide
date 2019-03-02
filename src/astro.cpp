@@ -44,7 +44,7 @@ T mod(T a, int n)
 //' time_mat
 //'
 //' @description
-//' Matrix to multiply by astrological.  Code adapted from Eterna.
+//' Matrix to multiply by astrological.  Code adapted from ETERNA.
 //'
 //' @param time the times to calculate astrological parameters
 //'
@@ -78,7 +78,7 @@ arma::mat time_mat(const arma::rowvec time) {
 //' time_der_mat
 //'
 //' @description
-//' Matrix to multiply by astrological.  Code adapted from Eterna.
+//' Matrix to multiply by astrological.  Code adapted from ETERNA.
 //'
 //' @param time the times to calculate the derivatives of the astrological parameters
 //'
@@ -112,7 +112,7 @@ arma::mat time_der_mat(const arma::rowvec time) {
 //' astro
 //'
 //' @description
-//' Calculate astronomical parameters.  Code adapted from Eterna.
+//' Calculate astronomical parameters.  Code adapted from ETERNA.
 //'
 //' @param t_astro astronomical time
 //' @param simon coefficient matrix
@@ -155,7 +155,7 @@ arma::mat astro(const arma::rowvec t_astro,
 //' astro_der
 //'
 //' @description
-//' Calculate derivatives of astronomical parameters.  Code adapted from Eterna.
+//' Calculate derivatives of astronomical parameters.  Code adapted from ETERNA.
 //'
 //' @param t_astro astronomical time
 //' @param simon coefficient matrix
@@ -316,7 +316,7 @@ Rcpp::NumericMatrix legendre(int l_max, double x) {
 //' et_analyze
 //'
 //' @description
-//' Calculate tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+//' Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 //'
 //' @param astro vector astronomical parameters
 //' @param astro_der vector derivative of astronomical parameters
@@ -447,7 +447,7 @@ arma::mat et_analyze(const arma::mat astro,
 //' et_predict
 //'
 //' @description
-//' Calculate tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+//' Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 //'
 //' @param astro vector astronomical parameters
 //' @param astro_der vector derivative of astronomical parameters
@@ -709,7 +709,7 @@ struct earthtide_worker : public Worker
 //' et_calculate
 //'
 //' @description
-//' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+//' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 //'
 //' @param astro matrix astronomical parameters
 //' @param astro_der matrix derivative of astronomical parameters
@@ -854,7 +854,7 @@ arma::mat et_calculate(const arma::mat astro,
 // //' et_predict_one
 // //'
 // //' @description
-// //' Calculate tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+// //' Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 // //'
 // //' @param astro vector astronomical parameters
 // //' @param astro_der vector derivative of astronomical parameters
@@ -1069,7 +1069,7 @@ arma::mat et_calculate(const arma::mat astro,
 // //' et_predict
 // //'
 // //' @description
-// //' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+// //' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 // //'
 // //' @param astro matrix astronomical parameters
 // //' @param astro_der matrix derivative of astronomical parameters

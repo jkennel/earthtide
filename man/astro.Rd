@@ -21,7 +21,7 @@ astro(t_astro, simon, longitude, hours, ddt)
 astonomical parameters
 }
 \description{
-Calculate astronomical parameters.  Code adapted from Eterna.
+Calculate astronomical parameters.  Code adapted from ETERNA.
 }
 \references{
 Wenzel, H.-G. (1996): The nanogal software: Earth tide data

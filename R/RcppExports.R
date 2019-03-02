@@ -5,7 +5,7 @@
 #' time_mat
 #'
 #' @description
-#' Matrix to multiply by astrological.  Code adapted from Eterna.
+#' Matrix to multiply by astrological.  Code adapted from ETERNA.
 #'
 #' @param time the times to calculate astrological parameters
 #'
@@ -26,7 +26,7 @@ time_mat <- function(time) {
 #' time_der_mat
 #'
 #' @description
-#' Matrix to multiply by astrological.  Code adapted from Eterna.
+#' Matrix to multiply by astrological.  Code adapted from ETERNA.
 #'
 #' @param time the times to calculate the derivatives of the astrological parameters
 #'
@@ -47,7 +47,7 @@ time_der_mat <- function(time) {
 #' astro
 #'
 #' @description
-#' Calculate astronomical parameters.  Code adapted from Eterna.
+#' Calculate astronomical parameters.  Code adapted from ETERNA.
 #'
 #' @param t_astro astronomical time
 #' @param simon coefficient matrix
@@ -72,7 +72,7 @@ astro <- function(t_astro, simon, longitude, hours, ddt) {
 #' astro_der
 #'
 #' @description
-#' Calculate derivatives of astronomical parameters.  Code adapted from Eterna.
+#' Calculate derivatives of astronomical parameters.  Code adapted from ETERNA.
 #'
 #' @param t_astro astronomical time
 #' @param simon coefficient matrix
@@ -165,7 +165,7 @@ legendre <- function(l_max, x) {
 #' et_analyze
 #'
 #' @description
-#' Calculate tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+#' Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 #'
 #' @param astro vector astronomical parameters
 #' @param astro_der vector derivative of astronomical parameters
@@ -204,7 +204,7 @@ et_analyze <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, delt
 #' et_predict
 #'
 #' @description
-#' Calculate tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+#' Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 #'
 #' @param astro vector astronomical parameters
 #' @param astro_der vector derivative of astronomical parameters
@@ -243,7 +243,7 @@ et_predict <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, delt
 #' et_calculate
 #'
 #' @description
-#' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from Eterna.
+#' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
 #'
 #' @param astro matrix astronomical parameters
 #' @param astro_der matrix derivative of astronomical parameters

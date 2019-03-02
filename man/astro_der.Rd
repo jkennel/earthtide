@@ -15,7 +15,7 @@ astro_der(t_astro, simon)
 derivative astonomical parameters
 }
 \description{
-Calculate derivatives of astronomical parameters.  Code adapted from Eterna.
+Calculate derivatives of astronomical parameters.  Code adapted from ETERNA.
 }
 \references{
 Wenzel, H.-G. (1996): The nanogal software: Earth tide data

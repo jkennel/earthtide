@@ -13,7 +13,7 @@ time_der_mat(time)
 matrix of time derivatives
 }
 \description{
-Matrix to multiply by astrological.  Code adapted from Eterna.
+Matrix to multiply by astrological.  Code adapted from ETERNA.
 }
 \references{
 Wenzel, H.-G. (1996): The nanogal software: Earth tide data

@@ -1,4 +1,4 @@
-#' @title Hartmann and Wenzel (1995) (Eterna 3.4) wavegroups
+#' @title Hartmann and Wenzel (1995) (ETERNA 3.4) wavegroups
 #' @format A \code{data.frame} The columns are:
 #' \describe{
 #'  \item{\code{name}}{wave group name}
