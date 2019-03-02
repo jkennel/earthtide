@@ -33,4 +33,22 @@ test_that("et_predict works", {
                tolerance = .0001)
   
   
+  
+  tms <- as.POSIXct('1990-01-01', tz = 'UTC') + 0:(24*31) * 3600
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-10,
+                      catalog = 'ksm03',
+                      freq_range = freq_range)
+  
+  et$predict(method = 'gravity', astro_update = 24)
+  expect_equal(et$output$gravity[1:2], 
+               c(-448.648, -564.549), 
+               tolerance = 0.01)
+  
+  
+  
 })
