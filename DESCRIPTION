@@ -1,10 +1,10 @@
 Package: earthtide
 Type: Package
-Title: Parallel Implementation of 'ETERNA 3.40' for Prediction and Analysis in R
+Title: Parallel Implementation of 'ETERNA 3.40' for Prediction and Analysis of Earth Tides in R
 Version: 0.0.1
 Authors@R: c(person("Jonathan", "Kennel", email = "jkennel@uoguelph.ca", role = c("aut", "cre", "trl")), 
              person("Beth", "Parker", email = "bparker@uoguelph.ca", role = "ths"),
-             person("Wenzel", "Hans-Georg", role = "aut"))
+             person("Wenzel", "Hans-Georg", role = "ctb"))
 Maintainer: Jonathan Kennel <jkennel@uoguelph.ca>
 Description: This is a port of Fortran 'ETERNA 3.4' code <http://igets.u-strasbg.fr/soft_and_tool.php> 
              for calculating synthetic earth tides. It has been rewritten in R and C++ for increased 
@@ -19,7 +19,7 @@ LinkingTo: Rcpp (>= 1.0.0),
     RcppArmadillo (>= 0.9.200.7.0),
     BH (>= 1.69.0-1)
 RoxygenNote: 6.1.1
-Suggests: testthat, knitr
+Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: TRUE

@@ -19,14 +19,10 @@ You can learn about the earthtide package in the vignettes:
 \author{
 \strong{Maintainer}: Jonathan Kennel \email{jkennel@uoguelph.ca} [translator]
 
-Authors:
-\itemize{
-  \item Wenzel Hans-Georg
-}
-
 Other contributors:
 \itemize{
   \item Beth Parker \email{bparker@uoguelph.ca} [thesis advisor]
+  \item Wenzel Hans-Georg [contributor]
 }
 
 }
