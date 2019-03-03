@@ -18,6 +18,3 @@ gravity for location in m/s^2
 \code{gravity_station} returns the estimated gravity for a latitude.
 http://the-mostly.ru/misc/local_gravity_online_calculator.html
 }
-\examples{
-earthtide::gravity_station(0, 0)
-}

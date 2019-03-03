@@ -124,8 +124,6 @@
 #' 
 #' @return information on time conversions and leap seconds
 #'
-#' @export
-#'
 get_dut1 <- function(){
  
   tf <- tempfile()

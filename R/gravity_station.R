@@ -9,10 +9,6 @@
 #'
 #' @return gravity for location in m/s^2
 #'
-#' @export
-#'
-#' @examples
-#' earthtide::gravity_station(0, 0)
 #-------------------------------------------------------------------------------
 gravity_station <- function(latitude, elevation){
   
