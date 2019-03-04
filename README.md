@@ -34,7 +34,6 @@ tide <-  Earthtide$
   new(utc = as.POSIXct("2015-01-01", tz = "UTC") + 0:(24*31) * 3600,
       latitude = 52.3868,
       longitude = 9.7144,
-      catalog = "ksm03",
       wave_groups = data.frame(start = 0.0, end = 6.0))$
   predict(method = "gravity", astro_update = 1)$
   lod_tide()$
