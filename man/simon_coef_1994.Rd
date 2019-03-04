@@ -3,7 +3,7 @@
 \docType{data}
 \name{simon_coef_1994}
 \alias{simon_coef_1994}
-\title{simon_coef_1994}
+\title{Simon 1994 astronomical constants}
 \format{A \code{data.frame} The columns are:
 \describe{
  \item{\code{j}}{7 = mercury, 8 = venus, 9 = mars, 10 = Jupiter, 11 = Saturn}
@@ -17,12 +17,15 @@
 simon_coef_1994
 }
 \description{
-simon_coef_1994
+Simon 1994 astronomical constants
 }
 \examples{
 \dontrun{
 utils::data(simon_coef_1994)
 summary(simon_coef_1994)
 }
+}
+\references{
+Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession for- mulae and mean elements for the Moon and planets. Astron Astrophys 282:663–683
 }
 \keyword{datasets}

@@ -26,6 +26,9 @@
  \item{\code{C1}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the COS of the argument.}
  \item{\code{S1}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the SIN of the argument.}
  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
+ \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
+ \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
+ \item{\code{phase}}{phase of the tidal wave at J2000}
 }}
 \usage{
 hw95s
@@ -38,5 +41,8 @@ Hartmann and Wenzel (1995) tidal potential catalogue
 data(hw95s)
 summary(hw95s)
 }
+}
+\references{
+Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. doi:10.1029/95GL03324
 }
 \keyword{datasets}

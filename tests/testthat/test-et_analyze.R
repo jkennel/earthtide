@@ -27,7 +27,6 @@ test_that("dimensions correct", {
                       elevation = 110,
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
-                      catalog = 'ksm03',
                       wave_groups = wave_groups)
   
   out <- et$analyze(method = 'gravity')$tide()
@@ -44,7 +43,6 @@ test_that("dimensions correct", {
                       elevation = 110,
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
-                      catalog = 'ksm03',
                       wave_groups = wave_groups)
   
   out <- et$analyze(method = 'gravity', astro_update = 24)$tide()

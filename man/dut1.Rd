@@ -23,4 +23,7 @@ dut1
 utils::data(dut1)
 }
 }
+\references{
+http://hpiers.obspm.fr/eop-pc/index.php
+}
 \keyword{datasets}

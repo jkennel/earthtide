@@ -10,6 +10,5 @@ get_dut1()
 information on time conversions and leap seconds
 }
 \description{
-Downloads data from http://maia.usno.navy.mil/ and updates package data
-58.3092 from Monthly determinations of Delta T -- values of (TT - UT1) since 1973
+Downloads earth orientation data from http://hpiers.obspm.fr/eop-pc/index.php
 }

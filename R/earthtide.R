@@ -8,7 +8,7 @@
 #'   utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24) * 3600, 
 #'   latitude = 52.3868,
 #'   longitude = 9.7144,
-#'   catalog = "ksm03",
+#'   catalog = "ksm04",
 #'   wave_groups = data.frame(start = 0.0, end = 6.0))
 #' 
 #' et$predict(method = "gravity", astro_update = 1)
@@ -36,7 +36,7 @@
 #'     defaults to 1e-6}
 #'   \item{wave_groups: }{Two column data.frame having start and end of 
 #'     frequency groups (data.frame).}
-#'   \item{catalog: }{Use the "hw95s" catalog or "ksm03" catalog(character).}
+#'   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog(character).}
 #'   \item{...: }{Currently not used.}
 #'   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
 #'     "tidal_potential", "tidal_tilt", "vertical_displacement", 
@@ -62,6 +62,7 @@
 #'   of the Earth tide for analysis.
 #'   
 #' \code{$lod_tide()} generate components of the LOD tide (length of day).
+#' 
 #' \code{$pole_tide()} generate components of the pole tide.
 #' 
 #' \code{$tide()} get the tide \code{data.frame}.
@@ -82,20 +83,12 @@
 #'   utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24) * 3600, 
 #'   latitude = 52.3868,
 #'   longitude = 9.7144,
-#'   catalog = "ksm03",
+#'   catalog = "ksm04",
 #'   wave_groups = data.frame(start = 0.0, end = 6.0))
 #' 
 #' et$predict(method = "gravity", astro_update = 1)
-#' et$lod_tide()
-#' et$pole_tide()
 #' 
-#' grav <- et$tide()
-#' 
-#' plot(gravity~datetime, grav, type='l')
-#' 
-#' plot(lod_tide~datetime, grav, type='l')
-#' 
-#' plot(pole_tide~datetime, grav, type='l')
+#' plot(gravity~datetime, et$tide(), type='l')
 #' 
 #' @name Earthtide
 NULL
@@ -116,7 +109,7 @@ Earthtide <- R6Class("et",
                           earth_eccen = 6.69439795140e-3,
                           cutoff = 1e-6,
                           wave_groups = NA_real_,
-                          catalog = 'ksm03',
+                          catalog = 'ksm04',
                           ...) {
       
       # Initialize class using input values
@@ -147,7 +140,7 @@ Earthtide <- R6Class("et",
     
     # Subset values based using a cutoff amplitude and 
     # cutoff frequencies
-    prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm03') {
+    prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm04') {
       
       self$catalog <- .prepare_catalog(cutoff, wave_groups, catalog = catalog)
       
@@ -371,8 +364,6 @@ Earthtide <- R6Class("et",
       cat("    cutoff:      ", head(self$catalog$cutoff), "\n", sep = "")
       cat("    n waves:     ", head(self$catalog$n_constituents), "\n", sep = "")
       cat("    n groups:    ", nrow(self$catalog$wave_groups), "\n", sep = "")
-      # cat("    wave groups: \n")
-      # print(self$catalog$wave_groups, row.names = FALSE)
       # cat("  Tides: \n")
       # print(head(self$tides), row.names = FALSE)
       

@@ -16,7 +16,7 @@ et <- Earthtide$new(
   utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24) * 3600, 
   latitude = 52.3868,
   longitude = 9.7144,
-  catalog = "ksm03",
+  catalog = "ksm04",
   wave_groups = data.frame(start = 0.0, end = 6.0))
 
 et$predict(method = "gravity", astro_update = 1)
@@ -46,7 +46,7 @@ et$print()
     defaults to 1e-6}
   \item{wave_groups: }{Two column data.frame having start and end of 
     frequency groups (data.frame).}
-  \item{catalog: }{Use the "hw95s" catalog or "ksm03" catalog(character).}
+  \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog(character).}
   \item{...: }{Currently not used.}
   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
     "tidal_potential", "tidal_tilt", "vertical_displacement", 
@@ -74,6 +74,7 @@ et$print()
   of the Earth tide for analysis.
   
 \code{$lod_tide()} generate components of the LOD tide (length of day).
+
 \code{$pole_tide()} generate components of the pole tide.
 
 \code{$tide()} get the tide \code{data.frame}.
@@ -87,19 +88,11 @@ et <- Earthtide$new(
   utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24) * 3600, 
   latitude = 52.3868,
   longitude = 9.7144,
-  catalog = "ksm03",
+  catalog = "ksm04",
   wave_groups = data.frame(start = 0.0, end = 6.0))
 
 et$predict(method = "gravity", astro_update = 1)
-et$lod_tide()
-et$pole_tide()
 
-grav <- et$tide()
-
-plot(gravity~datetime, grav, type='l')
-
-plot(lod_tide~datetime, grav, type='l')
-
-plot(pole_tide~datetime, grav, type='l')
+plot(gravity~datetime, et$tide(), type='l')
 
 }

@@ -195,3 +195,4 @@ print(tides[1:5,], row.names = FALSE)
 - Print methods and getter/setters for love numbers, catalog, station variables
 - Optional wave group multipliers, wave group names
 - Ocean loading
+- Predicted Earth orientation data

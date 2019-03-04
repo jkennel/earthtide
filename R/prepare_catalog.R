@@ -1,4 +1,4 @@
-.prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm03') {
+.prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm04') {
   
   
   utils::data(list = catalog, package = 'earthtide')

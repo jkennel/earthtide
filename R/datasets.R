@@ -36,7 +36,13 @@
 #'  \item{\code{C1}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the COS of the argument.}
 #'  \item{\code{S1}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the SIN of the argument.}
 #'  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
+#'  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
+#'  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
+#'  \item{\code{phase}}{phase of the tidal wave at J2000}
 #' }
+#' 
+#' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. doi:10.1029/95GL03324
+#'
 #' @examples
 #' \dontrun{
 #' data(hw95s)
@@ -47,7 +53,7 @@
 
 
 
-#' @title KSM (2003) tidal potential catalogue
+#' @title Kudryavtsev, S M (2004) tidal potential catalogue
 #' @format A \code{data.frame} The columns are:
 #' \describe{
 #'  \item{\code{index}}{the index}
@@ -72,17 +78,22 @@
 #'  \item{\code{C2}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000^2 (in Julian centuries) and with the COS of the argument.}
 #'  \item{\code{S2}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000^2 (in Julian centuries) and with the SIN of the argument.}
 #'  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
+#'  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
+#'  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
 #' }
+#' 
+#' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829–838. doi:10.1007/s00190-003-0361-2
+#' 
 #' @examples
 #' \dontrun{
-#' utils::data(ksm03)
-#' summary(ksm03)
+#' utils::data(ksm04)
+#' summary(ksm04)
 #' }
-'ksm03'
+'ksm04'
 
 
 
-#' @title simon_coef_1994
+#' @title Simon 1994 astronomical constants
 #' @format A \code{data.frame} The columns are:
 #' \describe{
 #'  \item{\code{j}}{7 = mercury, 8 = venus, 9 = mars, 10 = Jupiter, 11 = Saturn}
@@ -92,6 +103,8 @@
 #'  \item{\code{t3}}{t3}
 #'  \item{\code{t4}}{t4}
 #' }
+#' @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession for- mulae and mean elements for the Moon and planets. Astron Astrophys 282:663–683
+#' 
 #' @examples
 #' \dontrun{
 #' utils::data(simon_coef_1994)
@@ -109,6 +122,9 @@
 #'  \item{\code{tai_utc}}{TAI - UTC}
 #'  \item{\code{lod}}{length of day correction}
 #' }
+#' 
+#' @references http://hpiers.obspm.fr/eop-pc/index.php 
+#' 
 #' @examples
 #' \dontrun{
 #' utils::data(dut1)
@@ -119,8 +135,7 @@
 
 #' get_dut1
 #'
-#' Downloads data from http://maia.usno.navy.mil/ and updates package data
-#' 58.3092 from Monthly determinations of Delta T -- values of (TT - UT1) since 1973
+#' Downloads earth orientation data from http://hpiers.obspm.fr/eop-pc/index.php 
 #' 
 #' @return information on time conversions and leap seconds
 #'
@@ -136,13 +151,15 @@ get_dut1 <- function(){
                               'ut1_utc', 'ut1_utc_sig', 'ut1_tai', 'ut1_tai_sig',
                               'lod', 'lod_sig', 'w3', 'w3_sig',
                               'dx', 'dx_sig', 'dy', 'dy_sig'),
-                colClasses = c('integer', 'integer', 'integer', rep('numeric', 16)))
+                colClasses = c('integer', 'integer', 'integer',
+                               rep('numeric', 16)))
   dut1 <- dut1[-nrow(dut1),]
   
   
   dut1$datetime <- as.POSIXct(paste(dut1$year, 
                                     sprintf("%02i", dut1$month),
-                                    sprintf("%02i", dut1$day), sep = '-'), tz = 'UTC')
+                                    sprintf("%02i", dut1$day), sep = '-'),
+                              tz = 'UTC')
   
   dut1$ut1_utc <- dut1$ut1_utc / 1000
   dut1$ut1_tai <- dut1$ut1_tai / 1000
@@ -153,24 +170,18 @@ get_dut1 <- function(){
   dut1$lod     <- dut1$lod / 1000
   
   
-  #dut1[, tai_utc := ut1_utc - ut1_tai]
   dut1$tai_utc <- dut1$ut1_utc - dut1$ut1_tai
   
   # equation from http://maia.usno.navy.mil/
   # monthly values http://maia.usno.navy.mil/ser7/deltat.data
   dut1$ddt <- 32.184 + (dut1$tai_utc - dut1$ut1_utc)
   
-  # dut1 <- dut1[, list(datetime, ddt, ut1_utc, tai_utc, lod)]
   dut1 <- dut1[, c('datetime', 'ddt', 'ut1_utc', 'tai_utc', 'lod', 'x', 'y',
                    'dx', 'dy')]
-
-  #usethis::use_data(dut1, internal = FALSE, overwrite = TRUE)
-  
   dut1
   
 }
 
-# simon_coef_1994 <- as.data.frame(simon_coef_1994)
-# usethis::use_data(simon_coef_1994, internal = FALSE, overwrite = TRUE)
 # dut1 <- get_dut1()
 # usethis::use_data(dut1, internal = FALSE, overwrite = TRUE)
+#usethis::use_data(ksm04, internal = FALSE, overwrite = TRUE)

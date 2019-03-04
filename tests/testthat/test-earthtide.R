@@ -12,7 +12,7 @@ test_that("earthtide works", {
                       elevation = 110,
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
-                      catalog = 'ksm03',
+                      catalog = 'ksm04',
                       wave_groups = wave_groups)
   
   et$predict(method = 'tidal_potential', astro_update = 1L)
@@ -45,7 +45,7 @@ test_that("earthtide works", {
                       elevation = 110,
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
-                      catalog = 'ksm03',
+                      catalog = 'ksm04',
                       wave_groups = wave_groups)
 
   expect_warning(et$predict(method = 'tidal_potential', astro_update = 1L))

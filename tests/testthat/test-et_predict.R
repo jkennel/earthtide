@@ -27,7 +27,6 @@ test_that("et_predict works", {
                       elevation = 110,
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
-                      catalog = 'ksm03',
                       wave_groups = wave_groups)
   et$predict(method = 'gravity')
   tide <- et$tide()
@@ -45,7 +44,6 @@ test_that("et_predict works", {
                       elevation = 110,
                       gravity = 9.8127, 
                       cutoff = 1.0e-10,
-                      catalog = 'ksm03',
                       wave_groups = wave_groups)
   
   et$predict(method = 'gravity', astro_update = 24)
