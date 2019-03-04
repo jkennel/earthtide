@@ -11,13 +11,11 @@ Class to generate synthetic earthtide signals.
 }
 \section{Usage}{
 
-\preformatted{et <- Earthtide$new(
-  utc = as.POSIXct("2019-01-01", tz = "UTC") + 0:24 * 3600, 
+\preformatted{
+et <- Earthtide$new(
+  utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24) * 3600, 
   latitude = 52.3868,
   longitude = 9.7144,
-  elevation = 110,
-  gravity = 9.8127, 
-  cutoff = 1.0e-10,
   catalog = "ksm03",
   wave_groups = data.frame(start = 0.0, end = 6.0))
 
@@ -25,33 +23,35 @@ et$predict(method = "gravity", astro_update = 1)
 et$analyze(method = "gravity", astro_update = 1)
 et$lod_tide()
 et$pole_tide()
+et$tide()
+et$print()
 }
 }
 
 \section{Arguments}{
 
-\describe{
-  \item{et}{An \code{Earthtide} object.}
-  \item{utc}{The time in UTC (POSIXct vector).}
-  \item{latitude}{The station latitude (numeric).}
-  \item{longitude}{The station longitude (numeric).}
-  \item{elevation}{The station elevation (m) (numeric)  0 to use default.}
-  \item{azimuth}{Earth azimuth (numeric) 0 to use default.}
-  \item{earth_radius}{Radius of earth (m) (numeric) defaults to 6378136.3 }
-  \item{earth_eccen}{Eccentricity of earth (numeric) defaults to 
-    6.69439795140e-3}
-  \item{cutoff}{Cutoff amplitude for constituents (numeric) defaults to 1e-6}
-  \item{wave_groups}{Two column data.table having start and end of frequency 
-    groups (data.frame).}
-  \item{wave_names}{Names of the constituent groups (character vector).}
-  \item{catalog}{Use the "hw95s" catalog or "ksm03" catalog(character).}
-  \item{...}{Currently not used.}
-  
-  
-  \item{method}{For \code{predict} and \code{analyze}. One of "gravity", 
+\itemize{
+  \item{et: }{An \code{Earthtide} object.}
+  \item{utc: }{The date-time in UTC (POSIXct vector).}
+  \item{latitude: }{The station latitude (numeric) defaults to 0.}
+  \item{longitude: }{The station longitude (numeric) defaults to 0.}
+  \item{elevation: }{The station elevation (m) (numeric) defaults to 0.}
+  \item{azimuth: }{Earth azimuth (numeric) defaults to 0.}
+  \item{gravity: }{Gravity at the station (m/s^2) (numeric) 0 to 
+    estimate gravity from elevation and latitude.}
+  \item{earth_radius: }{Radius of earth (m) (numeric) defaults to 6378136.3 }
+  \item{earth_eccen: }{Eccentricity of earth (numeric) 
+    defaults to 6.69439795140e-3}
+  \item{cutoff: }{Cutoff amplitude for constituents (numeric) 
+    defaults to 1e-6}
+  \item{wave_groups: }{Two column data.frame having start and end of 
+    frequency groups (data.frame).}
+  \item{catalog: }{Use the "hw95s" catalog or "ksm03" catalog(character).}
+  \item{...: }{Currently not used.}
+  \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
     "tidal_potential", "tidal_tilt", "vertical_displacement", 
     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
-  \item{astro_update}{For \code{predict} and \code{analyze}. Integer that
+  \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
     determines how often to phases are updated in number of samples. Defaults
     to 1 (every sample), but speed gains are realized with larger values.
     Typically updating every hour will have speed gains and keep precision 
@@ -61,22 +61,30 @@ et$pole_tide()
 
 \section{Details}{
 
-\code{Earthtide$new} create a new \code{Earthtide} object and initialize catalog, station and
-times.
 
-\code{et$predict(method, astro_argument)} generate a combined synthetic Earth tide.
-\code{et$analyze(method, astro_argument)} generate components of the Earth tide for analysis.
-\code{et$lod_tide()} generate components of the LOD tide (length of day).
-\code{et$pole_tide()} generate components of the pole tide.
-\code{et$tide()} get the tide \code{data.frame}.
-\code{et$print()} print the \code{Earthtide} object.
+\code{$new(utc, latitude, longitude, elevation, azimuth, gravity, 
+  earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)} 
+  create a new \code{Earthtide} object and initialize catalog, 
+  station and times.
+
+\code{$predict(method, astro_argument)} generate a combined 
+  synthetic Earth tide.
+  
+\code{$analyze(method, astro_argument)} generate components 
+  of the Earth tide for analysis.
+  
+\code{$lod_tide()} generate components of the LOD tide (length of day).
+\code{$pole_tide()} generate components of the pole tide.
+
+\code{$tide()} get the tide \code{data.frame}.
+
+\code{$print()} print the \code{Earthtide} object.
 }
 
 \examples{
-\dontrun{
 
 et <- Earthtide$new(
-  utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24*31) * 3600, 
+  utc = as.POSIXct("2017-01-01", tz = "UTC") + 0:(24) * 3600, 
   latitude = 52.3868,
   longitude = 9.7144,
   catalog = "ksm03",
@@ -86,11 +94,12 @@ et$predict(method = "gravity", astro_update = 1)
 et$lod_tide()
 et$pole_tide()
 
-grav <- et$tide
+grav <- et$tide()
 
 plot(gravity~datetime, grav, type='l')
+
 plot(lod_tide~datetime, grav, type='l')
+
 plot(pole_tide~datetime, grav, type='l')
 
-}
 }

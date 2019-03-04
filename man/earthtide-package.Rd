@@ -16,6 +16,14 @@ improvements
 You can learn about the earthtide package in the vignettes:
 `browseVignettes(package = "earthtide")`
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/jkennel/earthtide}
+  \item Report bugs at \url{https://github.com/jkennel/earthtide/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Jonathan Kennel \email{jkennel@uoguelph.ca} [translator]
 

@@ -8,6 +8,8 @@ Authors@R: c(person("Jonathan", "Kennel", email = "jkennel@uoguelph.ca", role = 
 Maintainer: Jonathan Kennel <jkennel@uoguelph.ca>
 Description: This is a port of Fortran 'ETERNA 3.4' code <http://igets.u-strasbg.fr/soft_and_tool.php> 
              for calculating synthetic Earth tides.
+BugReports: https://github.com/jkennel/earthtide/issues
+URL: https://github.com/jkennel/earthtide
 License: GPL-3
 Depends: R (>= 3.1.2)
 Imports: Rcpp (>= 1.0.0),
