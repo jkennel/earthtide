@@ -6,10 +6,11 @@ Authors@R: c(person("Jonathan", "Kennel", email = "jkennel@uoguelph.ca", role = 
              person("Beth", "Parker", email = "bparker@uoguelph.ca", role = "ths"),
              person("Wenzel", "Hans-Georg", role = "ctb"))
 Maintainer: Jonathan Kennel <jkennel@uoguelph.ca>
-Description: This is a port of 'Fortran ETERNA 3.4' code <http://igets.u-strasbg.fr/soft_and_tool.php> 
+Description: This is a port of 'Fortran ETERNA 3.4' code
+             <http://igets.u-strasbg.fr/soft_and_tool.php> 
              for calculating synthetic Earth tides using the 
              Hartmann and Wenzel (1994) <doi:10.1029/95GL03324> or 
-             Kudryavtsev (2004) <doi:10.1007/s00190-003-0361-2>the tidal catalogs. 
+             Kudryavtsev (2004) <doi:10.1007/s00190-003-0361-2> tidal catalogs. 
 BugReports: https://github.com/jkennel/earthtide/issues
 URL: https://github.com/jkennel/earthtide
 License: GPL-3
