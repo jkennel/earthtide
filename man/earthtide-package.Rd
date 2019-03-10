@@ -14,7 +14,7 @@ improvements.
 }
 \details{
 You can learn about the earthtide package in the vignettes:
-`browseVignettes(package = "earthtide")`
+\code{browseVignettes(package = "earthtide")}
 }
 \references{
 Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. \doi{10.1029/95GL03324}
