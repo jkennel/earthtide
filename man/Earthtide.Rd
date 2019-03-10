@@ -73,7 +73,7 @@ et$print()
 \code{$analyze(method, astro_argument)} generate components 
   of the Earth tide for analysis.
   
-\code{$lod_tide()} generate components of the LOD tide (length of day).
+\code{$lod_tide()} generate components of the LOD (Length Of Day) tide.
 
 \code{$pole_tide()} generate components of the pole tide.
 
