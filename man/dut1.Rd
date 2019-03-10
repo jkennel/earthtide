@@ -19,7 +19,7 @@ dut1
 dut1
 }
 \examples{
-\dontrun{
+\donttest{
 utils::data(dut1)
 }
 }

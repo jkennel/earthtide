@@ -20,7 +20,7 @@ simon_coef_1994
 Simon 1994 astronomical constants
 }
 \examples{
-\dontrun{
+\donttest{
 utils::data(simon_coef_1994)
 summary(simon_coef_1994)
 }

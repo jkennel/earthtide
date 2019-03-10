@@ -79,9 +79,9 @@
 #' @format An \code{\link{R6Class}} generator object
 #' 
 #' 
-#' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. <doi:10.1029/95GL03324>
-#' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829–838. <doi:10.1007/s00190-003-0361-2>
-#' @references Wenzel, H.G., 1996. The nanogal software: Earth tide data processing package ETERNA 3.30. Bull. Inf. Marées Terrestres, 124, pp.9425-9439.
+#' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. \doi{10.1029/95GL03324}
+#' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829–838. \doi{10.1007/s00190-003-0361-2}
+#' @references Wenzel, H.G., 1996. The nanogal software: Earth tide data processing package ETERNA 3.30. Bull. Inf. Marées Terrestres, 124, pp.9425-9439. \url{http://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM}
 #' 
 #' @examples
 #' 
@@ -224,7 +224,7 @@ Earthtide <- R6Class("et",
         self$love_params$dhlat[1:12] * dfak
       self$pk[] <- 0.0
     },
-    # This number is way to big from eterna - currently must be an error
+    # This number is way too big from eterna - currently must be an error
     # horizontal_displacement = function() {
     #   
     #   #dfak <- 1e3 *  self$station$geo_radius / self$station$gravity
