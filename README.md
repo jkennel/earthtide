@@ -28,6 +28,8 @@ install_github('jkennel/earthtide')
 Example
 =======
 
+The following code computes the synthetic gravity, LOD tide, and pole tide and returns a data.frame of results.
+
 ``` r
 library(earthtide)
 
@@ -37,10 +39,10 @@ tide <-  Earthtide$
       latitude = 52.3868,
       longitude = 9.7144,
       wave_groups = data.frame(start = 0.0, end = 6.0))$
-  predict(method = "gravity", astro_update = 1)$
-  lod_tide()$
-  pole_tide()$
-  tide()
+  predict(method = "gravity", astro_update = 1)$    # compute gravity
+  lod_tide()$                                       # add LOD tide to results
+  pole_tide()$                                      # add pole tide to results
+  tide()                                            # get result data.frame
 ```
 
 ![](README_files/figure-markdown_github/plot-1.png)
