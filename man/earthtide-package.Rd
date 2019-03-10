@@ -14,7 +14,6 @@ improvements.
 }
 \details{
 You can learn about the earthtide package in the vignettes:
-
 `browseVignettes(package = "earthtide")`
 }
 \references{
