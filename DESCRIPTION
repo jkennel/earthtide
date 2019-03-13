@@ -1,7 +1,7 @@
 Package: earthtide
 Type: Package
 Title: Parallel Implementation of 'ETERNA 3.40' for Prediction and Analysis of Earth Tides
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: c(person("Jonathan", "Kennel", email = "jkennel@uoguelph.ca", role = c("aut", "cre", "trl")), 
              person("Beth", "Parker", email = "bparker@uoguelph.ca", role = "ths"),
              person("Wenzel", "Hans-Georg", role = "ctb"))
@@ -9,8 +9,8 @@ Maintainer: Jonathan Kennel <jkennel@uoguelph.ca>
 Description: This is a port of 'Fortran ETERNA 3.4' 
              <http://igets.u-strasbg.fr/soft_and_tool.php> by H.G. Wenzel
              for calculating synthetic Earth tides using the 
-             Hartmann and Wenzel (1994) \doi{10.1029/95GL03324} or 
-             Kudryavtsev (2004) \doi{10.1007/s00190-003-0361-2} tidal catalogs. 
+             Hartmann and Wenzel (1994) <doi:10.1029/95GL03324> or 
+             Kudryavtsev (2004) <doi:10.1007/s00190-003-0361-2> tidal catalogs. 
 BugReports: https://github.com/jkennel/earthtide/issues
 URL: https://github.com/jkennel/earthtide
 License: GPL-3
