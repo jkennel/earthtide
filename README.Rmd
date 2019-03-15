@@ -6,8 +6,23 @@ output: github_document
 
 The **earthtide** package simplifies the generation of earth tides and wave group harmonics for analysis in **R**.
 
+```{r echo=FALSE, results="hide", message=FALSE}
+library("badger")
+```
+
 [![Build Status](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide)
 [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master)
+
+```{r, echo = FALSE, results='asis'}
+cat(
+	badge_cran_release("earthtide", "green"),
+	badge_cran_download("earthtide", "grand-total", "green"),
+	badge_cran_download("earthtide", "last-month", "green"),
+  badge_dependencies("earthtide")
+)
+
+```
+
 
 # Background #
 
