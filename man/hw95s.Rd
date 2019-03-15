@@ -37,12 +37,9 @@ hw95s
 Hartmann and Wenzel (1995) tidal potential catalogue
 }
 \examples{
-\donttest{
-data(hw95s)
-summary(hw95s)
-}
+utils::data(hw95s)
 }
 \references{
 Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. \doi{10.1029/95GL03324}
 }
-\keyword{datasets}
+\keyword{internal}

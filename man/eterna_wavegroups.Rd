@@ -18,9 +18,6 @@ eterna_wavegroups
 Hartmann and Wenzel (1995) (ETERNA 3.4) wavegroups
 }
 \examples{
-\dontrun{
 utils::data(eterna_wavegroups)
-summary(eterna_wavegroups)
 }
-}
-\keyword{datasets}
+\keyword{internal}

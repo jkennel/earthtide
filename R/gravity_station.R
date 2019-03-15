@@ -1,14 +1,16 @@
 #-------------------------------------------------------------------------------
-#' gravity_station
-#'
-#' \code{gravity_station} returns the estimated gravity for a latitude.
-#' http://the-mostly.ru/misc/local_gravity_online_calculator.html
-#'
-#' @param latitude the station latitude in radians
-#' @param elevation the station elevation in meters
-#'
-#' @return gravity for location in m/s^2
-#'
+# gravity_station
+#
+# \code{gravity_station} returns the estimated gravity for a latitude.
+# http://the-mostly.ru/misc/local_gravity_online_calculator.html
+#
+# @param latitude the station latitude in radians
+# @param elevation the station elevation in meters
+#
+# @return gravity for location in m/s^2
+# 
+# @keywords internal
+# 
 #-------------------------------------------------------------------------------
 gravity_station <- function(latitude, elevation){
   

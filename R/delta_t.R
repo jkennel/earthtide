@@ -1,13 +1,15 @@
 #-------------------------------------------------------------------------------
-#' delta_t
-#'
-#' delta_t returns the delta t
-#' data from http://maia.usno.navy.mil/
-#'
-#' @param utc datetime in utc
-#'
-#' @return seconds difference  32.184s + (TAI - UTC) - (UT1 - UTC)
-#'
+# delta_t
+#
+# delta_t returns the delta t
+# data from http://maia.usno.navy.mil/
+#
+# @param utc datetime in utc
+#
+# @return seconds difference  32.184s + (TAI - UTC) - (UT1 - UTC)
+# 
+# @keywords internal
+# 
 #-------------------------------------------------------------------------------
 delta_t <- function(utc){
   

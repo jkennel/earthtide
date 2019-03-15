@@ -1,13 +1,15 @@
-#' love
-#'
-#' returns the love numbers - direct port of eterna 3.40 code
-#' http://igets.u-strasbg.fr/soft_and_tool.php
-#'
-#' @param latitude latitude the station latitude
-#' @param elevation elevation the station elevation
-#'
-#' @return list of love numbers
-#'
+# love
+#
+# returns the love numbers - direct port of eterna 3.40 code
+# http://igets.u-strasbg.fr/soft_and_tool.php
+#
+# @param latitude latitude the station latitude
+# @param elevation elevation the station elevation
+#
+# @return list of love numbers
+# 
+# @keywords internal
+# 
 love <- function(latitude, elevation){
   
   dg0 <- c(1.1576,1.1542,1.1600,1.0728,1.0728,1.0728,

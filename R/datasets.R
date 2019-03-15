@@ -6,11 +6,11 @@
 #'  \item{\code{end}}{higher frequency of the wave group}
 #'  \item{\code{time}}{applicable to data of what length}
 #' }
+#' 
+#' @keywords internal
+#' 
 #' @examples
-#' \dontrun{
 #' utils::data(eterna_wavegroups)
-#' summary(eterna_wavegroups)
-#' }
 'eterna_wavegroups'
 
 #' @title Hartmann and Wenzel (1995) tidal potential catalogue
@@ -41,13 +41,12 @@
 #'  \item{\code{phase}}{phase of the tidal wave at J2000}
 #' }
 #' 
+#' @keywords internal
+#' 
 #' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. \doi{10.1029/95GL03324}
 #'
 #' @examples
-#' \donttest{
-#' data(hw95s)
-#' summary(hw95s)
-#' }
+#' utils::data(hw95s)
 'hw95s'
 
 
@@ -84,11 +83,10 @@
 #' 
 #' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829–838. \doi{10.1007/s00190-003-0361-2}
 #' 
+#' @keywords internal
+#' 
 #' @examples
-#' \donttest{
 #' utils::data(ksm04)
-#' summary(ksm04)
-#' }
 'ksm04'
 
 
@@ -105,11 +103,11 @@
 #' }
 #' @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession for- mulae and mean elements for the Moon and planets. Astron Astrophys 282:663–683
 #' 
+#' @keywords internal
+#' 
 #' @examples
-#' \donttest{
 #' utils::data(simon_coef_1994)
-#' summary(simon_coef_1994)
-#' }
+#' 
 'simon_coef_1994'
 
 
@@ -125,20 +123,21 @@
 #' 
 #' @references http://hpiers.obspm.fr/eop-pc/index.php 
 #' 
+#' @keywords internal
+#' 
 #' @examples
-#' \donttest{
 #' utils::data(dut1)
-#' }
 'dut1'
 
 
 
-#' get_dut1
-#'
-#' Downloads earth orientation data from http://hpiers.obspm.fr/eop-pc/index.php 
-#' 
-#' @return information on time conversions and leap seconds
-#'
+# get_dut1
+#
+# Downloads earth orientation data from http://hpiers.obspm.fr/eop-pc/index.php 
+# 
+# @return information on time conversions and leap seconds
+#
+# @keywords internal
 get_dut1 <- function(){
  
   tf <- tempfile()

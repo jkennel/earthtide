@@ -20,12 +20,10 @@ simon_coef_1994
 Simon 1994 astronomical constants
 }
 \examples{
-\donttest{
 utils::data(simon_coef_1994)
-summary(simon_coef_1994)
-}
+
 }
 \references{
 Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession for- mulae and mean elements for the Moon and planets. Astron Astrophys 282:663–683
 }
-\keyword{datasets}
+\keyword{internal}

@@ -19,11 +19,9 @@ dut1
 dut1
 }
 \examples{
-\donttest{
 utils::data(dut1)
-}
 }
 \references{
 http://hpiers.obspm.fr/eop-pc/index.php
 }
-\keyword{datasets}
+\keyword{internal}
