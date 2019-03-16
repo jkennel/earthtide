@@ -6,7 +6,7 @@ The **earthtide** package simplifies the generation of earth tides and wave grou
 
 [![Build Status](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master)
 
-[![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/last-month/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![Dependencies](https://tinyverse.netlify.com/badge/earthtide)](https://cran.r-project.org/package=earthtide)
+[![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![Dependencies](https://tinyverse.netlify.com/badge/earthtide)](https://cran.r-project.org/package=earthtide)
 
 Background
 ==========

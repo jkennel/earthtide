@@ -17,7 +17,6 @@ library("badger")
 cat(
 	badge_cran_release("earthtide", "green"),
 	badge_cran_download("earthtide", "grand-total", "green"),
-	badge_cran_download("earthtide", "last-month", "green"),
   badge_dependencies("earthtide")
 )
 
