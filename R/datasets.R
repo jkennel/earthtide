@@ -154,7 +154,6 @@ get_dut1 <- function(){
                                rep('numeric', 16)))
   dut1 <- dut1[-nrow(dut1),]
   
-  
   dut1$datetime <- as.POSIXct(paste(dut1$year, 
                                     sprintf("%02i", dut1$month),
                                     sprintf("%02i", dut1$day), sep = '-'),
@@ -181,6 +180,138 @@ get_dut1 <- function(){
   
 }
 
+
+# download leap second data
+get_tai_utc <- function() {
+  
+  tf <- tempfile()
+  utils::download.file('http://maia.usno.navy.mil/ser7/tai-utc.dat', tf)
+  widths  <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
+  tai_utc <- read.fwf(tf, widths = widths, stringsAsFactors=FALSE)
+  tai_utc <- tai_utc[, c(2, 4, 6, 8)]
+  names(tai_utc) <- c('jd', 'tai_utc', 'minus_date', 'factor')
+  
+  tai_utc$mjd <- julian_mod_julian(tai_utc$jd)
+  
+  tai_utc
+  
+}
+
+# get tai - utc
+mjd_tai_utc <- function(mjd) {
+  
+  tai_utc <- get_tai_utc()
+  
+  tu <- c()
+  
+  for (i in 1:length(mjd)) {
+    
+    di <- mjd[i] - tai_utc$mjd
+    
+    wh <- max(which(di >= 0))
+    
+    tu[i] <- tai_utc$tai_utc[wh] + (mjd[i] - tai_utc$minus_date[wh]) * tai_utc$factor[wh]
+
+  }
+  
+  tu
+
+}
+
+
+# Bulletin B
+get_iers_b <- function() {
+
+  tf <- tempfile()
+  utils::download.file('http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now', tf)
+  
+  len  <- length(readLines(tf))
+  dut1 <- utils::read.table(tf, skip = 15, stringsAsFactors = FALSE,
+                            col.names = c('year', 'month', 'day', 'mjd', 
+                                          'x', 'y', 'ut1_utc', 'lod',
+                                          'dx', 'dy', 'x_sig',  'y_sig',
+                                           'ut1_utc_sig', 'lod_sig',
+                                           'dx_sig',  'dy_sig'),
+                            colClasses = c('integer', 'integer', 'integer',
+                                           rep('numeric', 13)))
+  
+  dut1$datetime <- mod_julian_utc(dut1$mjd)
+  
+  # equation from http://maia.usno.navy.mil/
+  dut1$ddt <- 32.184 + (mjd_tai_utc(dut1$mjd) - dut1$ut1_utc)
+  
+  
+  dut1 <- dut1[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
+                   'dx', 'dy')]
+
+}
+
+
+# Bulletin A
+get_iers_a <- function(){
+  
+  tf_all <- tempfile()
+  tf_daily <- tempfile()
+  widths = c(2,2,2,1,8,1,1,1,9,9,1,9,9,2,1,10,10,1,7,7,2,1,1,9,9,1,9,9,10,10,11,10,10)
+  
+  # historical
+  utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.all', tf_all)
+  # daily set for update
+  utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.daily', tf_daily)
+  
+  iers_all   <- read.fwf(tf_all, widths = widths, stringsAsFactors=FALSE)
+  iers_daily <- read.fwf(tf_daily, widths = widths, stringsAsFactors=FALSE)
+  
+  wh <- c(5,9,12,16,19,24,27)
+  wh_names <- c('mjd', 'x', 'y', 'ut1_utc', 'lod', 'dx', 'dy')
+  iers_all <- iers_all[, wh]
+  iers_daily <- iers_daily[, wh]
+  names(iers_all) <- wh_names
+  names(iers_daily) <- wh_names
+
+  iers_all$datetime   <- mod_julian_utc(iers_all$mjd)
+  iers_daily$datetime <- mod_julian_utc(iers_daily$mjd)
+  
+  iers_all$dx <- iers_all$dx/1000
+  iers_all$dy <- iers_all$dy/1000
+  iers_daily$dx <- iers_daily$dx/1000
+  iers_daily$dy <- iers_daily$dy/1000
+  
+  iers_all$lod <- iers_all$lod / 1000
+  iers_daily$lod <- iers_daily$lod / 1000
+  
+  iers_all$ddt <- 32.184 + (mjd_tai_utc(iers_all$mjd) - iers_all$ut1_utc)
+  iers_daily$ddt <- 32.184 + (mjd_tai_utc(iers_daily$mjd) - iers_daily$ut1_utc)
+
+  iers_all <- iers_all[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
+                           'dx', 'dy')]
+  
+  iers_daily <- iers_daily[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
+                           'dx', 'dy')]
+  
+  iers_all <- iers_all[iers_all$datetime < min(iers_daily$datetime),]
+  
+  rbind(iers_all, iers_daily)
+  
+  
+}
+
+
+# Bulletin A & B combined where B takes precedence
+get_dut1_iers <- function() {
+  a <- get_iers_a() # bulletin A
+  b <- get_iers_b() # bulletin B
+  
+  a <- a[a$datetime > max(b$datetime),]
+  rbind(b, a)
+  
+}
+
+# dut1 <- get_dut1_iers()
+# usethis::use_data(dut1, internal = FALSE, overwrite = TRUE)
+
+# old version
 # dut1 <- get_dut1()
 # usethis::use_data(dut1, internal = FALSE, overwrite = TRUE)
-#usethis::use_data(ksm04, internal = FALSE, overwrite = TRUE)
+
+
