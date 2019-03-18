@@ -34,9 +34,9 @@ The first step to generate earthtides is to create the object with the predictio
 - *latitude* numeric of length one.  The latitude of the monitoring location.
 - *longitude* numeric of length one.  The longitude of the monitoring location.
 - *cutoff* numeric of length one. Cutoff determines how many waves to include in the analysis.  A lower number yields more precise results but at the cost of runtime. A value of 1e-10 includes all waves in the catalog and may be quite slow for long series. The default is 1e-6.
-- *wave_groups* is a data.frame of of the frequency ranges in cycles per day. It requires a column named start and an column named end which give the ranges for each wave group.
+- *wave_groups* is a `data.frame` of of the frequency ranges in cycles per day. It requires a column named start and an column named end which give the ranges for each wave group.
 
-See **?Earthtide** for the complete list of available arguments.
+See `?Earthtide` for the complete list of available arguments.
 
 ```{r newearthtide}
 library(earthtide)
@@ -168,7 +168,7 @@ for (i in seq(2, 11, 2)) {
 
 ## Get the tidal values
 
-The _**tide**_ method of the earthtide class returns a data.frame of tidal values. The following example in the chaining section shows how to calculate the gravity, LOD (length of day), and pole tides and return a data.frame of the values. 
+The _**tide**_ method of the earthtide class returns a `data.frame` of tidal values. The following example in the chaining section shows how to calculate the gravity, LOD (length of day), and pole tides and return a `data.frame` of the values. 
 
 ## Chaining
 
@@ -199,4 +199,3 @@ print(tides[1:5,], row.names = FALSE)
 - Print methods and getter/setters for love numbers, catalog, station variables
 - Optional wave group multipliers, wave group names
 - Ocean loading
-- Predicted Earth orientation data

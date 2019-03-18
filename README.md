@@ -34,7 +34,7 @@ install_github('jkennel/earthtide')
 Example
 =======
 
-The following code computes the synthetic gravity, LOD tide, and pole tide and returns a data.frame of results.
+The following code computes the synthetic gravity, LOD tide, and pole tide and returns a `data.frame` of results.
 
 ``` r
 library(earthtide)
