@@ -516,7 +516,7 @@ arma::mat et_predict(const arma::mat astro,
   arma::vec cos_dc2(nr), sin_dc2(nr);
   arma::vec dummy(nr), cos_c(nr), sin_c(nr);
   arma::vec fac = body;
-  arma::vec output(nt, 1);
+  arma::mat output(nt, 1);
   
   
   dc2 = arma::vectorise(k_mat * astro.col(0) + pk + 360.0);

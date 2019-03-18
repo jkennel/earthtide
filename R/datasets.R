@@ -43,7 +43,7 @@
 #' 
 #' @keywords internal
 #' 
-#' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. \doi{10.1029/95GL03324}
+#' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553-3556. \doi{10.1029/95GL03324}
 #'
 #' @examples
 #' utils::data(hw95s)
@@ -81,7 +81,7 @@
 #'  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
 #' }
 #' 
-#' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829–838. \doi{10.1007/s00190-003-0361-2}
+#' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829-838. \doi{10.1007/s00190-003-0361-2}
 #' 
 #' @keywords internal
 #' 
@@ -101,7 +101,7 @@
 #'  \item{\code{t3}}{t3}
 #'  \item{\code{t4}}{t4}
 #' }
-#' @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession for- mulae and mean elements for the Moon and planets. Astron Astrophys 282:663–683
+#' @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession formulae and mean elements for the Moon and planets. Astron Astrophys 282:663-683
 #' 
 #' @keywords internal
 #' 
