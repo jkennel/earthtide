@@ -74,6 +74,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom stats approx
 #' @importFrom utils read.table
+#' @importFrom utils read.fwf
 #' @importFrom utils download.file
 #' @importFrom utils data
 #' @format An \code{\link{R6Class}} generator object

@@ -303,8 +303,10 @@ get_dut1_iers <- function() {
   b <- get_iers_b() # bulletin B
   
   a <- a[a$datetime > max(b$datetime),]
-  rbind(b, a)
+  ab <- rbind(b, a)
+  ab[is.na(ab)] <- 0
   
+  ab
 }
 
 # dut1 <- get_dut1_iers()
