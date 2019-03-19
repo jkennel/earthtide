@@ -46,7 +46,7 @@
 #' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553-3556. \doi{10.1029/95GL03324}
 #'
 #' @examples
-#' utils::data(hw95s)
+#' earthtide:::hw95s
 'hw95s'
 
 
@@ -86,7 +86,7 @@
 #' @keywords internal
 #' 
 #' @examples
-#' utils::data(ksm04)
+#' earthtide:::ksm04
 'ksm04'
 
 
@@ -106,7 +106,7 @@
 #' @keywords internal
 #' 
 #' @examples
-#' utils::data(simon_coef_1994)
+#' earthtide:::simon_coef_1994
 #' 
 'simon_coef_1994'
 
@@ -126,7 +126,7 @@
 #' @keywords internal
 #' 
 #' @examples
-#' utils::data(dut1)
+#' earthtide:::dut1
 'dut1'
 
 
@@ -310,10 +310,9 @@ get_dut1_iers <- function() {
 }
 
 # dut1 <- get_dut1_iers()
-# usethis::use_data(dut1, internal = FALSE, overwrite = TRUE)
-
-# old version
-# dut1 <- get_dut1()
-# usethis::use_data(dut1, internal = FALSE, overwrite = TRUE)
-
-
+# usethis::use_data(dut1, 
+#                   earthtide:::simon_coef_1994, 
+#                   earthtide:::ksm04, 
+#                   earthtide:::hw95s,
+#                   internal = TRUE, overwrite = TRUE)
+# 

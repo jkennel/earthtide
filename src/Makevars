@@ -1,4 +1,6 @@
 CXX_STD = CXX11
 
+PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) 
+
 PKG_LIBS = `${R_HOME}/bin/Rscript -e "RcppParallel::RcppParallelLibs()"` $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 

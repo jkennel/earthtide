@@ -19,7 +19,7 @@ dut1
 dut1
 }
 \examples{
-utils::data(dut1)
+earthtide:::dut1
 }
 \references{
 http://hpiers.obspm.fr/eop-pc/index.php

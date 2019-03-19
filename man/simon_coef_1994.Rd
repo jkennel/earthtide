@@ -20,7 +20,7 @@ simon_coef_1994
 Simon 1994 astronomical constants
 }
 \examples{
-utils::data(simon_coef_1994)
+earthtide:::simon_coef_1994
 
 }
 \references{

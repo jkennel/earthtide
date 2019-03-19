@@ -38,7 +38,7 @@ ksm04
 Kudryavtsev, S M (2004) tidal potential catalogue
 }
 \examples{
-utils::data(ksm04)
+earthtide:::ksm04
 }
 \references{
 Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829-838. \doi{10.1007/s00190-003-0361-2}

@@ -1,13 +1,12 @@
 .prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm04') {
   
   
-  utils::data(list = catalog, package = 'earthtide')
-  
-  cat_sub <- get(catalog)
-  
   if (catalog == 'hw95s') {
+    cat_sub    <- earthtide:::hw95s  
     cat_sub$C2 <- 0.0
     cat_sub$S2 <- 0.0
+  } else if (catalog == 'ksm04'){
+    cat_sub    <- earthtide:::ksm04
   }
   
   wh  <- which(cat_sub$amplitude > cutoff)
