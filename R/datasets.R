@@ -13,121 +13,120 @@
 #' utils::data(eterna_wavegroups)
 'eterna_wavegroups'
 
-#' @title Hartmann and Wenzel (1995) tidal potential catalogue
-#' @format A \code{data.frame} The columns are:
-#' \describe{
-#'  \item{\code{index}}{the index}
-#'  \item{\code{body}}{body generating the potential}
-#'  \item{\code{degree}}{degree of the spherical harmonic development}
-#'  \item{\code{order}}{order of the spherical harmonic development, k1 = integer argument number for the mean local Moontime, period 24 hours 50 min.}
-#'  \item{\code{k02}}{integer argument number for the mean longitude of the Moon, period 27.3 days.}
-#'  \item{\code{K03}}{integer argument number for the mean longitude of the Sun, period 365.25 days.}
-#'  \item{\code{K04}}{integer argument number for the mean longitude of the lunar perigee, period 8.8 years.}
-#'  \item{\code{K05}}{integer argument number for the negate mean longitude of the lunar ascending node, period 18.6 years.}
-#'  \item{\code{K06}}{integer argument number for the mean longitude of the solar perigee, period 20942 years.}
-#'  \item{\code{K07}}{integer argument number for the mean longitude of Mercury, period 88 days.}
-#'  \item{\code{K08}}{integer argument number for the mean longitude of Venus, period 225 days.}
-#'  \item{\code{K09}}{integer argument number for the mean longitude of Mars, period 1.88 years.}
-#'  \item{\code{K10}}{integer argument number for the mean longitude of Jupiter, period 11.86 years.}
-#'  \item{\code{K11}}{integer argument number for the mean longitude of Saturn, period 29.4 years.}
-#'  \item{\code{frequency}}{frequency of the tidal wave at J2000 in degree per hour.}
-#'  \item{\code{C0}}{COS-coefficient of the tidal potential in 10^-10 m^2/s^2. The C0 coefficient has to be multiplied with the COS of the argument.}
-#'  \item{\code{S0}}{SIN-coefficient of the tidal potential in 10^-10 m^2/s^2. The S0 coefficient has to be multiplied with the SIN of the argument.}
-#'  \item{\code{C1}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the COS of the argument.}
-#'  \item{\code{S1}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the SIN of the argument.}
-#'  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
-#'  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
-#'  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
-#'  \item{\code{phase}}{phase of the tidal wave at J2000}
-#' }
-#' 
-#' @keywords internal
-#' 
-#' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553-3556. \doi{10.1029/95GL03324}
-#'
-#' @examples
-#' earthtide:::hw95s
-'hw95s'
+# @title Hartmann and Wenzel (1995) tidal potential catalogue
+# @format A \code{data.frame} The columns are:
+# \describe{
+#  \item{\code{index}}{the index}
+#  \item{\code{body}}{body generating the potential}
+#  \item{\code{degree}}{degree of the spherical harmonic development}
+#  \item{\code{order}}{order of the spherical harmonic development, k1 = integer argument number for the mean local Moontime, period 24 hours 50 min.}
+#  \item{\code{k02}}{integer argument number for the mean longitude of the Moon, period 27.3 days.}
+#  \item{\code{K03}}{integer argument number for the mean longitude of the Sun, period 365.25 days.}
+#  \item{\code{K04}}{integer argument number for the mean longitude of the lunar perigee, period 8.8 years.}
+#  \item{\code{K05}}{integer argument number for the negate mean longitude of the lunar ascending node, period 18.6 years.}
+#  \item{\code{K06}}{integer argument number for the mean longitude of the solar perigee, period 20942 years.}
+#  \item{\code{K07}}{integer argument number for the mean longitude of Mercury, period 88 days.}
+#  \item{\code{K08}}{integer argument number for the mean longitude of Venus, period 225 days.}
+#  \item{\code{K09}}{integer argument number for the mean longitude of Mars, period 1.88 years.}
+#  \item{\code{K10}}{integer argument number for the mean longitude of Jupiter, period 11.86 years.}
+#  \item{\code{K11}}{integer argument number for the mean longitude of Saturn, period 29.4 years.}
+#  \item{\code{frequency}}{frequency of the tidal wave at J2000 in degree per hour.}
+#  \item{\code{C0}}{COS-coefficient of the tidal potential in 10^-10 m^2/s^2. The C0 coefficient has to be multiplied with the COS of the argument.}
+#  \item{\code{S0}}{SIN-coefficient of the tidal potential in 10^-10 m^2/s^2. The S0 coefficient has to be multiplied with the SIN of the argument.}
+#  \item{\code{C1}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the COS of the argument.}
+#  \item{\code{S1}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the SIN of the argument.}
+#  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
+#  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
+#  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
+#  \item{\code{phase}}{phase of the tidal wave at J2000}
+# }
+# 
+# @keywords internal
+# 
+# @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553-3556. \doi{10.1029/95GL03324}
+#
+# @examples
+# hw95s
+# 'hw95s'
 
 
 
-
-#' @title Kudryavtsev, S M (2004) tidal potential catalogue
-#' @format A \code{data.frame} The columns are:
-#' \describe{
-#'  \item{\code{index}}{the index}
-#'  \item{\code{body}}{body generating the potential}
-#'  \item{\code{degree}}{degree of the spherical harmonic development}
-#'  \item{\code{order}}{order of the spherical harmonic development, k1 = integer argument number for the mean local Moontime, period 24 hours 50 min.}
-#'  \item{\code{k02}}{integer argument number for the mean longitude of the Moon, period 27.3 days.}
-#'  \item{\code{K03}}{integer argument number for the mean longitude of the Sun, period 365.25 days.}
-#'  \item{\code{K04}}{integer argument number for the mean longitude of the lunar perigee, period 8.8 years.}
-#'  \item{\code{K05}}{integer argument number for the negate mean longitude of the lunar ascending node, period 18.6 years.}
-#'  \item{\code{K06}}{integer argument number for the mean longitude of the solar perigee, period 20942 years.}
-#'  \item{\code{K07}}{integer argument number for the mean longitude of Mercury, period 88 days.}
-#'  \item{\code{K08}}{integer argument number for the mean longitude of Venus, period 225 days.}
-#'  \item{\code{K09}}{integer argument number for the mean longitude of Mars, period 1.88 years.}
-#'  \item{\code{K10}}{integer argument number for the mean longitude of Jupiter, period 11.86 years.}
-#'  \item{\code{K11}}{integer argument number for the mean longitude of Saturn, period 29.4 years.}
-#'  \item{\code{frequency}}{frequency of the tidal wave at J2000 in degree per hour.}
-#'  \item{\code{C0}}{COS-coefficient of the tidal potential in 10^-10 m^2/s^2. The C0 coefficient has to be multiplied with the COS of the argument.}
-#'  \item{\code{S0}}{SIN-coefficient of the tidal potential in 10^-10 m^2/s^2. The S0 coefficient has to be multiplied with the SIN of the argument.}
-#'  \item{\code{C1}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the COS of the argument.}
-#'  \item{\code{S1}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the SIN of the argument.}
-#'  \item{\code{C2}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000^2 (in Julian centuries) and with the COS of the argument.}
-#'  \item{\code{S2}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000^2 (in Julian centuries) and with the SIN of the argument.}
-#'  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
-#'  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
-#'  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
-#' }
-#' 
-#' @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829-838. \doi{10.1007/s00190-003-0361-2}
-#' 
-#' @keywords internal
-#' 
-#' @examples
-#' earthtide:::ksm04
-'ksm04'
-
+# @title Kudryavtsev, S M (2004) tidal potential catalogue
+# @format A \code{data.frame} The columns are:
+# \describe{
+#  \item{\code{index}}{the index}
+#  \item{\code{body}}{body generating the potential}
+#  \item{\code{degree}}{degree of the spherical harmonic development}
+#  \item{\code{order}}{order of the spherical harmonic development, k1 = integer argument number for the mean local Moontime, period 24 hours 50 min.}
+#  \item{\code{k02}}{integer argument number for the mean longitude of the Moon, period 27.3 days.}
+#  \item{\code{K03}}{integer argument number for the mean longitude of the Sun, period 365.25 days.}
+#  \item{\code{K04}}{integer argument number for the mean longitude of the lunar perigee, period 8.8 years.}
+#  \item{\code{K05}}{integer argument number for the negate mean longitude of the lunar ascending node, period 18.6 years.}
+#  \item{\code{K06}}{integer argument number for the mean longitude of the solar perigee, period 20942 years.}
+#  \item{\code{K07}}{integer argument number for the mean longitude of Mercury, period 88 days.}
+#  \item{\code{K08}}{integer argument number for the mean longitude of Venus, period 225 days.}
+#  \item{\code{K09}}{integer argument number for the mean longitude of Mars, period 1.88 years.}
+#  \item{\code{K10}}{integer argument number for the mean longitude of Jupiter, period 11.86 years.}
+#  \item{\code{K11}}{integer argument number for the mean longitude of Saturn, period 29.4 years.}
+#  \item{\code{frequency}}{frequency of the tidal wave at J2000 in degree per hour.}
+#  \item{\code{C0}}{COS-coefficient of the tidal potential in 10^-10 m^2/s^2. The C0 coefficient has to be multiplied with the COS of the argument.}
+#  \item{\code{S0}}{SIN-coefficient of the tidal potential in 10^-10 m^2/s^2. The S0 coefficient has to be multiplied with the SIN of the argument.}
+#  \item{\code{C1}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the COS of the argument.}
+#  \item{\code{S1}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000 (in Julian centuries) and with the SIN of the argument.}
+#  \item{\code{C2}}{t*COS-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The C1 coefficient has to be multiplied with the time difference between the epoch and J2000^2 (in Julian centuries) and with the COS of the argument.}
+#  \item{\code{S2}}{t*SIN-coefficent of the tidal potential in 10^-10 m^2/s^2 per Julian century. The S1 coefficient has to be multiplied with the time difference between the epoch and J2000^2 (in Julian centuries) and with the SIN of the argument.}
+#  \item{\code{name}}{Darwin name of the tidal wave (for very few main tidal waves available only)}
+#  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
+#  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
+# }
+# 
+# @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829-838. \doi{10.1007/s00190-003-0361-2}
+# 
+# @keywords internal
+# 
+# @examples
+# ksm04
+# 'ksm04'
 
 
-#' @title Simon 1994 astronomical constants
-#' @format A \code{data.frame} The columns are:
-#' \describe{
-#'  \item{\code{j}}{7 = mercury, 8 = venus, 9 = mars, 10 = Jupiter, 11 = Saturn}
-#'  \item{\code{constant}}{constant}
-#'  \item{\code{t1}}{t1}
-#'  \item{\code{t2}}{t2}
-#'  \item{\code{t3}}{t3}
-#'  \item{\code{t4}}{t4}
-#' }
-#' @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession formulae and mean elements for the Moon and planets. Astron Astrophys 282:663-683
-#' 
-#' @keywords internal
-#' 
-#' @examples
-#' earthtide:::simon_coef_1994
-#' 
-'simon_coef_1994'
+
+# @title Simon 1994 astronomical constants
+# @format A \code{data.frame} The columns are:
+# \describe{
+#  \item{\code{j}}{7 = mercury, 8 = venus, 9 = mars, 10 = Jupiter, 11 = Saturn}
+#  \item{\code{constant}}{constant}
+#  \item{\code{t1}}{t1}
+#  \item{\code{t2}}{t2}
+#  \item{\code{t3}}{t3}
+#  \item{\code{t4}}{t4}
+# }
+# @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession formulae and mean elements for the Moon and planets. Astron Astrophys 282:663-683
+# 
+# @keywords internal
+# 
+# @examples
+# simon_coef_1994
+# 
+# 'simon_coef_1994'
 
 
-#' @title dut1 
-#' @format A \code{data.frame} The columns are:
-#' \describe{
-#'  \item{\code{datetime}}{UTC time}
-#'  \item{\code{ddt}}{TDT-UTC}
-#'  \item{\code{ut1_utc}}{UT1-UTC}
-#'  \item{\code{tai_utc}}{TAI - UTC}
-#'  \item{\code{lod}}{length of day correction}
-#' }
-#' 
-#' @references http://hpiers.obspm.fr/eop-pc/index.php 
-#' 
-#' @keywords internal
-#' 
-#' @examples
-#' earthtide:::dut1
-'dut1'
+# @title dut1 
+# @format A \code{data.frame} The columns are:
+# \describe{
+#  \item{\code{datetime}}{UTC time}
+#  \item{\code{ddt}}{TDT-UTC}
+#  \item{\code{ut1_utc}}{UT1-UTC}
+#  \item{\code{tai_utc}}{TAI - UTC}
+#  \item{\code{lod}}{length of day correction}
+# }
+# 
+# @references http://hpiers.obspm.fr/eop-pc/index.php 
+# 
+# @keywords internal
+# 
+# @examples
+# dut1
+# 'dut1'
 
 
 

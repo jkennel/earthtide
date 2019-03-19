@@ -17,8 +17,8 @@ interpolate_dut1 <- function(utc, fit_var){
   
   # dut1 included in package, needs to be updated as new leap seconds are added
   
-  #approx(earthtide:::dut1$datetime, earthtide:::dut1$ddt, utc, ties = 'ordered')$y
-  stats::spline(earthtide:::dut1[['datetime']], earthtide:::dut1[[fit_var]],
+  #approx(dut1$datetime, earthtide:::dut1$ddt, utc, ties = 'ordered')$y
+  stats::spline(dut1[['datetime']], dut1[[fit_var]],
                 xout = utc, ties = 'ordered')$y
   
   
