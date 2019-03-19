@@ -1,11 +1,12 @@
 
+#define BOOST_DISABLE_ASSERTS
+
 // [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::depends(RcppParallel)]]
 
 
 #include <RcppArmadillo.h>
-#define NDEBUG 1
 #include <RcppParallel.h>
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/math/special_functions/factorials.hpp>
