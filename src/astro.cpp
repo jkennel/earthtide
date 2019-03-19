@@ -1,5 +1,6 @@
 
 #define BOOST_DISABLE_ASSERTS
+#define ARMA_DONT_PRINT_ERRORS
 
 // [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppArmadillo)]]
