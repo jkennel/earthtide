@@ -48,7 +48,7 @@ test_that("earthtide works", {
                       catalog = 'ksm04',
                       wave_groups = wave_groups)
 
-  expect_warning(et$predict(method = 'tidal_potential', astro_update = 1L))
+  expect_warning(et$predict(method = 'tidal_potential', astro_update = 2L))
   
 })
 
