@@ -49,6 +49,7 @@ test_that("earthtide works", {
                       wave_groups = wave_groups)
 
   expect_warning(et$predict(method = 'tidal_potential', astro_update = 2L))
+  expect_silent(et$predict(method = 'tidal_potential', astro_update = 1L))
   
 })
 

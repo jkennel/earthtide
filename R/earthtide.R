@@ -175,8 +175,10 @@ Earthtide <- R6Class("et",
         return(1L)
       }
       
-      if (length(dt) != 1L & astro_update != 1L) {
-        warning('Times are not regularly spaced, setting astro_update to 1') 
+      if (length(dt) != 1L) {
+        if (astro_update != 1L) {
+          warning('Times are not regularly spaced, setting astro_update to 1') 
+        }
         astro_update <- 1L
         self$update_coef <- 0.0
       } else {
