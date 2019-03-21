@@ -61,9 +61,9 @@ tide <-  Earthtide$
       longitude = 9.7144,
       wave_groups = data.frame(start = 0.0, end = 6.0))$
   predict(method = "gravity", astro_update = 1)$    # compute gravity
-  lod_tide()$                                       # add LOD tide to results
-  pole_tide()$                                      # add pole tide to results
-  tide()                                            # get result data.frame
+  lod_tide()$                                       # LOD tide column
+  pole_tide()$                                      # pole tide column
+  tide()                                            # return result
 
 ```
 
