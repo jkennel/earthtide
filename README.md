@@ -36,7 +36,7 @@ I will try to keep the IERS orientation datasets up-to-date in the development v
 Predict
 =======
 
-The following code computes the synthetic gravity, LOD tide, and pole tide and returns a `data.frame` of results.
+The following code computes the synthetic gravity, LOD tide, and pole tide and returns a `data.frame` of results. To see the list of possible arguments and methods of the Earthtide class use `?Earthtide`.
 
 ``` r
 library(earthtide)
@@ -63,6 +63,7 @@ To generate curves for regression applications we can use the analyze method. Fo
 ``` r
 wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == '1 month', 
                                         c('start', 'end')])
+
 tide_groups <-  Earthtide$
   new(utc = as.POSIXct("2015-01-01", tz = "UTC") + 0:(24*31) * 3600,
       latitude = 52.3868,
