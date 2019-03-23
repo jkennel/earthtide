@@ -308,10 +308,15 @@ get_dut1_iers <- function() {
   ab
 }
 
+# library(earthtide)
 # dut1 <- get_dut1_iers()
-# usethis::use_data(dut1, 
-#                   earthtide:::simon_coef_1994, 
-#                   earthtide:::ksm04, 
-#                   earthtide:::hw95s,
-#                   internal = TRUE, overwrite = TRUE)
-# 
+# simon_coef_1994 <- earthtide:::simon_coef_1994
+# ksm04 <- earthtide:::ksm04
+# hw95s <- earthtide:::hw95s
+# usethis::use_data(dut1,
+#                   simon_coef_1994,
+#                   ksm04,
+#                   hw95s,
+#                   internal = TRUE, 
+#                   overwrite = TRUE)
+
