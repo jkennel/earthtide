@@ -46,8 +46,9 @@ library(devtools)
 install_github('jkennel/earthtide')
 ```
 
+I will try to keep the IERS orientation datasets up-to-date in the development version (weekly update).
 
-# Example # 
+# Predict # 
 
 The following code computes the synthetic gravity, LOD tide, and pole tide and returns a `data.frame` of results.
 
@@ -89,6 +90,27 @@ plot(pole_tide~datetime, tide,
      col  = '#5696BC',
      las  = 1)
 ```
+
+# Analyze #
+
+To generate curves for regression applications we can use the analyze method. For each wave group a normalized sin and cosine curves are generated.
+
+```{r analyze, echo = TRUE}
+
+wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == '1 month', 
+                                        c('start', 'end')])
+tide_groups <-  Earthtide$
+  new(utc = as.POSIXct("2015-01-01", tz = "UTC") + 0:(24*31) * 3600,
+      latitude = 52.3868,
+      longitude = 9.7144,
+      wave_groups = wave_groups)$                                     
+  analyze(method = 'gravity', astro_update = 1)$
+  tide()
+
+print(str(tide_groups))
+
+```
+
 
 # License # 
 
