@@ -58,7 +58,7 @@ tide <-  Earthtide$
 Analyze
 =======
 
-To generate curves for regression applications we can use the analyze method. For each wave group a normalized sin and cosine curves are generated.
+To generate curves for regression applications we can use the analyze method. For each wave group normalized sin and cosine curves are generated.
 
 ``` r
 wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == '1 month', 
