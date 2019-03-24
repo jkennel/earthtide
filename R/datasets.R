@@ -296,7 +296,31 @@ get_iers_a <- function(){
 }
 
 
-# Bulletin A & B combined where B takes precedence
+# 
+
+#' get_dut1_iers
+#'
+#' \code{get_dut1_iers} returns a \code{data.frame} of earth orientation 
+#' parameters from (1962-present).  This function requires and active internet connection. 
+#' Bulletins A and B are combined giving precedence to B. 
+#' The following datasets are downloaded (~ 7 MB):
+#'   \itemize{
+#'     \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.all}}
+#'     \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.daily}}
+#'     \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
+#'   }
+#'
+#' @return \code{data.frame} of earth orientation parameters with the following 
+#' columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy.
+#' 
+#' 
+#' @export
+#' 
+#' @examples
+#' \dontrun{
+#' eop <- get_dut1_iers()
+#' }
+#' 
 get_dut1_iers <- function() {
   
   bull_a <- get_iers_a() # bulletin A

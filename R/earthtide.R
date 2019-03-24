@@ -36,10 +36,17 @@
 #'     defaults to 1e-6}
 #'   \item{wave_groups: }{Two column data.frame having start and end of 
 #'     frequency groups (data.frame).}
-#'   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog(character).}
-#'   \item{update: }{Should the earth orienation parameters be updated. This
-#'     requires an internet connection to download data from IERS}
-#'   \item{eop: }{User defined Earth Orientation Parameter data.frame with the 
+#'   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog (character).}
+#'   \item{update: }{Should the earth orienation parameters be updated 
+#'     (logical). This should only be necessary if you are predicting into the 
+#'     future or recent values. This requires an internet connection to
+#'      download Bulletins A and B data from IERS. The following datasets 
+#'      are downloaded (~ 7 MB):
+#'     \url{http://maia.usno.navy.mil/ser7/finals2000A.all},
+#'     \url{http://maia.usno.navy.mil/ser7/finals2000A.daily},
+#'     \url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now},
+#'     }
+#'   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame with the 
 #'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 #'   \item{...: }{Currently not used.}
 #'   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
@@ -195,7 +202,6 @@ Earthtide <- R6Class("et",
       astro_update
       
     },
-    
     gravity = function(){
 
       self$station$dgk <- self$station$dgz
@@ -226,7 +232,6 @@ Earthtide <- R6Class("et",
       self$deltar = self$love_params$dkr - self$love_params$dhr
       
     }, 
-    
     vertical_displacement = function() {
       dfak <- 1e3 / self$station$gravity
       self$station$dgk[1:12] <- self$station$dgk[1:12] * 
@@ -250,7 +255,6 @@ Earthtide <- R6Class("et",
     #   self$pk[wh] <- 180 / pi * atan2(y_comp, x_comp)
     #   
     # },
-    
     vertical_strain = function(poisson = 0.25) {
       dfak <- 1.e9 * poisson / (poisson - 1.0)
       self$strain(dfak)
@@ -277,7 +281,6 @@ Earthtide <- R6Class("et",
       self$station$dgk <- self$station$dgk * dfak
       self$pk[] <- 0.0
     },
-
     predict = function(method = 'gravity', astro_update = 1L) {
       
       self$apply_method(method) 
@@ -294,7 +297,6 @@ Earthtide <- R6Class("et",
                            self$station$earth_eccen)
       invisible(self)
     },
-
     analyze = function(method = 'gravity', astro_update = 1L) {
       
       self$apply_method(method)
@@ -325,7 +327,6 @@ Earthtide <- R6Class("et",
       } else if (method == 'volume_strain') {
         self$volume_strain()
       } 
-      
     },
     calculate = function(astro_update = 1L, predict = TRUE) {
       et_calculate(self$astro$astro,
