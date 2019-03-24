@@ -47,6 +47,10 @@ et$print()
   \item{wave_groups: }{Two column data.frame having start and end of 
     frequency groups (data.frame).}
   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog(character).}
+  \item{update: }{Should the earth orienation parameters be updated. This
+    requires an internet connection to download data from IERS}
+  \item{eop: }{User defined Earth Orientation Parameter data.frame with the 
+    following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
   \item{...: }{Currently not used.}
   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
     "tidal_potential", "tidal_tilt", "vertical_displacement", 

@@ -37,6 +37,10 @@
 #'   \item{wave_groups: }{Two column data.frame having start and end of 
 #'     frequency groups (data.frame).}
 #'   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog(character).}
+#'   \item{update: }{Should the earth orienation parameters be updated. This
+#'     requires an internet connection to download data from IERS}
+#'   \item{eop: }{User defined Earth Orientation Parameter data.frame with the 
+#'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 #'   \item{...: }{Currently not used.}
 #'   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
 #'     "tidal_potential", "tidal_tilt", "vertical_displacement", 
@@ -117,10 +121,12 @@ Earthtide <- R6Class("et",
                           cutoff = 1e-6,
                           wave_groups = NA_real_,
                           catalog = 'ksm04',
+                          update = FALSE,
+                          eop = NULL,
                           ...) {
       
       # Initialize class using input values
-      self$prepare_datetime(utc)
+      self$prepare_datetime(utc, update, eop)
       
       self$prepare_station(latitude, longitude, elevation, azimuth, gravity,
                            earth_radius, earth_eccen)
@@ -135,8 +141,8 @@ Earthtide <- R6Class("et",
     },
     
     # Initialize class using input values
-    prepare_datetime = function(utc) {
-      self$datetime <- .prepare_datetime(utc)
+    prepare_datetime = function(utc, update, eop) {
+      self$datetime <- .prepare_datetime(utc, update, eop)
       self$tides <- data.frame(datetime = utc)
     },
     

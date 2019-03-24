@@ -51,5 +51,28 @@ test_that("earthtide works", {
   expect_warning(et$predict(method = 'tidal_potential', astro_update = 2L))
   expect_silent(et$predict(method = 'tidal_potential', astro_update = 1L))
   
+  
+  
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-4,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups, 
+                      update = TRUE)
+  
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-4,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups, 
+                      update = FALSE,
+                      eop = earthtide:::dut1)
+  
 })
 

@@ -1,15 +1,24 @@
-.prepare_datetime <- function(utc) {
+.prepare_datetime <- function(utc, update = FALSE, eop = NULL) {
+  
+  # set the earth orientation parameters
+  if (update) {
+    eop <- get_dut1_iers()
+  } else if (!is.null(eop)) {
+    eop <- eop
+  } else {
+    eop <- dut1
+  }
   
   utc      <- sort(utc)
   mjd      <- utc_mod_julian(utc)
   j2000    <- utc_julian_2000(utc)
-  ddt_int  <- interpolate_dut1(utc, 'ddt') 
-  dut1_int <- interpolate_dut1(utc, 'ut1_utc') 
+  ddt_int  <- interpolate_dut1(utc, 'ddt', eop) 
+  dut1_int <- interpolate_dut1(utc, 'ut1_utc', eop) 
   hours    <- (as.numeric(utc) %% 86400.0 + dut1_int) / 3600.0
   t_astro  <- (j2000 + ddt_int / 3155760000.0) / 10.0
 
   
   list(utc = utc, mjd = mjd, j2000 = j2000, ddt = ddt_int, dut1 = dut1_int, 
-       hours = hours, t_astro = t_astro)
+       hours = hours, t_astro = t_astro, eop = eop)
   
 }

@@ -13,12 +13,11 @@
 # @keywords internal
 # 
 #-------------------------------------------------------------------------------
-interpolate_dut1 <- function(utc, fit_var){
+interpolate_dut1 <- function(utc, fit_var, eop){
   
-  # dut1 included in package, needs to be updated as new leap seconds are added
-  
-  #approx(dut1$datetime, earthtide:::dut1$ddt, utc, ties = 'ordered')$y
-  stats::spline(dut1[['datetime']], dut1[[fit_var]],
+  # eop included in package, needs to be updated as new leap seconds are added
+  #approx(eop[['datetime']], eop[[fit_var]], utc, ties = 'ordered')$y
+  stats::spline(eop[['datetime']], eop[[fit_var]],
                 xout = utc, ties = 'ordered')$y
   
   

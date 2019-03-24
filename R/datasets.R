@@ -298,14 +298,15 @@ get_iers_a <- function(){
 
 # Bulletin A & B combined where B takes precedence
 get_dut1_iers <- function() {
-  a <- get_iers_a() # bulletin A
-  b <- get_iers_b() # bulletin B
   
-  a <- a[a$datetime > max(b$datetime),]
-  ab <- rbind(b, a)
-  ab[is.na(ab)] <- 0
+  bull_a <- get_iers_a() # bulletin A
+  bull_b <- get_iers_b() # bulletin B
   
-  ab
+  bull_a <- bull_a[bull_a$datetime > max(bull_b$datetime),]
+  bull_ab <- rbind(bull_b, bull_a)
+  bull_ab[is.na(bull_ab)] <- 0
+  
+  bull_ab
 }
 
 # library(earthtide)

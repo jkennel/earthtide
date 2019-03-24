@@ -93,7 +93,7 @@ plot(pole_tide~datetime, tide,
 
 # Analyze #
 
-To generate curves for regression applications we can use the analyze method. For each wave group normalized sin and cosine curves are generated.
+To generate curves for regression applications we can use the analyze method. For each wave group, normalized sin and cosine curves are generated.
 
 ```{r analyze, echo = TRUE}
 

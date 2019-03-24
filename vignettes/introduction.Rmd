@@ -198,7 +198,6 @@ print(tides[1:5,], row.names = FALSE)
 This package is still in development.  The following changes are planned:
 
 - Speed enhancements
-- Allow user the option to provide own Earth orientation data
 - Print methods and getter/setters for love numbers, catalog, station variables
 - Optional wave group multipliers/scaling, wave group names
 - Ocean loading

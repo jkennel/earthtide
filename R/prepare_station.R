@@ -19,10 +19,10 @@
   
 
   # pole tide
-  x_pol  <- interpolate_dut1(self$datetime$utc, 'x')
-  y_pol  <- interpolate_dut1(self$datetime$utc, 'y') 
-  dx_pol <- interpolate_dut1(self$datetime$utc, 'dx') 
-  dy_pol <- interpolate_dut1(self$datetime$utc, 'dy') 
+  x_pol  <- interpolate_dut1(self$datetime$utc, 'x', self$datetime$eop)
+  y_pol  <- interpolate_dut1(self$datetime$utc, 'y', self$datetime$eop) 
+  dx_pol <- interpolate_dut1(self$datetime$utc, 'dx', self$datetime$eop) 
+  dy_pol <- interpolate_dut1(self$datetime$utc, 'dy', self$datetime$eop) 
   
   self$pole_t <- 1.16 * 2.0 * angular_velocity^2 * 
     earth_radius * cos_lat * sin_lat * ((x_pol) * cos_lon - 
@@ -30,7 +30,7 @@
   
   
   # lod tide
-  lod_spline <- interpolate_dut1(self$datetime$utc, 'lod')
+  lod_spline <- interpolate_dut1(self$datetime$utc, 'lod', self$datetime$eop)
   self$lod_t = 1.16 * 2.0 * lod_spline * 
     angular_velocity^2 * earth_radius *
     cos_lat * cos_lat * 1.e9 / 86400.0
