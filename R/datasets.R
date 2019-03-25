@@ -298,10 +298,10 @@ get_iers_a <- function(){
 
 # 
 
-#' get_dut1_iers
+#' get_iers
 #'
-#' \code{get_dut1_iers} returns a \code{data.frame} of earth orientation 
-#' parameters from (1962-present).  This function requires and active internet connection. 
+#' \code{get_iers} returns a \code{data.frame} of earth orientation 
+#' parameters from (1962-present).  This function requires an active internet connection. 
 #' Bulletins A and B are combined giving precedence to B. 
 #' The following datasets are downloaded (~ 7 MB):
 #'   \itemize{
@@ -318,10 +318,10 @@ get_iers_a <- function(){
 #' 
 #' @examples
 #' \dontrun{
-#' eop <- get_dut1_iers()
+#' eop <- get_iers()
 #' }
 #' 
-get_dut1_iers <- function() {
+get_iers <- function() {
   
   bull_a <- get_iers_a() # bulletin A
   bull_b <- get_iers_b() # bulletin B
@@ -334,7 +334,7 @@ get_dut1_iers <- function() {
 }
 
 # library(earthtide)
-# dut1 <- get_dut1_iers()
+# dut1 <- get_iers()
 # simon_coef_1994 <- earthtide:::simon_coef_1994
 # ksm04 <- earthtide:::ksm04
 # hw95s <- earthtide:::hw95s

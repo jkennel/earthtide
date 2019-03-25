@@ -30,6 +30,7 @@ et$print()
 
 \section{Arguments}{
 
+\code{Earthtide$new}
 \itemize{
   \item{et: }{An \code{Earthtide} object.}
   \item{utc: }{The date-time in UTC (POSIXct vector).}
@@ -52,13 +53,19 @@ et$print()
     future or recent values. This requires an internet connection to
      download Bulletins A and B data from IERS. The following datasets 
      are downloaded (~ 7 MB):
-    \url{http://maia.usno.navy.mil/ser7/finals2000A.all},
-    \url{http://maia.usno.navy.mil/ser7/finals2000A.daily},
-    \url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now},
+     \itemize{
+       \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.all}}
+       \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.daily}}
+       \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
+     }
     }
   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame with the 
     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
   \item{...: }{Currently not used.}
+}
+
+\code{Earthtide$predict, Earthtide$analyze}
+\itemize{
   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
     "tidal_potential", "tidal_tilt", "vertical_displacement", 
     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
@@ -73,10 +80,9 @@ et$print()
 \section{Details}{
 
 
-\code{$new(utc, latitude, longitude, elevation, azimuth, gravity, 
-  earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)} 
-  create a new \code{Earthtide} object and initialize catalog, 
-  station and times.
+\code{$new(utc, latitude, longitude, elevation, azimuth, gravity,\cr}
+\code{earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)\cr}
+create a new \code{Earthtide} object and initialize catalog, station and times.
 
 \code{$predict(method, astro_argument)} generate a combined 
   synthetic Earth tide.

@@ -2,7 +2,7 @@
   
   # set the earth orientation parameters
   if (update) {
-    eop <- get_dut1_iers()
+    eop <- get_iers()
   } else if (!is.null(eop)) {
     eop <- eop
   } else {
