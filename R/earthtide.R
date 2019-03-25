@@ -68,8 +68,8 @@
 #' 
 #' @section Details:
 #' 
-#' \code{$new(utc, latitude, longitude, elevation, azimuth, gravity,\cr}
-#' \code{earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)\cr}
+#' \code{$new(utc, latitude, longitude, elevation, azimuth, gravity,} \cr
+#' \code{earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)} \cr
 #' create a new \code{Earthtide} object and initialize catalog, station and times.
 #' 
 #' \code{$predict(method, astro_argument)} generate a combined 
