@@ -1,10 +1,13 @@
-.prepare_datetime <- function(utc, update = FALSE, eop = NULL) {
+.prepare_datetime <- function(utc, eop = NULL) {
   
   # set the earth orientation parameters
-  if (update) {
-    eop <- get_iers()
-  } else if (!is.null(eop)) {
-    eop <- eop
+  if (is.data.frame(eop)) {
+    if (all(names(dut1) %in% names(eop))){
+      eop <- eop
+    } else {
+      stop(paste0('eop must have the following column names: ', 
+                  paste0(names(dut1), collapse = ', ')))
+    }
   } else {
     eop <- dut1
   }

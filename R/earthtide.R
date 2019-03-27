@@ -36,19 +36,12 @@
 #'   \item{cutoff: }{Cutoff amplitude for constituents (numeric) 
 #'     defaults to 1e-6}
 #'   \item{wave_groups: }{Two column data.frame having start and end of 
-#'     frequency groups (data.frame).}
+#'     frequency groups (data.frame). This data.frame must have two columns
+#'     with the names 'start', and 'end' signifying the start and end of the 
+#'     wave groupings.  An optional third column 'multiplier' can be provided 
+#'     to scale the particular wave group.  If column names do no match, the
+#'     inferred column positions are start, end, multiplier.}
 #'   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog (character).}
-#'   \item{update: }{Should the earth orienation parameters be updated 
-#'     (logical). This should only be necessary if you are predicting into the 
-#'     future or recent values. This requires an internet connection to
-#'      download Bulletins A and B data from IERS. The following datasets 
-#'      are downloaded (~ 7 MB):
-#'      \itemize{
-#'        \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.all}}
-#'        \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.daily}}
-#'        \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
-#'      }
-#'     }
 #'   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame with the 
 #'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 #'   \item{...: }{Currently not used.}
@@ -132,14 +125,13 @@ Earthtide <- R6Class("et",
                           earth_radius = 6378136.3,
                           earth_eccen = 6.69439795140e-3,
                           cutoff = 1e-6,
-                          wave_groups = NA_real_,
+                          wave_groups = NULL,
                           catalog = 'ksm04',
-                          update = FALSE,
                           eop = NULL,
                           ...) {
       
       # Initialize class using input values
-      self$prepare_datetime(utc, update, eop)
+      self$prepare_datetime(utc, eop)
       
       self$prepare_station(latitude, longitude, elevation, azimuth, gravity,
                            earth_radius, earth_eccen)
@@ -154,8 +146,8 @@ Earthtide <- R6Class("et",
     },
     
     # Initialize class using input values
-    prepare_datetime = function(utc, update, eop) {
-      self$datetime <- .prepare_datetime(utc, update, eop)
+    prepare_datetime = function(utc, eop) {
+      self$datetime <- .prepare_datetime(utc, eop)
       self$tides <- data.frame(datetime = utc)
     },
     
@@ -166,7 +158,7 @@ Earthtide <- R6Class("et",
     
     # Subset values based using a cutoff amplitude and 
     # cutoff frequencies
-    prepare_catalog = function(cutoff, wave_groups, catalog = 'ksm04') {
+    prepare_catalog = function(cutoff, wave_groups = NULL, catalog = 'ksm04') {
       
       self$catalog <- .prepare_catalog(cutoff, wave_groups, catalog = catalog)
       
@@ -355,6 +347,7 @@ Earthtide <- R6Class("et",
                  self$catalog$id,
                  astro_update,
                  self$update_coef, 
+                 self$catalog$wave_groups$multiplier,
                  predict)
     },
     pole_tide = function() {

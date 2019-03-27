@@ -165,8 +165,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // et_calculate
-arma::mat et_calculate(const arma::mat astro, const arma::mat astro_der, const arma::mat k_mat, const arma::vec phases, const arma::vec delta, double deltar, const arma::vec c0, const arma::vec s0, const arma::vec c1, const arma::vec s1, const arma::vec c2, const arma::vec s2, const arma::vec dgk, const arma::uvec jcof, const arma::vec j2000, double o1, double resonance, const arma::ivec index, int astro_update, double update_coef, bool predict);
-RcppExport SEXP _earthtide_et_calculate(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP phasesSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP c0SEXP, SEXP s0SEXP, SEXP c1SEXP, SEXP s1SEXP, SEXP c2SEXP, SEXP s2SEXP, SEXP dgkSEXP, SEXP jcofSEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP indexSEXP, SEXP astro_updateSEXP, SEXP update_coefSEXP, SEXP predictSEXP) {
+arma::mat et_calculate(const arma::mat astro, const arma::mat astro_der, const arma::mat k_mat, const arma::vec phases, const arma::vec delta, double deltar, const arma::vec c0, const arma::vec s0, const arma::vec c1, const arma::vec s1, const arma::vec c2, const arma::vec s2, const arma::vec dgk, const arma::uvec jcof, const arma::vec j2000, double o1, double resonance, const arma::ivec index, int astro_update, double update_coef, const arma::vec magnifier, bool predict);
+RcppExport SEXP _earthtide_et_calculate(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP phasesSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP c0SEXP, SEXP s0SEXP, SEXP c1SEXP, SEXP s1SEXP, SEXP c2SEXP, SEXP s2SEXP, SEXP dgkSEXP, SEXP jcofSEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP indexSEXP, SEXP astro_updateSEXP, SEXP update_coefSEXP, SEXP magnifierSEXP, SEXP predictSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -190,8 +190,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::ivec >::type index(indexSEXP);
     Rcpp::traits::input_parameter< int >::type astro_update(astro_updateSEXP);
     Rcpp::traits::input_parameter< double >::type update_coef(update_coefSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type magnifier(magnifierSEXP);
     Rcpp::traits::input_parameter< bool >::type predict(predictSEXP);
-    rcpp_result_gen = Rcpp::wrap(et_calculate(astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, predict));
+    rcpp_result_gen = Rcpp::wrap(et_calculate(astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, magnifier, predict));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -207,7 +208,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_earthtide_legendre", (DL_FUNC) &_earthtide_legendre, 2},
     {"_earthtide_et_analyze", (DL_FUNC) &_earthtide_et_analyze, 19},
     {"_earthtide_et_predict", (DL_FUNC) &_earthtide_et_predict, 19},
-    {"_earthtide_et_calculate", (DL_FUNC) &_earthtide_et_calculate, 21},
+    {"_earthtide_et_calculate", (DL_FUNC) &_earthtide_et_calculate, 22},
     {NULL, NULL, 0}
 };
 

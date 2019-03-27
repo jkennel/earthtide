@@ -41,7 +41,7 @@ et_predict <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, delt
     .Call(`_earthtide_et_predict`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x0, y0, x1, y1, x2, y2, j2000, o1, resonance, max_amp, update_coef)
 }
 
-et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, predict) {
-    .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, predict)
+et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, magnifier, predict) {
+    .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, magnifier, predict)
 }
 

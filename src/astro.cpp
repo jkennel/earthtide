@@ -530,9 +530,12 @@ arma::mat et_predict(const arma::mat astro,
   fac(body_inds) = delta + deltar * (dc3(body_inds) - o1) / (resonance - dc3(body_inds));
   fac = fac / fac(max_amp);
   
+  
   // determine phase correction
   cos_dc2 = arma::cos(dc2);
   sin_dc2 = arma::sin(dc2);
+  
+  
   
   if (nt == 1) {
     
@@ -597,6 +600,7 @@ struct earthtide_worker : public Worker
   const arma::uvec i_max;
   int astro_update;
   double update_coef;
+  const arma::vec multiplier;
   bool predict;
   arma::mat& output;
   
@@ -621,12 +625,14 @@ struct earthtide_worker : public Worker
                    const arma::uvec i_max,
                    int astro_update,
                    double update_coef,
+                   const arma::vec multiplier,
                    bool predict,
                    arma::mat& output)
     : astro(astro), astro_der(astro_der), k_mat(k_mat), pk(pk), body(body),body_inds(body_inds), delta(delta), deltar(deltar),
       x0(x0),  y0(y0), x1(x1), y1(y1), x2(x2), y2(y2),
       j2000(j2000), o1(o1), resonance(resonance), inds(inds), i_max(i_max),
-      astro_update(astro_update), update_coef(update_coef), predict(predict), output(output) {}
+      astro_update(astro_update), update_coef(update_coef), multiplier(multiplier),
+      predict(predict), output(output) {}
   
   
   void operator()(std::size_t begin_row, std::size_t end_row) {
@@ -649,7 +655,7 @@ struct earthtide_worker : public Worker
           // r_start = (j * 2);
           // r_end = (j * 2 + 1);
           
-          output(arma::span(start, end), 0) += et_predict(
+          output(arma::span(start, end), 0) += multiplier[j] * et_predict(
             astro.cols(arma::span(start, end)),
             astro_der.cols(arma::span(start, end)),
             k_mat.rows(inds(j)),
@@ -685,7 +691,7 @@ struct earthtide_worker : public Worker
           r_start = (j * 2);
           r_end = (j * 2 + 1);
           
-          output(arma::span(start, end), arma::span(r_start, r_end)) = et_analyze(
+          output(arma::span(start, end), arma::span(r_start, r_end)) = multiplier[j] * et_analyze(
             astro.cols(arma::span(start, end)),
             astro_der.cols(arma::span(start, end)),
             k_mat.rows(inds(j)),
@@ -739,6 +745,7 @@ struct earthtide_worker : public Worker
 // @param index vector wave group index
 // @param astro_update how often to recalculate astronomical parameters
 // @param update_coef time for approx
+// @param magnifier scale the wave group value
 // @param predict predict or analyze
 //
 // @return synthetic gravity
@@ -772,6 +779,7 @@ arma::mat et_calculate(const arma::mat astro,
                        const arma::ivec index,
                        int astro_update,
                        double update_coef,
+                       const arma::vec magnifier,
                        bool predict) {
   
   
@@ -843,6 +851,7 @@ arma::mat et_calculate(const arma::mat astro,
                       i_max,
                       astro_update,
                       update_coef,
+                      magnifier,
                       predict,
                       output);
   

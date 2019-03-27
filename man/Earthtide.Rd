@@ -48,17 +48,6 @@ et$print()
   \item{wave_groups: }{Two column data.frame having start and end of 
     frequency groups (data.frame).}
   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog (character).}
-  \item{update: }{Should the earth orienation parameters be updated 
-    (logical). This should only be necessary if you are predicting into the 
-    future or recent values. This requires an internet connection to
-     download Bulletins A and B data from IERS. The following datasets 
-     are downloaded (~ 7 MB):
-     \itemize{
-       \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.all}}
-       \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.daily}}
-       \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
-     }
-    }
   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame with the 
     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
   \item{...: }{Currently not used.}

@@ -199,7 +199,7 @@ This package is still in development.  The following changes are planned:
 
 - Speed enhancements
 - Print methods and getter/setters for love numbers, catalog, station variables
-- Optional wave group multipliers/scaling, wave group names
+- Optional wave group names
 - Ocean loading
 
 
