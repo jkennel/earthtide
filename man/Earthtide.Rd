@@ -46,7 +46,11 @@ et$print()
   \item{cutoff: }{Cutoff amplitude for constituents (numeric) 
     defaults to 1e-6}
   \item{wave_groups: }{Two column data.frame having start and end of 
-    frequency groups (data.frame).}
+    frequency groups (data.frame). This data.frame must have two columns
+    with the names 'start', and 'end' signifying the start and end of the 
+    wave groupings.  An optional third column 'multiplier' can be provided 
+    to scale the particular wave group.  If column names do no match, the
+    inferred column positions are start, end, multiplier.}
   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog (character).}
   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame with the 
     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
