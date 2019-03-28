@@ -342,6 +342,6 @@ get_iers <- function() {
 #                   simon_coef_1994,
 #                   ksm04,
 #                   hw95s,
-#                   internal = TRUE, 
+#                   internal = TRUE,
 #                   overwrite = TRUE)
 
