@@ -7,15 +7,17 @@
 \format{A \code{data.frame} The columns are:
 \describe{
  \item{\code{name}}{wave group name}
- \item{\code{start}}{lower frequency of the wave group}
- \item{\code{end}}{higher frequency of the wave group}
+ \item{\code{start}}{lowest frequency of the wave group}
+ \item{\code{end}}{highest frequency of the wave group}
  \item{\code{time}}{applicable to data of what length}
 }}
 \usage{
 eterna_wavegroups
 }
 \description{
-Hartmann and Wenzel (1995) (ETERNA 3.4) wavegroups
+This data.frame contains wavegroups for different data time
+spans.  The wavegroups should be subset prior to use and the 'time' column
+provides guidelines based on your input time span.
 }
 \examples{
 utils::data(eterna_wavegroups)
