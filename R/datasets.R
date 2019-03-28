@@ -12,8 +12,6 @@
 #'  \item{\code{time}}{applicable to data of what length}
 #' }
 #' 
-#' @keywords internal
-#' 
 #' @examples
 #' utils::data(eterna_wavegroups)
 'eterna_wavegroups'

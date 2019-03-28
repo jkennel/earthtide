@@ -22,4 +22,4 @@ provides guidelines based on your input time span.
 \examples{
 utils::data(eterna_wavegroups)
 }
-\keyword{internal}
+\keyword{datasets}
