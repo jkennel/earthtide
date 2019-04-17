@@ -11,6 +11,7 @@ library("badger")
 
 ```{r, echo = FALSE, results='asis'}
 cat('## earthtide',
+  '[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)',
   badge_travis("jkennel/earthtide"),
   '[![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master)',
 	badge_cran_release("earthtide", "green"),
@@ -36,11 +37,13 @@ Wenzel, H.G. 1996: The nanogal software: Earth tide data processing package ETER
 # Installation #
 
 You can install the [CRAN](https://CRAN.R-project.org/package=earthtide) version with the following command:
+
 ```{r fromcran, echo = TRUE, eval = FALSE}
 install.packages('earthtide')
 ```
 
 The development version can be installed from github using the following commands:
+
 ```{r setup, echo = TRUE, eval = FALSE}
 library(remotes)
 remotes::install_github('jkennel/earthtide')
@@ -112,7 +115,3 @@ print(str(tide_groups))
 
 ```
 
-
-# License # 
-
-GPL-3

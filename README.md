@@ -1,6 +1,6 @@
 
-earthtide [![](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master) [![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![Dependencies](https://tinyverse.netlify.com/badge/earthtide)](https://cran.r-project.org/package=earthtide)
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+earthtide [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master) [![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![Dependencies](https://tinyverse.netlify.com/badge/earthtide)](https://cran.r-project.org/package=earthtide)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The **earthtide** package simplifies the generation of earth tides and wave group harmonics for analysis in **R**.
 
@@ -108,8 +108,3 @@ print(str(tide_groups))
     ##  $ cos_2.451944_7       : num  1.0937 0.739 -0.0149 -0.7518 -1.0714 ...
     ##  $ sin_2.451944_7       : num  0.073 0.802 1.084 0.773 0.045 ...
     ## NULL
-
-License
-=======
-
-GPL-3
