@@ -93,5 +93,19 @@ test_that("earthtide works", {
   
   
   
+  
+  wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == 'all', c('start', 'end')])
+  
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  
+  
+  
 })
 

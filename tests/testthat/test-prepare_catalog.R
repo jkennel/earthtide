@@ -25,5 +25,11 @@ test_that("prepare_catalog works", {
   wave_groups <- data.frame(start = 1)
   expect_error(.prepare_catalog(1e-10, wave_groups = wave_groups, catalog = 'ksm04'))
   
+  wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == 'all', c('start', 'end')])
+  expect_silent(.prepare_catalog(1e-10, wave_groups = wave_groups, catalog = 'ksm04'))
+  
+  wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == 'all', c('start', 'end')])
+  expect_silent(.prepare_catalog(1e-4, wave_groups = wave_groups, catalog = 'ksm04'))
+  
   
 })

@@ -14,11 +14,17 @@
     for (i in 1:nrow(freq_sub)) {
       wh <- which(sub$frequency_cpd >= freq_sub$start[i] & 
                     sub$frequency_cpd <= freq_sub$end[i])
+      if(length(wh) > 0) {
+        
       sub_keep[[i]] <- sub[wh, ]
       sub_keep[[i]]$start <- freq_sub$start[i]
       sub_keep[[i]]$end <- freq_sub$end[i]
       sub_keep[[i]]$wave_names <- freq_sub$wave_names[i]
       sub_keep[[i]]$id <- freq_sub$id[i]
+      }
+      else {
+        sub_keep[[i]] <- NULL
+      }
     }
     
     sub <- do.call(rbind, sub_keep)
