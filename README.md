@@ -27,8 +27,8 @@ install.packages('earthtide')
 The development version can be installed from github using the following commands:
 
 ``` r
-library(devtools)
-install_github('jkennel/earthtide')
+library(remotes)
+remotes::install_github('jkennel/earthtide')
 ```
 
 I will try to keep the IERS orientation datasets up-to-date in the development version (weekly update).
