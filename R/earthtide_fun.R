@@ -1,4 +1,4 @@
-#' earthtide
+#' @title earthtide
 #' 
 #' This is a wrapper to the Earthtide R6 class for the prediction of Earth
 #' tides. This function is provided for users who would prefer a more typical R 
@@ -39,7 +39,7 @@
 #'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy
 #' @param ... Currently not used.
 #'
-#' @return
+#' @return data.frame of tidal results
 #' @export
 #'
 #' @examples

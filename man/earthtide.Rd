@@ -2,7 +2,11 @@
 % Please edit documentation in R/earthtide_fun.R
 \name{earthtide}
 \alias{earthtide}
-\title{earthtide}
+\title{earthtide
+
+This is a wrapper to the Earthtide R6 class for the prediction of Earth
+tides. This function is provided for users who would prefer a more typical R 
+function.}
 \usage{
 earthtide(utc, do_predict = TRUE, method = "gravity",
   astro_update = 1, latitude = 0, longitude = 0, elevation = 0,
@@ -61,7 +65,12 @@ following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 
 \item{...}{Currently not used.}
 }
+\value{
+data.frame of tidal results
+}
 \description{
+earthtide
+
 This is a wrapper to the Earthtide R6 class for the prediction of Earth
 tides. This function is provided for users who would prefer a more typical R 
 function.

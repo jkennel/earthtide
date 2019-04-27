@@ -1,6 +1,8 @@
-#' Earthtide class
+#' @title Earthtide class
 #'
 #' Class to generate synthetic earthtide signals.
+#' 
+#' @rdname Earthtide_class
 #' 
 #' @section Usage:
 #' \preformatted{
