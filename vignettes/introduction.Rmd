@@ -193,6 +193,37 @@ print(tides[1:5,], row.names = FALSE)
 ```
 
 
+## Non-R6 method
+
+There are two main methods for using the **earthtide** package. The codes were developed using R6 classes, but wrappers have been written if a more typical interface is desired. Both should give the same results, but R6 stores more information about the calculations.
+
+For example (the standard method):
+
+```{r standardmethod, echo = TRUE}
+
+grav_std <- earthtide(utc = tms, 
+                      do_predict = TRUE,
+                      method = 'gravity',
+                      latitude = 52.3868,
+                      longitude = 9.7144)
+
+```
+
+and the R6 method:
+
+```{r r6method, echo = TRUE}
+
+grav_r6 <- Earthtide$new(utc = tms, 
+                         latitude = 52.3868,
+                         longitude = 9.7144)$
+  predict(method = 'gravity')$
+  tide()
+  
+
+all.equal(grav_std, grav_r6)
+
+```
+
 ## TODO: 
 
 This package is still in development.  The following changes are planned:

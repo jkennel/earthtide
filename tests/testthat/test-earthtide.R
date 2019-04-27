@@ -106,6 +106,63 @@ test_that("earthtide works", {
                       wave_groups = wave_groups)
   
   
+  wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == 'all', c('start', 'end')])
+  
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  
+  et$predict(method = 'tidal_potential', astro_update = 1L)
+  et$lod_tide()
+  et$pole_tide()
+  et_r6 <- et$tide()
+  
+  et_fun <- earthtide(utc = tms,
+                      do_predict = TRUE,
+                      method = c('tidal_potential', 'lod_tide', 'pole_tide'),
+                      astro_update = 1,
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  
+  expect_equal(et_r6, et_fun)
+  
+  
+  
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  
+  et$analyze(method = 'tidal_potential', astro_update = 1L)
+  et_r6 <- et$tide()
+  
+  et_fun <- earthtide(utc = tms,
+                      do_predict = FALSE,
+                      method = c('tidal_potential'),
+                      astro_update = 1,
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  
+  expect_equal(et_r6, et_fun)
   
 })
 
