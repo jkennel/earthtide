@@ -136,6 +136,17 @@ test_that("earthtide works", {
   
   expect_equal(et_r6, et_fun)
   
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  et_mat <- et$predict(method = 'tidal_potential', astro_update = 1L, return_matrix = TRUE)
+  expect_equivalent(as.matrix(et_r6[, c('tidal_potential')]), et_mat)
+  
   
   
   et <- Earthtide$new(utc = tms, 
@@ -163,6 +174,23 @@ test_that("earthtide works", {
                       wave_groups = wave_groups)
   
   expect_equal(et_r6, et_fun)
+  
+  
+  
+  
+  et <- Earthtide$new(utc = tms, 
+                      latitude = 52.3868,
+                      longitude = 9.7144,
+                      elevation = 110,
+                      gravity = 9.8127, 
+                      cutoff = 1.0e-5,
+                      catalog = 'ksm04',
+                      wave_groups = wave_groups)
+  
+  et_mat <- et$analyze(method = 'tidal_potential', astro_update = 1L, return_matrix = TRUE)
+  expect_equivalent(as.matrix(et_r6[, -c(1)]), et_mat)
+  
+  
   
 })
 

@@ -281,13 +281,18 @@ Earthtide <- R6Class("et",
       self$station$dgk <- self$station$dgk * dfak
       self$pk[] <- 0.0
     },
-    predict = function(method = 'gravity', astro_update = 1L) {
+    predict = function(method = 'gravity', astro_update = 1L, return_matrix = FALSE) {
       
       self$apply_method(method) 
       astro_update <- self$check_time_increment(astro_update)
-      self$tides[[method]] <- 
-        as.numeric(self$calculate(astro_update = astro_update, predict = TRUE))
+      if (return_matrix) {
+        return(self$calculate(astro_update = astro_update, predict = TRUE))
+      } else {
+        self$tides[[method]] <- 
+          as.numeric(self$calculate(astro_update = astro_update, predict = TRUE))
+      }
       
+      # reset parameters after calculation
       self$prepare_station(self$station$latitude, 
                            self$station$longitude, 
                            self$station$elevation,
@@ -297,13 +302,26 @@ Earthtide <- R6Class("et",
                            self$station$earth_eccen)
       invisible(self)
     },
-    analyze = function(method = 'gravity', astro_update = 1L) {
+    analyze = function(method = 'gravity', astro_update = 1L, return_matrix = FALSE) {
       
       self$apply_method(method)
       astro_update <- self$check_time_increment(astro_update)
-      self$tides[self$catalog$col_names] <- 
-        self$calculate(astro_update = astro_update, predict = FALSE)
       
+      if (return_matrix) {
+        return(self$calculate(astro_update = astro_update, predict = FALSE))
+      } else {
+        self$tides[self$catalog$col_names] <- 
+          self$calculate(astro_update = astro_update, predict = FALSE)
+      }
+      
+      # reset parameters after calculation
+      self$prepare_station(self$station$latitude, 
+                           self$station$longitude, 
+                           self$station$elevation,
+                           self$station$azimuth, 
+                           self$station$gravity, 
+                           self$station$earth_radius,
+                           self$station$earth_eccen)
       invisible(self)
     },
     apply_method = function(method) {
