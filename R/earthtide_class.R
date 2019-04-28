@@ -286,7 +286,9 @@ Earthtide <- R6Class("et",
       self$apply_method(method) 
       astro_update <- self$check_time_increment(astro_update)
       if (return_matrix) {
-        return(self$calculate(astro_update = astro_update, predict = TRUE))
+        mat <- self$calculate(astro_update = astro_update, predict = TRUE)
+        colnames(mat) <- method
+        return(mat)
       } else {
         self$tides[[method]] <- 
           as.numeric(self$calculate(astro_update = astro_update, predict = TRUE))
@@ -308,7 +310,9 @@ Earthtide <- R6Class("et",
       astro_update <- self$check_time_increment(astro_update)
       
       if (return_matrix) {
-        return(self$calculate(astro_update = astro_update, predict = FALSE))
+        mat <- self$calculate(astro_update = astro_update, predict = FALSE)
+        colnames(mat) <- self$catalog$col_names
+        return(mat)
       } else {
         self$tides[self$catalog$col_names] <- 
           self$calculate(astro_update = astro_update, predict = FALSE)

@@ -109,8 +109,8 @@ print(str(tide_groups))
     ##  $ sin_2.451944_7       : num  0.073 0.802 1.084 0.773 0.045 ...
     ## NULL
 
-Non-R6 method
--------------
+Non-R6 function
+---------------
 
 There are two main methods for using the **earthtide** package. The codes were developed using R6 classes, but wrappers have been written if a more typical interface is desired. Both should give the same results, but R6 stores more information about the calculations.
 
@@ -118,11 +118,11 @@ For example (the standard method):
 
 ``` r
 tms <- as.POSIXct("2015-01-01", tz = "UTC") + 0:(24*31) * 3600
-grav_std <- earthtide(utc = tms, 
-                      do_predict = TRUE,
-                      method = 'gravity',
-                      latitude = 52.3868,
-                      longitude = 9.7144)
+grav_std <- calc_earthtide(utc = tms, 
+                           do_predict = TRUE,
+                           method = 'gravity',
+                           latitude = 52.3868,
+                           longitude = 9.7144)
 ```
 
 and the R6 method:

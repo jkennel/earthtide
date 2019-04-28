@@ -122,7 +122,7 @@ test_that("earthtide works", {
   et$pole_tide()
   et_r6 <- et$tide()
   
-  et_fun <- earthtide(utc = tms,
+  et_fun <- calc_earthtide(utc = tms,
                       do_predict = TRUE,
                       method = c('tidal_potential', 'lod_tide', 'pole_tide'),
                       astro_update = 1,
@@ -161,7 +161,7 @@ test_that("earthtide works", {
   et$analyze(method = 'tidal_potential', astro_update = 1L)
   et_r6 <- et$tide()
   
-  et_fun <- earthtide(utc = tms,
+  et_fun <- calc_earthtide(utc = tms,
                       do_predict = FALSE,
                       method = c('tidal_potential'),
                       astro_update = 1,

@@ -46,7 +46,7 @@
 #' tms <- as.POSIXct('1990-01-01', tz = 'UTC') + c(0, 3600)
 #' wave_groups = data.frame(start = 0, end = 8, multiplier = 1.5)
 #' 
-#' et <- earthtide(utc = tms,
+#' et <- calc_earthtide(utc = tms,
 #'                     do_predict = TRUE,
 #'                     method = c('tidal_potential', 'lod_tide', 'pole_tide'),
 #'                     astro_update = 1,
@@ -57,7 +57,7 @@
 #'                     cutoff = 1.0e-5,
 #'                     catalog = 'ksm04',
 #'                     wave_groups = wave_groups)
-earthtide <- function(utc,
+calc_earthtide <- function(utc,
                       do_predict = TRUE,
                       method = 'gravity',
                       astro_update = 1,
