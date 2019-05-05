@@ -71,6 +71,9 @@ et$print()
     to 1 (every sample), but speed gains are realized with larger values.
     Typically updating every hour will have speed gains and keep precision 
     (ie 3600 for one second data, 60 for minute data, 1 for hourly data).}
+  \item{return_matrix: }{For \code{predict} and \code{analyze}. Return a 
+    matrix of tidal values instead of data.frame. The datetime column will 
+    not be present in this case (logical).}
 }
 }
 
@@ -81,10 +84,10 @@ et$print()
 \code{earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)} \cr
 create a new \code{Earthtide} object and initialize catalog, station and times.
 
-\code{$predict(method, astro_argument)} generate a combined 
+\code{$predict(method, astro_argument, return_matrix)} generate a combined 
   synthetic Earth tide.
   
-\code{$analyze(method, astro_argument)} generate components 
+\code{$analyze(method, astro_argument, return_matrix)} generate components 
   of the Earth tide for analysis.
   
 \code{$lod_tide()} generate components of the LOD (Length Of Day) tide.

@@ -135,7 +135,7 @@ test_that("earthtide works", {
                       wave_groups = wave_groups)
   
   expect_equal(et_r6, et_fun)
-  
+
   et <- Earthtide$new(utc = tms, 
                       latitude = 52.3868,
                       longitude = 9.7144,
