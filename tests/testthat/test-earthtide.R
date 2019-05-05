@@ -191,6 +191,19 @@ test_that("earthtide works", {
   expect_equivalent(as.matrix(et_r6[, -c(1)]), et_mat)
   
   
+  expect_error(calc_earthtide(utc = tms,
+                           do_predict = FALSE,
+                           method = c('tidal_potential', 'gravity'),
+                           astro_update = 1,
+                           latitude = 52.3868,
+                           longitude = 9.7144,
+                           elevation = 110,
+                           gravity = 9.8127, 
+                           cutoff = 1.0e-5,
+                           catalog = 'ksm04',
+                           wave_groups = wave_groups))
+  
+  
   
 })
 

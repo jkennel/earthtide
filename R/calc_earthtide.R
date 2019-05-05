@@ -88,6 +88,12 @@ calc_earthtide <- function(utc,
                       earth_radius = earth_radius,
                       earth_eccen = earth_eccen)
   
+  if(length(method) > 1) {
+    if(!do_predict) {
+      stop('If do_predict is FALSE only one method can be provided.')
+    }
+  }
+  
   for (i in seq_along(method)) {
 
     if (method[i] == 'pole_tide') {
