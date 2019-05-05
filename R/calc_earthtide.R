@@ -37,7 +37,8 @@
 #' @param catalog Use the "hw95s" catalog or "ksm04" catalog (character).
 #' @param eop User defined Earth Orientation Parameter (EOP) data.frame with the 
 #'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy
-#' @param return_matrix
+#' @param return_matrix Return a matrix of tidal values instead of data.frame. 
+#'     The datetime column will not be present in this case (logical).
 #' @param ... Currently not used.
 #'
 #' @return data.frame of tidal results
@@ -73,7 +74,7 @@ calc_earthtide <- function(utc,
                       wave_groups = NULL,
                       catalog = 'ksm04',
                       eop = NULL,
-                      return_matrix,
+                      return_matrix = FALSE,
                       ...){
   
 

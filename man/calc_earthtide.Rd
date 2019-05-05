@@ -12,7 +12,7 @@ calc_earthtide(utc, do_predict = TRUE, method = "gravity",
   astro_update = 1, latitude = 0, longitude = 0, elevation = 0,
   azimuth = 0, gravity = 0, earth_radius = 6378136.3,
   earth_eccen = 0.0066943979514, cutoff = 1e-06, wave_groups = NULL,
-  catalog = "ksm04", eop = NULL, return_matrix, ...)
+  catalog = "ksm04", eop = NULL, return_matrix = FALSE, ...)
 }
 \arguments{
 \item{utc}{The date-time in UTC (POSIXct vector).}
@@ -62,6 +62,9 @@ inferred column positions are start, end, multiplier.}
 
 \item{eop}{User defined Earth Orientation Parameter (EOP) data.frame with the 
 following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
+
+\item{return_matrix}{Return a matrix of tidal values instead of data.frame. 
+The datetime column will not be present in this case (logical).}
 
 \item{...}{Currently not used.}
 }
