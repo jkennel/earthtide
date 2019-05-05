@@ -77,7 +77,7 @@ calc_earthtide <- function(utc,
                       return_matrix = FALSE,
                       ...){
   
-
+  
   et <- Earthtide$new(utc = utc, 
                       latitude = latitude,
                       longitude = longitude,
@@ -98,27 +98,40 @@ calc_earthtide <- function(utc,
   }
   
   for (i in seq_along(method)) {
-
-    if (method[i] == 'pole_tide') {
-
-      et$pole_tide()
     
+    if (method[i] == 'pole_tide') {
+      
+      et$pole_tide()
+      
     } else if (method[i] == 'lod_tide') {
       
       et$lod_tide()
       
     } else if (do_predict) {
       
-      et$predict(method = method[i], 
-                 astro_update = astro_update, 
-                 return_matrix = return_matrix)
-      
+      if(return_matrix) {
+        return(et$predict(method = method[i], 
+                          astro_update = astro_update, 
+                          return_matrix = return_matrix))  
+      } else {
+        et$predict(method = method[i], 
+                   astro_update = astro_update, 
+                   return_matrix = return_matrix)
+        
+      }
     } else {
+      if(return_matrix) {
+        return(et$analyze(method = method[i], 
+                          astro_update = astro_update, 
+                          return_matrix = return_matrix)
+        )
+      } else {
+        
+        et$analyze(method = method[i], 
+                   astro_update = astro_update, 
+                   return_matrix = return_matrix)
+      }
       
-      et$analyze(method = method[i], 
-                 astro_update = astro_update, 
-                 return_matrix = return_matrix)
-    
     }
     
   }
