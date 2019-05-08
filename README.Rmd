@@ -12,12 +12,12 @@ library("badger")
 ```{r, echo = FALSE, results='asis'}
 
 cat('# earthtide',
+  '[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2673048.svg)](https://doi.org/10.5281/zenodo.2673048)',
   '[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)',
   badge_travis("jkennel/earthtide"),
   '[![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master)',
 	badge_cran_release("earthtide", "green"),
-	badge_cran_download("earthtide", "grand-total", "green"),
-  badge_dependencies("earthtide")
+	badge_cran_download("earthtide", "grand-total", "green")
 )
 
 ```

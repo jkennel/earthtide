@@ -3,6 +3,7 @@
 export(Earthtide)
 export(calc_earthtide)
 export(get_iers)
+export(get_main_frequency)
 importFrom(R6,R6Class)
 importFrom(Rcpp,evalCpp)
 importFrom(RcppParallel,RcppParallelLibs)

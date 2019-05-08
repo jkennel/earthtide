@@ -26,8 +26,8 @@ LinkingTo:
     RcppArmadillo (>= 0.9.200.7.0),
     BH (>= 1.69.0-1)
 Suggests: 
-    testthat, 
-    knitr, 
+    testthat (>= 2.1.0),
+    knitr,
     rmarkdown
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
@@ -35,4 +35,3 @@ Encoding: UTF-8
 LazyData: TRUE
 NeedsCompilation: yes
 SystemRequirements: C++11
-
