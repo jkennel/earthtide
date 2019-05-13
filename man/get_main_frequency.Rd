@@ -15,5 +15,5 @@ get_main_frequency(start, end)
 the main frequency between start and end
 }
 \description{
-get_main_frequency
+Get the frequency of the wave with the maximum amplitude in a range.
 }

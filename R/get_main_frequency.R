@@ -1,5 +1,7 @@
 #' get_main_frequency
 #'
+#' Get the frequency of the wave with the maximum amplitude in a range.
+#'
 #' @param start the starting frequency in cycles per day (numeric)
 #' @param end the ending frequency in cycles per day (numeric)
 #'
