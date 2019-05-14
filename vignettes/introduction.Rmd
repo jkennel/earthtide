@@ -232,5 +232,6 @@ This package is still in development.  The following changes are planned:
 - Print methods and getter/setters for love numbers, catalog, station variables
 - Optional wave group names
 - Ocean loading
+- strain in N-S, E-W
 
 
