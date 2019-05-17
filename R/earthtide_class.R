@@ -53,7 +53,7 @@
 #' \itemize{
 #'   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
 #'     "tidal_potential", "tidal_tilt", "vertical_displacement",
-#'     "horizontal_displacement", n_s_displacement, e_w_displacement, 
+#'     "horizontal_displacement", "n_s_displacement", "e_w_displacement", 
 #'     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
 #'   \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
 #'     determines how often to phases are updated in number of samples. Defaults
