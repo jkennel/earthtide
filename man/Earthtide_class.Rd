@@ -41,7 +41,7 @@ et$print()
   \item{latitude: }{The station latitude (numeric) defaults to 0.}
   \item{longitude: }{The station longitude (numeric) defaults to 0.}
   \item{elevation: }{The station elevation (m) (numeric) defaults to 0.}
-  \item{azimuth: }{Earth azimuth (numeric) defaults to 0.}
+  \item{azimuth: }{Earth azimuth (numeric) defaults to 0 (radians)}
   \item{gravity: }{Gravity at the station (m/s^2) (numeric) 0 to 
     estimate gravity from elevation and latitude.}
   \item{earth_radius: }{Radius of earth (m) (numeric) defaults to 6378136.3 }
@@ -64,7 +64,8 @@ et$print()
 \code{Earthtide$predict, Earthtide$analyze}
 \itemize{
   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
-    "tidal_potential", "tidal_tilt", "vertical_displacement", 
+    "tidal_potential", "tidal_tilt", "vertical_displacement",
+    "horizontal_displacement", n_s_displacement, e_w_displacement, 
     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
   \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
     determines how often to phases are updated in number of samples. Defaults

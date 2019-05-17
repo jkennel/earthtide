@@ -29,7 +29,7 @@
 #'   \item{latitude: }{The station latitude (numeric) defaults to 0.}
 #'   \item{longitude: }{The station longitude (numeric) defaults to 0.}
 #'   \item{elevation: }{The station elevation (m) (numeric) defaults to 0.}
-#'   \item{azimuth: }{Earth azimuth (numeric) defaults to 0.}
+#'   \item{azimuth: }{Earth azimuth (numeric) defaults to 0 (radians)}
 #'   \item{gravity: }{Gravity at the station (m/s^2) (numeric) 0 to 
 #'     estimate gravity from elevation and latitude.}
 #'   \item{earth_radius: }{Radius of earth (m) (numeric) defaults to 6378136.3 }
@@ -52,7 +52,8 @@
 #' \code{Earthtide$predict, Earthtide$analyze}
 #' \itemize{
 #'   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
-#'     "tidal_potential", "tidal_tilt", "vertical_displacement", 
+#'     "tidal_potential", "tidal_tilt", "vertical_displacement",
+#'     "horizontal_displacement", n_s_displacement, e_w_displacement, 
 #'     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
 #'   \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
 #'     determines how often to phases are updated in number of samples. Defaults
@@ -242,22 +243,66 @@ Earthtide <- R6Class("et",
       self$pk[] <- 0.0
     },
     # This number is way too big from eterna - currently must be an error
-    # horizontal_displacement = function() {
-    #   
-    #   #dfak <- 1e3 *  self$station$geo_radius / self$station$gravity
-    #   
-    #   dfak <- 1
-    #   cos_azimuth <- cos(self$station$azimuth)
-    #   sin_azimuth <- sin(self$station$azimuth)
-    #   x_comp <- self$station$dgx[1:12] * cos_azimuth
-    #   y_comp <- self$station$dgy[1:12] * sin_azimuth
-    #   self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) * 
-    #     self$love_params$dllat[1:12] * dfak
-    #   self$pk[] <- 0.0
-    #   wh <- which(x_comp != 0 | y_comp != 0)
-    #   self$pk[wh] <- 180 / pi * atan2(y_comp, x_comp)
-    #   
-    # },
+    horizontal_displacement = function() {
+
+      dfak <- 1e-6 *  self$station$geo_radius / self$station$gravity
+
+      #dfak <- 1
+      cos_azimuth <- cos(self$station$azimuth)
+      sin_azimuth <- sin(self$station$azimuth)
+      x_comp <- self$station$dgx[1:12] * cos_azimuth
+      y_comp <- self$station$dgy[1:12] * sin_azimuth
+      self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
+        self$love_params$dllat[1:12] * dfak
+      
+      self$pk[] <- 0.0
+      
+      self$pk[1:12] <- 180 / pi * atan2(y_comp, x_comp)
+      
+      wh <- which(x_comp == 0 & y_comp == 0)
+      self$pk[wh] <- 0.0
+
+    },
+    n_s_displacement = function() {
+      
+      dfak <- 1e-6 *  self$station$geo_radius / self$station$gravity
+      
+      #dfak <- 1
+      cos_azimuth <- cos(0)
+      sin_azimuth <- sin(0)
+      x_comp <- self$station$dgx[1:12] * cos_azimuth
+      y_comp <- self$station$dgy[1:12] * sin_azimuth
+      self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
+        self$love_params$dllat[1:12] * dfak
+      
+      self$pk[] <- 0.0
+      
+      self$pk[1:12] <- 180 / pi * atan2(y_comp, x_comp)
+      
+      wh <- which(x_comp == 0 & y_comp == 0)
+      self$pk[wh] <- 0.0
+      
+    },
+    e_w_displacement = function() {
+      
+      dfak <- 1e-6 *  self$station$geo_radius / self$station$gravity
+      
+      #dfak <- 1
+      cos_azimuth <- cos(pi/2)
+      sin_azimuth <- sin(pi/2)
+      x_comp <- self$station$dgx[1:12] * cos_azimuth
+      y_comp <- self$station$dgy[1:12] * sin_azimuth
+      self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
+        self$love_params$dllat[1:12] * dfak
+      
+      self$pk[] <- 0.0
+      
+      self$pk[1:12] <- 180 / pi * atan2(y_comp, x_comp)
+      
+      wh <- which(x_comp == 0 & y_comp == 0)
+      self$pk[wh] <- 0.0
+      
+    },
     vertical_strain = function(poisson = 0.25) {
       dfak <- 1.e9 * poisson / (poisson - 1.0)
       self$strain(dfak)
@@ -343,8 +388,12 @@ Earthtide <- R6Class("et",
         self$tidal_tilt()
       } else if (method == 'vertical_displacement') {
         self$vertical_displacement()
-      # } else if (method == 'horizontal_displacement') {
-      #   self$horizontal_displacement()
+      } else if (method == 'horizontal_displacement') {
+        self$horizontal_displacement()
+      } else if (method == 'n_s_displacement') {
+        self$n_s_displacement()
+      } else if (method == 'e_w_displacement') {
+        self$e_w_displacement()
       } else if (method == 'vertical_strain') {
         self$vertical_strain()
       } else if (method == 'areal_strain') {
