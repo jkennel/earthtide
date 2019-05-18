@@ -49,9 +49,10 @@ test_that("dimensions correct", {
   expect_equal(nrow(out), length(tms))
   expect_equal(ncol(out), 5)
   
+})
   
   
-  
+test_that("scaling is correct", {
   
   # scale 
   tms <- as.POSIXct('1990-01-01', tz = 'UTC') + seq(0, 86400*2, 7200)
@@ -80,7 +81,7 @@ test_that("dimensions correct", {
                       cutoff = 1.0e-7,
                       catalog = 'hw95s',
                       wave_groups = wave_groups, 
-                      astro_update = 2)
+                      astro_update = 10)
   
   out <- et$analyze(method = 'gravity',  scale = FALSE)$tide()
   o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])

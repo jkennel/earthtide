@@ -19,6 +19,8 @@ test_that("earthtide works", {
   et$predict(method = 'tidal_tilt', astro_update = 1L)
   et$predict(method = 'vertical_displacement', astro_update = 1L)
   et$predict(method = 'horizontal_displacement', astro_update = 1L)
+  et$predict(method = 'n_s_displacement', astro_update = 1L)
+  et$predict(method = 'e_w_displacement', astro_update = 1L)
   et$predict(method = 'vertical_strain', astro_update = 1L)
   et$predict(method = 'areal_strain', astro_update = 1L)
   et$predict(method = 'horizontal_strain', astro_update = 1L)
@@ -29,7 +31,9 @@ test_that("earthtide works", {
   expect_equal(tide$tidal_potential, c(1.422, 1.890), tolerance = 0.001)
   expect_equal(tide$tidal_tilt, c(-17.845, -20.578), tolerance = 0.001)
   expect_equal(tide$vertical_displacement, c(87.822, 110.715), tolerance = 0.001)
-  expect_equal(tide$horizontal_displacement, c(-46.14956, 53.40266), tolerance = 2) # from solidearthtide
+  expect_equal(tide$horizontal_displacement, c(-47.34171, -55.21554), tolerance = 2) # from solidearthtide
+  expect_equal(tide$n_s_displacement, c(-47.34171, -55.21554), tolerance = 2) # from solidearthtide
+  expect_equal(tide$e_w_displacement, c(31.11908, 13.03227), tolerance = 2) # from solidearthtide
   expect_equal(tide$vertical_strain, c(-5.533, -6.964), tolerance = 0.001)
   expect_equal(tide$areal_strain,  c(16.600, 20.893), tolerance = 0.001)
   expect_equal(tide$volume_strain, c(11.067, 13.929), tolerance = 0.001)
