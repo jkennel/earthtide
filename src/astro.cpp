@@ -372,7 +372,8 @@ arma::mat et_analyze(const arma::mat astro,
                          double o1,
                          double resonance,
                          const arma::uword max_amp,
-                         double update_coef) {
+                         double update_coef,
+                         bool scale) {
   
   
   int nr = k_mat.n_rows;  // number of constituents
@@ -416,8 +417,13 @@ arma::mat et_analyze(const arma::mat astro,
   
   if (nt == 1) {
     
-    output(0, 0) = arma::dot(dtham, cos_dc2) / arma::max(dtham);
-    output(0, 1) = arma::dot(dtham, sin_dc2) / arma::max(dtham); 
+    if (scale) {
+      output(0, 0) = arma::dot(dtham, cos_dc2) / arma::max(dtham);
+      output(0, 1) = arma::dot(dtham, sin_dc2) / arma::max(dtham); 
+    } else {
+      output(0, 0) = arma::dot(dtham, cos_dc2);
+      output(0, 1) = arma::dot(dtham, sin_dc2); 
+    }
     
   } else {
     
@@ -430,8 +436,13 @@ arma::mat et_analyze(const arma::mat astro,
     // loop through each time group
     for (int k = 0; k < nt; k++) {
       
-      output(k, 0) = arma::dot(dtham, cos_dc2) / arma::max(dtham);
-      output(k, 1) = arma::dot(dtham, sin_dc2) / arma::max(dtham); 
+      if (scale) {
+        output(k, 0) = arma::dot(dtham, cos_dc2) / arma::max(dtham);
+        output(k, 1) = arma::dot(dtham, sin_dc2) / arma::max(dtham); 
+      } else {
+        output(k, 0) = arma::dot(dtham, cos_dc2);
+        output(k, 1) = arma::dot(dtham, sin_dc2); 
+      }
       
       // update
       dummy   = cos_dc2 % cos_c - sin_dc2 % sin_c;
@@ -602,6 +613,7 @@ struct earthtide_worker : public Worker
   double update_coef;
   const arma::vec multiplier;
   bool predict;
+  bool scale;
   arma::mat& output;
   
   earthtide_worker(const arma::mat astro,
@@ -627,12 +639,13 @@ struct earthtide_worker : public Worker
                    double update_coef,
                    const arma::vec multiplier,
                    bool predict,
+                   bool scale,
                    arma::mat& output)
     : astro(astro), astro_der(astro_der), k_mat(k_mat), pk(pk), body(body),body_inds(body_inds), delta(delta), deltar(deltar),
       x0(x0),  y0(y0), x1(x1), y1(y1), x2(x2), y2(y2),
       j2000(j2000), o1(o1), resonance(resonance), inds(inds), i_max(i_max),
       astro_update(astro_update), update_coef(update_coef), multiplier(multiplier),
-      predict(predict), output(output) {}
+      predict(predict), scale(scale), output(output) {}
   
   
   void operator()(std::size_t begin_row, std::size_t end_row) {
@@ -710,7 +723,8 @@ struct earthtide_worker : public Worker
             o1,
             resonance,
             i_max(j),
-            update_coef);
+            update_coef,
+            scale);
         }
       }
     }
@@ -780,7 +794,8 @@ arma::mat et_calculate(const arma::mat astro,
                        int astro_update,
                        double update_coef,
                        const arma::vec magnifier,
-                       bool predict) {
+                       bool predict,
+                       bool scale) {
   
   
   // number of times
@@ -853,6 +868,7 @@ arma::mat et_calculate(const arma::mat astro,
                       update_coef,
                       magnifier,
                       predict,
+                      scale,
                       output);
   
   RcppParallel::parallelFor(0, nt, ew);

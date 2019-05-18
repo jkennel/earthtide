@@ -54,7 +54,8 @@
 #'   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
 #'     "tidal_potential", "tidal_tilt", "vertical_displacement",
 #'     "horizontal_displacement", "n_s_displacement", "e_w_displacement", 
-#'     "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
+#'     "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain"
+#'     or "ocean_tides".}
 #'   \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
 #'     determines how often to phases are updated in number of samples. Defaults
 #'     to 1 (every sample), but speed gains are realized with larger values.
@@ -74,8 +75,8 @@
 #' \code{$predict(method, astro_argument, return_matrix)} generate a combined 
 #'   synthetic Earth tide.
 #'   
-#' \code{$analyze(method, astro_argument, return_matrix)} generate components 
-#'   of the Earth tide for analysis.
+#' \code{$analyze(method, astro_argument, return_matrix, scale)} generate 
+#'   components of the Earth tide for analysis.
 #'   
 #' \code{$lod_tide()} generate components of the LOD (Length Of Day) tide.
 #' 
@@ -222,9 +223,9 @@ Earthtide <- R6Class("et",
 
     },
     tidal_tilt = function() {
-      
-      cos_azimuth <- cos(self$station$azimuth)
-      sin_azimuth <- sin(self$station$azimuth)
+      to_radians <- pi/180
+      cos_azimuth <- cos(self$station$azimuth * to_radians)
+      sin_azimuth <- sin(self$station$azimuth * to_radians)
       x_comp <- self$station$dgx[1:12] * cos_azimuth
       y_comp <- self$station$dgy[1:12] * sin_azimuth
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) * self$station$df
@@ -244,12 +245,12 @@ Earthtide <- R6Class("et",
     },
     # This number is way too big from eterna - currently must be an error
     horizontal_displacement = function() {
-
+      to_radians <- pi / 180
+      
       dfak <- 1e-6 *  self$station$geo_radius / self$station$gravity
 
-      #dfak <- 1
-      cos_azimuth <- cos(self$station$azimuth)
-      sin_azimuth <- sin(self$station$azimuth)
+      cos_azimuth <- cos(self$station$azimuth * to_radians)
+      sin_azimuth <- sin(self$station$azimuth * to_radians)
       x_comp <- self$station$dgx[1:12] * cos_azimuth
       y_comp <- self$station$dgy[1:12] * sin_azimuth
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
@@ -264,12 +265,12 @@ Earthtide <- R6Class("et",
 
     },
     n_s_displacement = function() {
+      to_radians <- pi / 180
       
       dfak <- 1e-6 *  self$station$geo_radius / self$station$gravity
       
-      #dfak <- 1
-      cos_azimuth <- cos(0)
-      sin_azimuth <- sin(0)
+      cos_azimuth <- cos(0 * to_radians)
+      sin_azimuth <- sin(0 * to_radians)
       x_comp <- self$station$dgx[1:12] * cos_azimuth
       y_comp <- self$station$dgy[1:12] * sin_azimuth
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
@@ -284,12 +285,12 @@ Earthtide <- R6Class("et",
       
     },
     e_w_displacement = function() {
+      to_radians <- pi / 180
       
       dfak <- 1e-6 *  self$station$geo_radius / self$station$gravity
       
-      #dfak <- 1
-      cos_azimuth <- cos(pi/2)
-      sin_azimuth <- sin(pi/2)
+      cos_azimuth <- cos(90 * to_radians)
+      sin_azimuth <- sin(90 * to_radians)
       x_comp <- self$station$dgx[1:12] * cos_azimuth
       y_comp <- self$station$dgy[1:12] * sin_azimuth
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
@@ -324,6 +325,89 @@ Earthtide <- R6Class("et",
         (self$station$gravity * self$station$geo_radius)
       
     },
+    horizontal_strain = function() {
+      
+      to_radians <- pi / 180
+      
+      dgx   <- self$station$dgx
+      dgy   <- self$station$dgy
+      dhlat <- self$love_params$dhlat
+      dllat <- self$love_params$dllat
+      
+      theta <- self$station$theta * to_radians
+      azr   <- (self$station$azimuth + 180) * to_radians
+      caz   <- cos(azr)
+      saz   <- sin(azr)
+      saz2  <- sin(2.0 * azr)
+      csts  <- -0.5 * sin(2.0 * azr)
+      
+      ct    <- sin(self$station$geo_latitude * to_radians)
+      st    <- cos(self$station$geo_latitude * to_radians)
+      
+      ct2   <- ct*ct
+      st2   <- st*st
+      cc2   <- cos(2.0 * self$station$geo_latitude * to_radians)
+      c2t   <- -cc2
+      cott  <- 1.0 / tan(theta)
+      cott2 <- 1.0 / tan(2.0 * theta)
+      dfak   <- 1e9 / (self$station$geo_radius * self$station$gravity)
+      
+      
+      dgx[1]  <- (dhlat[1] - (6.0 * dllat[1] * c2t) / (3.0 * ct2 - 1.0)) * caz^2 + 
+        (dhlat[1] - (6.0 * dllat[1] * ct2) / (3.0 * ct2 - 1.0)) * saz^2
+      dgy[1]  <- 0.0
+      
+      dgx[2]  <- (dhlat[2] - 4.0 * dllat[2]) * caz^2 + 
+        (dhlat[2] - dllat[2] / st2 + 2.0 * dllat[2] * cott * cott2) * saz^2
+      dgy[2]  <- 2.0*dllat[2]*(2.0*cott2-cott)*csts/st
+      
+      dgx[3]  <- (dhlat[3] + 2.0 * dllat[3] * (cott^2 - 1.0)) * caz^2 +
+        (dhlat[3] - 4.0 * dllat[3] / st2 + 2.0 * dllat[3] * cott^2) * saz^2
+      dgy[3]  <- 4.0*dllat[3] * cott * csts / st
+      
+      dgx[4]  <- (dhlat[4] + dllat[4] * (33.0 - 45.0 * ct2) / (5.0 * ct2 - 3.0)) * caz^2 + 
+        (dhlat[4] - dllat[4] * (1.00 + 10.0 * ct2 / (5.0 * ct2 - 3.0))) * saz^2
+      dgy[4]  <- 0.0
+      
+      dgx[5]  <- (dhlat[5] - dllat[5] * (1.0 + 10.0 * (1.0 - 4.0 * ct2) / (1.0 - 5.0 * ct2))) * caz^2 + 
+        (dhlat[5] + dllat[5] * (cott^2 - 1.0 / st2 - 10.0 * ct2 / (5.0 * ct2 - 1.0))) * saz^2
+      dgy[5]  <- -20.0 * dllat[5] * ct * csts / (5.0 * ct2 - 1.0)
+      
+      dgx[6]  <- (dhlat[6] + dllat[6] * (2.0 * cott^2 - 7.0)) * caz^2 + 
+        (dhlat[6] + dllat[6] * (2.0 * cott^2 -1.0 - 4.0 / st2)) * saz^2
+      dgy[6]  <- -4.0 * dllat[6] * (cott - 1.0 / cott) * csts / st
+      
+      dgx[7]  <- (dhlat[7] + dllat[7] * (6.0 * cott^2 - 3.0)) * caz^2 + 
+        (dhlat[7] + dllat[7] * (3.0 * cott^2 - 9.0 / st2)) * saz^2
+      dgy[7]  <- 12.0*dllat[7]*cott*csts/st
+      
+      dgx[8]  <- (dhlat[8] - 4.0 * dllat[8] * (4.0 - 3.0 * (5.0 * ct2 - 1.0) / (35.0 * ct2 * ct2 - 30.0 * ct2 + 3.0))) * caz^2 + 
+        (dhlat[8] - 4.0 * dllat[8] * (1.0 + 3.0 * (5.0 * ct2 - 1.0) / (35.0 * ct2 * ct2 - 30.0 * ct2 + 3.0))) * saz^2
+      dgy[8]  <- 0.0
+      
+      dgx[9]  <- (dhlat[9] - 2.0 * dllat[9] * (8.0 - 3.0 / (7.0 * ct2 - 3.0))) * caz^2 + 
+        (dhlat[9] - 2.0 * dllat[9] * (2.0 + 3.0 / (7.0 * ct2 - 3.0))) * saz^2
+      dgy[9]  <- dllat[9] * 3.0 / ct * (1.0 + 2.0 / (7.0 * ct2 - 3.0)) * saz2
+      
+      dgx[10] <- (dhlat[10] - 4.0 * dllat[10] * (4.0 + 3.0 * ct2 / (7.0 * ct2^2 - 8.0 * ct2 + 1.0))) * caz^2 + 
+        (dhlat[10] - 4.0 * dllat[10] * (1.0 - 3.0 * ct2 / (7.0 * ct2^2 - 8.0 * ct2 + 1.0))) * saz^2
+      dgy[10] <- -dllat[10] * 6.0 * ct/st^2 * (1.0 - 4.0 / (7.0 * ct2 - 1.0)) * saz2 
+      
+      dgx[11] <- (dhlat[11] - 2.0 * dllat[11] * (8.0 - 3.0 / st2)) * caz^2 + 
+        (dhlat[11] - 2.0 * dllat[11] * (2.0 + 3.0 / st2)) * saz^2
+      dgy[11] <-  dllat[11] * 3.0 / ct * (3.0 - 2.0 / st2) * saz2
+      
+      dgx[12] <- (dhlat[12] - 4.0 * dllat[12] * (4.0 - 3.0 / st2)) * caz^2 + 
+        (dhlat[12] - 4.0 * dllat[12] * (1.0 + 3.0 / st2)) * saz^2
+      dgy[12] <-  dllat[12] * 12.0 * ct / st2 * saz2
+      
+      self$station$dgx <- dgx
+      self$station$dgy <- dgy
+      
+      self$station$dgk[1:12] <-  self$station$dgk[1:12] * sqrt(dgx[1:12]^2 + dgy[1:12]^2) * dfak
+      self$pk[1:12]          <-  self$pk[1:12] + atan2(dgy[1:12], dgx[1:12]) * to_radians
+      
+    },
     ocean_tides = function() {
       dfak <- 1e3 / self$station$gravity
       self$station$dgk <- self$station$dgk * dfak
@@ -352,20 +436,21 @@ Earthtide <- R6Class("et",
                            self$station$earth_eccen)
       invisible(self)
     },
-    analyze = function(method = 'gravity', astro_update = 1L, return_matrix = FALSE) {
+    analyze = function(method = 'gravity', astro_update = 1L,
+                       return_matrix = FALSE, scale = TRUE) {
+      
       
       self$apply_method(method)
       astro_update <- self$check_time_increment(astro_update)
       
-      if (return_matrix) {
-        mat <- self$calculate(astro_update = astro_update, predict = FALSE)
-        colnames(mat) <- self$catalog$col_names
-        return(mat)
+      if(scale) {
+        mat <- self$calculate(astro_update = astro_update, 
+                              predict = FALSE, scale = TRUE)
       } else {
-        self$tides[self$catalog$col_names] <- 
-          self$calculate(astro_update = astro_update, predict = FALSE)
+        mat <- self$calculate(astro_update = astro_update, 
+                              predict = FALSE, scale = FALSE)
       }
-      
+
       # reset parameters after calculation
       self$prepare_station(self$station$latitude, 
                            self$station$longitude, 
@@ -374,6 +459,14 @@ Earthtide <- R6Class("et",
                            self$station$gravity, 
                            self$station$earth_radius,
                            self$station$earth_eccen)
+      
+      if (return_matrix) {
+        colnames(mat) <- self$catalog$col_names
+        return(mat)
+      } 
+      
+      self$tides[self$catalog$col_names] <- mat
+      
       invisible(self)
     },
     apply_method = function(method) {
@@ -398,11 +491,13 @@ Earthtide <- R6Class("et",
         self$vertical_strain()
       } else if (method == 'areal_strain') {
         self$areal_strain()
+      } else if (method == 'horizontal_strain') {
+        self$horizontal_strain()
       } else if (method == 'volume_strain') {
         self$volume_strain()
       } 
     },
-    calculate = function(astro_update = 1L, predict = TRUE) {
+    calculate = function(astro_update = 1L, predict = TRUE, scale = TRUE) {
       et_calculate(self$astro$astro,
                  self$astro$astro_der,
                  self$catalog$k,
@@ -424,7 +519,8 @@ Earthtide <- R6Class("et",
                  astro_update,
                  self$update_coef, 
                  self$catalog$wave_groups$multiplier,
-                 predict)
+                 predict,
+                 scale)
     },
     pole_tide = function() {
       self$tides$pole_tide <- self$pole_t

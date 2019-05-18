@@ -66,7 +66,8 @@ et$print()
   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity", 
     "tidal_potential", "tidal_tilt", "vertical_displacement",
     "horizontal_displacement", "n_s_displacement", "e_w_displacement", 
-    "vertical_strain", "areal_strain", "volume_strain", or "ocean_tides".}
+    "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain"
+    or "ocean_tides".}
   \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
     determines how often to phases are updated in number of samples. Defaults
     to 1 (every sample), but speed gains are realized with larger values.
@@ -88,8 +89,8 @@ create a new \code{Earthtide} object and initialize catalog, station and times.
 \code{$predict(method, astro_argument, return_matrix)} generate a combined 
   synthetic Earth tide.
   
-\code{$analyze(method, astro_argument, return_matrix)} generate components 
-  of the Earth tide for analysis.
+\code{$analyze(method, astro_argument, return_matrix, scale)} generate 
+  components of the Earth tide for analysis.
   
 \code{$lod_tide()} generate components of the LOD (Length Of Day) tide.
 

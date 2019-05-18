@@ -89,7 +89,7 @@ plot(pole_tide~datetime, tide,
 
 The _**predict**_ method of the earthtide class computes the tidal response. There are two options for this function:
 
-- *method* determines the which response is desired. Currently valid options are "gravity", "tidal_potential", "tidal_tilt", "vertical_displacement", "horizontal_displacement", "n_s_displacement", "e_w_displacement", "vertical_strain", "areal_strain", "volume_strain", and "ocean_tides". 
+- *method* determines the which response is desired. Currently valid options are "gravity", "tidal_potential", "tidal_tilt", "vertical_displacement", "horizontal_displacement", "n_s_displacement", "e_w_displacement", "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain", and "ocean_tides". 
 - *astro_update* determines how often phases are updated. For long time series (greater than 100,000 times) a value greater than 1 can speed up the results. In general, values greater than 1 will only be necessary for predicting at the minute or second scale or if you are predicting for many years.  There may be a slight loss of precision when the cutoff is small.  For small cutoff values use a small value for *astro_update* and we suggest testing to achieve the desired precision.
   
 

@@ -1,8 +1,10 @@
 # earthtide 0.0.8
 
 * Added horizontal displacement calculation
+* Added horizontal strain calculation
+* Add scaling option for analyze function
 
-# earthtide 0.0.7
+# earthtide 0.0.7*
 
 * Added a `NEWS.md` file to track changes to the package.
 * Matrix output method

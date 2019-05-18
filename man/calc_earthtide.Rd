@@ -12,7 +12,8 @@ calc_earthtide(utc, do_predict = TRUE, method = "gravity",
   astro_update = 1, latitude = 0, longitude = 0, elevation = 0,
   azimuth = 0, gravity = 0, earth_radius = 6378136.3,
   earth_eccen = 0.0066943979514, cutoff = 1e-06, wave_groups = NULL,
-  catalog = "ksm04", eop = NULL, return_matrix = FALSE, ...)
+  catalog = "ksm04", eop = NULL, return_matrix = FALSE,
+  scale = TRUE, ...)
 }
 \arguments{
 \item{utc}{The date-time in UTC (POSIXct vector).}
@@ -22,10 +23,10 @@ calc_earthtide(utc, do_predict = TRUE, method = "gravity",
 \item{method}{One or more of "gravity", 
 "tidal_potential", "tidal_tilt", "vertical_displacement", 
 "horizontal_displacement", "n_s_displacement", "e_w_displacement",
-"vertical_strain", "areal_strain", "volume_strain", or "ocean_tides",
-"pole_tide", "lod_tide". The pole tide and lod_tide are used in predict
-mode even if do_predict is FALSE. More than one value can only be used
-if do_predict == TRUE.}
+"vertical_strain", "areal_strain", "volume_strain", "horizontal_strain",
+or "ocean_tides", "pole_tide", "lod_tide". The pole tide and lod_tide 
+are used in predict mode even if do_predict is FALSE. More than one value
+can only be used if do_predict == TRUE.}
 
 \item{astro_update}{Integer that
 determines how often to phases are updated in number of samples. Defaults
@@ -66,6 +67,8 @@ following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 
 \item{return_matrix}{Return a matrix of tidal values instead of data.frame. 
 The datetime column will not be present in this case (logical).}
+
+\item{scale}{Scale results when do_pedict is FALSE}
 
 \item{...}{Currently not used.}
 }

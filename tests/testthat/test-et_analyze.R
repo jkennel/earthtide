@@ -50,4 +50,41 @@ test_that("dimensions correct", {
   expect_equal(ncol(out), 5)
   
   
+  
+  
+  
+  # scale 
+  tms <- as.POSIXct('1990-01-01', tz = 'UTC') + seq(0, 86400*2, 7200)
+  
+  wave_groups = eterna_wavegroups
+  wave_groups <- na.omit(wave_groups[wave_groups$time == 'all',])
+  
+  et <- Earthtide$new(utc = tms, 
+                      longitude = -118.67,
+                      latitude = 34.23,
+                      elevation = 500,
+                      cutoff = 1.0e-7,
+                      catalog = 'hw95s',
+                      wave_groups = wave_groups)
+  
+  out <- et$analyze(method = 'gravity',  scale = FALSE)$tide()
+  o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
+  o_max <- apply(o, 2, max)
+  expect_equal(names(which.max(o_max)), "cos_1.930668_1.93379")
+  
+  
+  et <- Earthtide$new(utc = tms, 
+                      longitude = -118.67,
+                      latitude = 34.23,
+                      elevation = 500,
+                      cutoff = 1.0e-7,
+                      catalog = 'hw95s',
+                      wave_groups = wave_groups, 
+                      astro_update = 2)
+  
+  out <- et$analyze(method = 'gravity',  scale = FALSE)$tide()
+  o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
+  o_max <- apply(o, 2, max)
+  expect_equal(names(which.max(o_max)), "cos_1.930668_1.93379")
+  
 })
