@@ -64,9 +64,10 @@ test_that("scaling is correct", {
                       longitude = -118.67,
                       latitude = 34.23,
                       elevation = 500,
-                      cutoff = 1.0e-7,
+                      cutoff = 1.0e-5,
                       catalog = 'hw95s',
-                      wave_groups = wave_groups)
+                      wave_groups = wave_groups,
+                      astro_update = 1)
   
   out <- et$analyze(method = 'gravity',  scale = FALSE)$tide()
   o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
@@ -78,7 +79,7 @@ test_that("scaling is correct", {
                       longitude = -118.67,
                       latitude = 34.23,
                       elevation = 500,
-                      cutoff = 1.0e-7,
+                      cutoff = 1.0e-5,
                       catalog = 'hw95s',
                       wave_groups = wave_groups, 
                       astro_update = 10)
