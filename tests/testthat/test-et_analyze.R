@@ -66,10 +66,9 @@ test_that("scaling is correct", {
                       elevation = 500,
                       cutoff = 1.0e-5,
                       catalog = 'hw95s',
-                      wave_groups = wave_groups,
-                      astro_update = 1)
+                      wave_groups = wave_groups)
   
-  out <- et$analyze(method = 'gravity',  scale = FALSE)$tide()
+  out <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 1)$tide()
   o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
   o_max <- apply(o, 2, max)
   expect_equal(names(which.max(o_max)), "cos_1.930668_1.93379")
@@ -81,10 +80,9 @@ test_that("scaling is correct", {
                       elevation = 500,
                       cutoff = 1.0e-5,
                       catalog = 'hw95s',
-                      wave_groups = wave_groups, 
-                      astro_update = 10)
+                      wave_groups = wave_groups)
   
-  out <- et$analyze(method = 'gravity',  scale = FALSE)$tide()
+  out <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 10)$tide()
   o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
   o_max <- apply(o, 2, max)
   expect_equal(names(which.max(o_max)), "cos_1.930668_1.93379")

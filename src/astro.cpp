@@ -355,25 +355,25 @@ Rcpp::NumericMatrix legendre(int l_max, double x) {
 //
 // [[Rcpp::export]]
 arma::mat et_analyze(const arma::mat astro,
-                         const arma::mat astro_der,
-                         const arma::mat k_mat,
-                         const arma::vec pk,
-                         const arma::vec body,
-                         const arma::uvec body_inds,
-                         double delta,
-                         double deltar,
-                         const arma::vec x0, 
-                         const arma::vec y0, 
-                         const arma::vec x1, 
-                         const arma::vec y1,
-                         const arma::vec x2, 
-                         const arma::vec y2,
-                         const arma::vec j2000,
-                         double o1,
-                         double resonance,
-                         const arma::uword max_amp,
-                         double update_coef,
-                         bool scale) {
+                     const arma::mat astro_der,
+                     const arma::mat k_mat,
+                     const arma::vec pk,
+                     const arma::vec body,
+                     const arma::uvec body_inds,
+                     double delta,
+                     double deltar,
+                     const arma::vec x0, 
+                     const arma::vec y0, 
+                     const arma::vec x1, 
+                     const arma::vec y1,
+                     const arma::vec x2, 
+                     const arma::vec y2,
+                     const arma::vec j2000,
+                     double o1,
+                     double resonance,
+                     const arma::uword max_amp,
+                     double update_coef,
+                     bool scale) {
   
   
   int nr = k_mat.n_rows;  // number of constituents
@@ -499,24 +499,24 @@ arma::mat et_analyze(const arma::mat astro,
 //
 // [[Rcpp::export]]
 arma::mat et_predict(const arma::mat astro,
-                         const arma::mat astro_der,
-                         const arma::mat k_mat,
-                         const arma::vec pk,
-                         const arma::vec body,
-                         const arma::uvec body_inds,
-                         double delta,
-                         double deltar,
-                         const arma::vec x0, 
-                         const arma::vec y0, 
-                         const arma::vec x1, 
-                         const arma::vec y1,
-                         const arma::vec x2, 
-                         const arma::vec y2,
-                         const arma::vec j2000,
-                         double o1,
-                         double resonance,
-                         const arma::uword max_amp,
-                         double update_coef) {
+                     const arma::mat astro_der,
+                     const arma::mat k_mat,
+                     const arma::vec pk,
+                     const arma::vec body,
+                     const arma::uvec body_inds,
+                     double delta,
+                     double deltar,
+                     const arma::vec x0, 
+                     const arma::vec y0, 
+                     const arma::vec x1, 
+                     const arma::vec y1,
+                     const arma::vec x2, 
+                     const arma::vec y2,
+                     const arma::vec j2000,
+                     double o1,
+                     double resonance,
+                     const arma::uword max_amp,
+                     double update_coef) {
   
   
   int nr = k_mat.n_rows;  // number of constituents
@@ -1233,5 +1233,4 @@ arma::mat et_calculate(const arma::mat astro,
 
 //==============================================================================
 /*** R
-
 */
