@@ -229,6 +229,8 @@ test_that("earthtide works", {
   expect_equivalent(et_mat2, et_mat)
   
   
+
+  
   
   expect_error(calc_earthtide(utc = tms,
                            do_predict = FALSE,
@@ -246,6 +248,36 @@ test_that("earthtide works", {
   
   
 
+  tms <- as.POSIXct('1990-01-01', tz = 'UTC') + seq(0, 86400*5, 3600)
+  
+  
+  et_mat2 <- calc_earthtide(utc = tms,
+                            do_predict = FALSE,
+                            method = c('tidal_potential'),
+                            astro_update = 1,
+                            latitude = 52.3868,
+                            longitude = 9.7144,
+                            elevation = 110,
+                            gravity = 9.8127, 
+                            cutoff = 1.0e-5,
+                            catalog = 'ksm04',
+                            wave_groups = wave_groups,
+                            return_matrix = TRUE)
+
+  et_mat3 <- calc_earthtide(utc = tms,
+                            do_predict = FALSE,
+                            method = c('tidal_potential'),
+                            astro_update = 10,
+                            latitude = 52.3868,
+                            longitude = 9.7144,
+                            elevation = 110,
+                            gravity = 9.8127, 
+                            cutoff = 1.0e-5,
+                            catalog = 'ksm04',
+                            wave_groups = wave_groups,
+                            return_matrix = TRUE)
+  expect_equivalent(et_mat2, et_mat3)
+  
   
   
 })

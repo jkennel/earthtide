@@ -55,7 +55,7 @@ test_that("dimensions correct", {
 test_that("scaling is correct", {
   
   # scale 
-  tms <- as.POSIXct('1990-01-01', tz = 'UTC') + seq(0, 86400*2, 7200)
+  tms <- as.POSIXct('1990-01-01', tz = 'UTC') + seq(0, 86400*14, 60)
   
   wave_groups = eterna_wavegroups
   wave_groups <- na.omit(wave_groups[wave_groups$time == 'all',])
@@ -68,23 +68,25 @@ test_that("scaling is correct", {
                       catalog = 'hw95s',
                       wave_groups = wave_groups)
   
-  out <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 1)$tide()
-  o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
-  o_max <- apply(o, 2, max)
-  expect_equal(names(which.max(o_max)), "cos_1.930668_1.93379")
+  system.time(
+    out1 <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 1)$tide()
+  )
+  system.time(
+    out2 <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 10)$tide()
+  )
+  system.time(
+    out3 <- et$analyze(method = 'gravity',  scale = TRUE, astro_update = 1)$tide()
+  )
+  system.time(
+    out4 <- et$analyze(method = 'gravity',  scale = TRUE, astro_update = 10)$tide()
+  )
   
   
-  et <- Earthtide$new(utc = tms, 
-                      longitude = -118.67,
-                      latitude = 34.23,
-                      elevation = 500,
-                      cutoff = 1.0e-5,
-                      catalog = 'hw95s',
-                      wave_groups = wave_groups)
+  expect_equal(out1, out2, tolerance = 1e-7)
+  expect_equal(out3, out4, tolerance = 1e-7)
+  expect_false(isTRUE(all.equal(out1, out3, tolerance = 1e-2)))
+  expect_false(isTRUE(all.equal(out2, out4, tolerance = 1e-2)))
   
-  out <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 10)$tide()
-  o <- abs(out[seq(2, ncol(out), 2)] + out[seq(3, ncol(out), 2)])
-  o_max <- apply(o, 2, max)
-  expect_equal(names(which.max(o_max)), "cos_1.930668_1.93379")
+  
   
 })
