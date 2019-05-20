@@ -68,18 +68,14 @@ test_that("scaling is correct", {
                       catalog = 'hw95s',
                       wave_groups = wave_groups)
   
-  system.time(
-    out1 <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 1)$tide()
-  )
-  system.time(
-    out2 <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 10)$tide()
-  )
-  system.time(
-    out3 <- et$analyze(method = 'gravity',  scale = TRUE, astro_update = 1)$tide()
-  )
-  system.time(
-    out4 <- et$analyze(method = 'gravity',  scale = TRUE, astro_update = 10)$tide()
-  )
+  out1 <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 1)$tide()
+  
+  out2 <- et$analyze(method = 'gravity',  scale = FALSE, astro_update = 10)$tide()
+  
+  out3 <- et$analyze(method = 'gravity',  scale = TRUE, astro_update = 1)$tide()
+  
+  out4 <- et$analyze(method = 'gravity',  scale = TRUE, astro_update = 10)$tide()
+  
   
   
   expect_equal(out1, out2, tolerance = 1e-7)
