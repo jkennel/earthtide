@@ -244,7 +244,6 @@ Earthtide <- R6Class(
         self$love_params$dhlat[1:12] * dfak
       self$pk[] <- 0.0
     },
-    # This number is way too big from eterna - currently must be an error
     horizontal_displacement = function() {
       to_radians <- pi / 180
       

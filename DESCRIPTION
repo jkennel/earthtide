@@ -1,7 +1,7 @@
 Package: earthtide
 Type: Package
 Title: Parallel Implementation of 'ETERNA 3.40' for Prediction and Analysis of Earth Tides
-Version: 0.0.8
+Version: 0.0.9
 Date: 2019-05-17
 Authors@R: c(person("Jonathan", "Kennel", email = "jkennel@uoguelph.ca", role = c("aut", "cre", "trl")), 
              person("Beth", "Parker", email = "bparker@uoguelph.ca", role = "ths"),
