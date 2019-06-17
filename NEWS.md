@@ -1,3 +1,7 @@
+# earthtide 0.0.9
+
+* remove get_iers test as it can cause failure if no internet accesss, or the server is down.
+
 # earthtide 0.0.8
 
 * Added horizontal displacement calculation
