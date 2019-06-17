@@ -8,10 +8,6 @@ matrix:
     - os: linux
       r: devel
       env: R_CODECOV=true
-env:
-   global:
-     - NOT_CRAN="true"
-     - _R_CHECK_FORCE_SUGGESTS_=false
 r_packages:
   - devtools
   - covr
