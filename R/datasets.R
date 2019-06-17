@@ -187,7 +187,8 @@
 get_tai_utc <- function() {
   
   tf <- tempfile()
-  utils::download.file('http://maia.usno.navy.mil/ser7/tai-utc.dat', tf)
+  #utils::download.file('http://maia.usno.navy.mil/ser7/tai-utc.dat', tf)
+  utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/tai-utc.dat', tf)
   widths  <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
   tai_utc <- read.fwf(tf, widths = widths, stringsAsFactors=FALSE)
   tai_utc <- tai_utc[, c(2, 4, 6, 8)]
@@ -226,9 +227,9 @@ get_iers_b <- function() {
 
   tf <- tempfile()
   utils::download.file('http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now', tf)
-  
+
   len  <- length(readLines(tf))
-  dut1 <- utils::read.table(tf, skip = 15, stringsAsFactors = FALSE,
+  dut1 <- utils::read.table(tf, skip = 14, stringsAsFactors = FALSE,
                             col.names = c('year', 'month', 'day', 'mjd', 
                                           'x', 'y', 'ut1_utc', 'lod',
                                           'dx', 'dy', 'x_sig',  'y_sig',
@@ -257,9 +258,11 @@ get_iers_a <- function(){
   widths = c(2,2,2,1,8,1,1,1,9,9,1,9,9,2,1,10,10,1,7,7,2,1,1,9,9,1,9,9,10,10,11,10,10)
   
   # historical
-  utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.all', tf_all)
+  #utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.all', tf_all)
+  utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all', tf_all)
   # daily set for update
-  utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.daily', tf_daily)
+  #utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.daily', tf_daily)
+  utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily', tf_daily)
   
   iers_all   <- read.fwf(tf_all, widths = widths, stringsAsFactors=FALSE)
   iers_daily <- read.fwf(tf_daily, widths = widths, stringsAsFactors=FALSE)
@@ -308,8 +311,9 @@ get_iers_a <- function(){
 #' Bulletins A and B are combined giving precedence to B. 
 #' The following datasets are downloaded (~ 7 MB):
 #'   \itemize{
-#'     \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.all}}
-#'     \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.daily}}
+#'     \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/tai-utc.dat}}
+#'     \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all}}
+#'     \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily}}
 #'     \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
 #'   }
 #'

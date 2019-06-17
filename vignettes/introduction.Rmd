@@ -184,7 +184,7 @@ plot(pole_tide~datetime, tide,
 
 ## Speed for large datasets
 
-There are two primary ways to increase the speed of generating the tidal datasets.  In general, the speed should be as good as or better than ETERNA, given the parallel computation, however, the values chosen for **astro_update** and **cutoff** can result in sub-optimal performance.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff means fewer wave will be used in the calcuation and thus results in a faster but less accurate solution.  The **astro_update** parameter determines how often the astronomical arguments are updated.  In ETERNA this value ranges from daily to yearly. The current default in the earthtide package for **astro_update** is 1, which means that the parameters are updated for every time, and therefore if you are predicting in hourly increments it will be updated 24 times a day.  Increasing this value typically speeds up computation and in general can be larger than 1 in all but the coarsest prediction intervals.   
+There are two primary ways to increase the speed of generating the tidal datasets: increasing the **astro_update** parameter; and increasing the **cutoff** parameter. In general, the speed should be as good as or better than ETERNA, given the parallel computation.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff means fewer waves will be used leading to a faster but less accurate result.  The **astro_update** parameter determines how often the astronomical arguments are updated.  In ETERNA this value ranges from daily to yearly. The current default in the earthtide package for **astro_update** is 1, which means that the parameters are updated for every time provided, and therefore if you are predicting in hourly increments it will be updated 24 times a day.  Increasing this value typically speeds up computation, and in general values larger than 1 can be safely used unless the time interval between predictions is large. 
 
 
 ## References
@@ -204,5 +204,6 @@ This package is still in development.  The following changes are planned:
 - Print methods and getter/setters for love numbers, catalog, station variables
 - Optional wave group names
 - Ocean loading
+- Updated examples
 
 

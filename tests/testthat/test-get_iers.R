@@ -2,6 +2,8 @@ context("test-get_iers")
 
 test_that("get iers works", {
   
+  testthat::skip_on_cran()
+  
   eop <- get_iers()
   
   expect_s3_class(eop, 'data.frame')

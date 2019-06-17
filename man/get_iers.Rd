@@ -16,8 +16,9 @@ parameters from (1962-present).  This function requires an active internet conne
 Bulletins A and B are combined giving precedence to B. 
 The following datasets are downloaded (~ 7 MB):
   \itemize{
-    \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.all}}
-    \item{\url{http://maia.usno.navy.mil/ser7/finals2000A.daily}}
+    \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/tai-utc.dat}}
+    \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all}}
+    \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily}}
     \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
   }
 }
