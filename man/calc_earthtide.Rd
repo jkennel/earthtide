@@ -2,11 +2,7 @@
 % Please edit documentation in R/calc_earthtide.R
 \name{calc_earthtide}
 \alias{calc_earthtide}
-\title{earthtide
-
-This is a wrapper to the Earthtide R6 class for the prediction of Earth
-tides. This function is provided for users who would prefer a more typical R 
-function.}
+\title{earthtide}
 \usage{
 calc_earthtide(utc, do_predict = TRUE, method = "gravity",
   astro_update = 1, latitude = 0, longitude = 0, elevation = 0,
@@ -68,7 +64,7 @@ following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 \item{return_matrix}{Return a matrix of tidal values instead of data.frame. 
 The datetime column will not be present in this case (logical).}
 
-\item{scale}{Scale results when do_pedict is FALSE}
+\item{scale}{Scale results when do_predict is FALSE}
 
 \item{...}{Currently not used.}
 }
@@ -76,11 +72,9 @@ The datetime column will not be present in this case (logical).}
 data.frame of tidal results
 }
 \description{
-earthtide
-
-This is a wrapper to the Earthtide R6 class for the prediction of Earth
-tides. This function is provided for users who would prefer a more typical R 
-function.
+This is a wrapper to the Earthtide R6 class for the prediction 
+of Earth tides. This function is provided for users who would prefer a more 
+typical R function.
 }
 \examples{
 tms <- as.POSIXct('1990-01-01', tz = 'UTC') + c(0, 3600)

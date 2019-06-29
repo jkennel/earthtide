@@ -444,7 +444,8 @@ Earthtide <- R6Class(
       astro_update <- self$check_time_increment(astro_update)
       
       mat <- self$calculate(astro_update = astro_update, 
-                            predict = FALSE, scale = scale)
+                            predict = FALSE, 
+                            scale = scale)
       
       # reset parameters after calculation
       self$prepare_station(self$station$latitude, 

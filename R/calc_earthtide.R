@@ -1,8 +1,8 @@
 #' @title earthtide
 #' 
-#' This is a wrapper to the Earthtide R6 class for the prediction of Earth
-#' tides. This function is provided for users who would prefer a more typical R 
-#' function.
+#' @description This is a wrapper to the Earthtide R6 class for the prediction 
+#' of Earth tides. This function is provided for users who would prefer a more 
+#' typical R function.
 #'
 #' @param utc The date-time in UTC (POSIXct vector).
 #' @param do_predict run in predict or analyze mode
@@ -40,7 +40,7 @@
 #'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy
 #' @param return_matrix Return a matrix of tidal values instead of data.frame. 
 #'     The datetime column will not be present in this case (logical).
-#' @param scale Scale results when do_pedict is FALSE
+#' @param scale Scale results when do_predict is FALSE
 #' @param ... Currently not used.
 #'
 #' @return data.frame of tidal results
