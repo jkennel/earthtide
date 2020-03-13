@@ -18,7 +18,7 @@ library(earthtide)
 
 ## Code background 
 
-**earthtide** is a port of the 'Fortran ETERNA 3.4' (Wenzel, 1996) predict and part of the analyze codes with the Kudryavtsev 2004 update.  The original 'Fortran' code was rewritten in **R**, and **C++** using the great **Rcpp**, **RcppArmadillo**, and **RcppParallel**. The package is useful for generating synthetic earth tides using highly accurate tidal catalogs for prediction and regression. Attempts were made to ensure that results were consistent with the 'ETERNA 3.4', however, there is always the possibility that a bug was introduced during the conversion and update.  For the most feature rich and up-to-date version of 'ETERNA' please see http://ggp.bkg.bund.de/eterna/ maintained by Klaus Schueller.
+**earthtide** is a port of the 'Fortran ETERNA 3.4' (Wenzel, 1996) predict and part of the analyze codes with the Kudryavtsev 2004 update.  The original 'Fortran' code was rewritten in **R**, and **C++** using **Rcpp**, **RcppArmadillo**, and **RcppParallel**. The package is useful for generating synthetic earth tides using highly accurate tidal catalogs for prediction and regression. Attempts were made to ensure that results were consistent with the 'ETERNA 3.4', however, there is always the possibility that a bug was introduced during the conversion and update.  For the most feature rich and up-to-date version of 'ETERNA' please see http://ggp.bkg.bund.de/eterna/ maintained by Klaus Schueller.
 
 ## Capabilities
 
@@ -48,7 +48,7 @@ kable(dat)
 
 ## Example
 
-To calculate a tidal component we provide the date-time in UTC, the component name from the previous table, and the latitude and longitude.  For most cases these are the minimum requirements necessary. For the full list of options see the documentation for _calc_earthtide_.
+The primary inputs are the date-time in UTC, the component name from the previous table, and the latitude and longitude.  For most cases these are the minimum requirements necessary. For the full list of options see the documentation for _calc_earthtide_.
 
 ```{r standardmethod, echo = TRUE}
 tms <- as.POSIXct("2015-01-01", tz = "UTC") + 0:(24*31) * 3600
@@ -62,7 +62,7 @@ gravity_tide <- calc_earthtide(utc = tms,
 ```
 
 
-There are two main methods of generating Earth tides: predict and analyze. Predict will return the combined tidal signal, and analyze returns a set of sin and cos curves for each wave group that is specified. This option is set using the **do_predict** parameter which defaults to TRUE.
+There are two main methods of generating Earth tides: predict and analyze. Predict returns the combined tidal signal, and analyze returns a set of sin and cos curves for each wave group that is specified. This option is set using the **do_predict** parameter which defaults to TRUE.
 
 ### Predict
 
@@ -92,7 +92,7 @@ plot(gravity~datetime, gravity_tide,
 
 ### Analyze
 
-In analyze mode results are separated by wave group into sin and cos curves.  The resulting sin and cos curves can be used in further analysis such as least squares models.  We plot the first five constituents in the following example. We specify the start and end points for each component with the **wave_groups** parameter.
+In analyze mode, results are separated by wave group into sin and cos curves.  The resulting sin and cos curves can be used in further analysis such as least squares models.  The first five constituents are plotted in the following example.  The **wave_groups** parameter is specified using a *data.frame* having the start and end frequencies for each component.
 
 ```{r analyze, echo = TRUE}
 wg <- eterna_wavegroups
@@ -135,7 +135,7 @@ for (i in seq(2, 11, 2)) {
 
 ## Wave grouping
 
-The choice of wave groups is important.  Wave groups are specified using a data.frame of start and end values for each group.  Example groupings are provided in the dataset **eterna_wavegroups**.  The choice of the appropriate wave groups is dependent purpose of the study and the duration of the dataset to be analyzed. For example, if the goal is to generate tidal harmonics to analyze 1 month of data you would select the "1 month" dataset.
+The choice of wave groups is important.  Wave groups are specified using a *data.frame* of start and end values for each group.  Example groupings are provided in the dataset **eterna_wavegroups**.  The choice of the appropriate wave groups is dependent purpose of the study and the duration of the dataset to be analyzed. For example, if the goal is to generate tidal harmonics to analyze one (1) month of data you would select the "1 month" dataset.
 
 ```{r analyze1month, echo = TRUE}
 
@@ -144,6 +144,7 @@ tms <- as.POSIXct("2015-01-01", tz = "UTC") + 0:(24*31) * 3600
 wg <- eterna_wavegroups
 wg <- na.omit(wg[wg$time=='1 month',])
 
+head(wg)
 ```
 
 ## LOD (length of day) tide and pole tide
@@ -184,7 +185,7 @@ plot(pole_tide~datetime, tide,
 
 ## Speed for large datasets
 
-There are two primary ways to increase the speed of generating the tidal datasets: increasing the **astro_update** parameter; and increasing the **cutoff** parameter. In general, the speed should be as good as or better than ETERNA, given the parallel computation.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff means fewer waves will be used leading to a faster but less accurate result.  The **astro_update** parameter determines how often the astronomical arguments are updated.  In ETERNA this value ranges from daily to yearly. The current default in the earthtide package for **astro_update** is 1, which means that the parameters are updated for every time provided, and therefore if you are predicting in hourly increments it will be updated 24 times a day.  Increasing this value typically speeds up computation, and in general values larger than 1 can be safely used unless the time interval between predictions is large. 
+There are two primary ways to increase the speed of generating the tidal datasets: increasing the **astro_update** parameter; and increasing the **cutoff** parameter. In general, the speed should be as good as or better than the fortran version of ETERNA, given the parallel computation.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff value means fewer waves will be used leading to a faster but less accurate result.  The **astro_update** parameter determines how often the astronomical arguments are updated.  In ETERNA this value ranges from daily to yearly. The current default in the earthtide package for **astro_update** is 1, which means that the parameters are updated for every time provided, and therefore if you are predicting in hourly increments it will be updated 24 times a day.  Increasing this value typically speeds up computation, and in general values larger than 1 can be safely used unless the time interval between predictions is large. 
 
 
 ## References
