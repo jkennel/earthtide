@@ -1,6 +1,8 @@
 
 #define BOOST_DISABLE_ASSERTS
 #define ARMA_DONT_PRINT_ERRORS
+// #define ARMA_USE_TBB_ALLOC
+#define ARMA_DONT_USE_OPENMP
 
 // [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -208,7 +210,6 @@ arma::mat astro_der(const arma::rowvec t_astro,
 //
 // [[Rcpp::export]]
 double legendre_bh(int l, int m, double x, int csphase = -1) {
-  
   
   return(boost::math::legendre_p(l, m, x) * std::pow(csphase, m));
   
