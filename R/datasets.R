@@ -188,7 +188,8 @@ get_tai_utc <- function() {
   
   tf <- tempfile()
   #utils::download.file('http://maia.usno.navy.mil/ser7/tai-utc.dat', tf)
-  utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/tai-utc.dat', tf)
+  utils::download.file('http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt', tf) # this may need to be updated
+  
   widths  <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
   tai_utc <- read.fwf(tf, widths = widths, stringsAsFactors=FALSE)
   tai_utc <- tai_utc[, c(2, 4, 6, 8)]
@@ -259,10 +260,12 @@ get_iers_a <- function(){
   
   # historical
   #utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.all', tf_all)
-  utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all', tf_all)
+  # utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all', tf_all)
+  utils::download.file('ftp://ftp.iers.org/products/eop/rapid/standard/finals2000A.all', tf_all)
   # daily set for update
   #utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.daily', tf_daily)
-  utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily', tf_daily)
+  # utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily', tf_daily)
+  utils::download.file('ftp://ftp.iers.org/products/eop/rapid/daily/finals2000A.daily', tf_daily)
   
   iers_all   <- read.fwf(tf_all, widths = widths, stringsAsFactors=FALSE)
   iers_daily <- read.fwf(tf_daily, widths = widths, stringsAsFactors=FALSE)
@@ -351,4 +354,3 @@ get_iers <- function() {
 #                   hw95s,
 #                   internal = TRUE,
 #                   overwrite = TRUE)
-
