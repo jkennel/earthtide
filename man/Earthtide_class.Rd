@@ -7,7 +7,9 @@
 \title{Earthtide class
 
 Class to generate synthetic earthtide signals.}
-\format{An \code{\link{R6Class}} generator object}
+\format{
+An \code{\link{R6Class}} generator object
+}
 \description{
 Earthtide class
 

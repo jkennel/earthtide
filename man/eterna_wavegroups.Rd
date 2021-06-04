@@ -4,13 +4,15 @@
 \name{eterna_wavegroups}
 \alias{eterna_wavegroups}
 \title{Hartmann and Wenzel (1995) (ETERNA 3.4) wavegroups}
-\format{A \code{data.frame} The columns are:
+\format{
+A \code{data.frame} The columns are:
 \describe{
  \item{\code{name}}{wave group name}
  \item{\code{start}}{lowest frequency of the wave group}
  \item{\code{end}}{highest frequency of the wave group}
  \item{\code{time}}{applicable to data of what length}
-}}
+}
+}
 \usage{
 eterna_wavegroups
 }
