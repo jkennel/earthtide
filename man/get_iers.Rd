@@ -4,7 +4,22 @@
 \alias{get_iers}
 \title{get_iers}
 \usage{
-get_iers()
+get_iers(
+  a_path = "https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all",
+  b_path = "http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now",
+ 
+    daily_path = "https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt",
+  tai_utc_path = "http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt"
+)
+}
+\arguments{
+\item{a_path}{ftp or http path to download IERS bullitin A}
+
+\item{b_path}{ftp or http path to download IERS bullitin B}
+
+\item{daily_path}{ftp or http path to download IERS daily data}
+
+\item{tai_utc_path}{ftp or http path to tai-utc data}
 }
 \value{
 \code{data.frame} of earth orientation parameters with the following 
@@ -14,13 +29,8 @@ columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy.
 \code{get_iers} returns a \code{data.frame} of earth orientation 
 parameters from (1962-present).  This function requires an active internet connection. 
 Bulletins A and B are combined giving precedence to B. 
-The following datasets are downloaded (~ 7 MB):
-  \itemize{
-    \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/tai-utc.dat}}
-    \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all}}
-    \item{\url{ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily}}
-    \item{\url{http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now}}
-  }
+Approximately (~ 7 MB) of data are downloaded. This function is brittle and
+may fail when data sources change.
 }
 \examples{
 \dontrun{
