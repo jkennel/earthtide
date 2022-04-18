@@ -1,3 +1,7 @@
+# earthtide 0.0.12
+
+* updated the get_iers download locations (thanks kohlerjl)
+
 # earthtide 0.0.9
 
 * remove get_iers test as it can cause failure if no internet accesss, or the server is down.
