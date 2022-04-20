@@ -133,70 +133,10 @@
 
 
 
-# this is the old version -------------------------------------------------
-
-
-# get_dut1
-#
-# Downloads earth orientation data from http://hpiers.obspm.fr/eop-pc/index.php 
-# 
-# @return information on time conversions and leap seconds
-#
-# @keywords internal
-# get_dut1 <- function(){
-#  
-#   tf <- tempfile()
-#   
-#   utils::download.file('http://hpiers.obspm.fr/eop-pc/products/combined/C04.php?date=1&eop=7&year1=1962&month1=1&day1=1&year2=2099&month2=12&day2=31&SUBMIT=Submit+Search', tf)
-#   
-#   len  <- length(readLines(tf))
-#   dut1 <- utils::read.table(tf, skip = 2, nrows = len-3, stringsAsFactors = FALSE,
-#                 col.names = c('year', 'month', 'day', 'x', 'x_sig', 'y', 'y_sig',
-#                               'ut1_utc', 'ut1_utc_sig', 'ut1_tai', 'ut1_tai_sig',
-#                               'lod', 'lod_sig', 'w3', 'w3_sig',
-#                               'dx', 'dx_sig', 'dy', 'dy_sig'),
-#                 colClasses = c('integer', 'integer', 'integer',
-#                                rep('numeric', 16)))
-#   dut1 <- dut1[-nrow(dut1),]
-#   
-#   dut1$datetime <- as.POSIXct(paste(dut1$year, 
-#                                     sprintf("%02i", dut1$month),
-#                                     sprintf("%02i", dut1$day), sep = '-'),
-#                               tz = 'UTC')
-#   
-#   dut1$ut1_utc <- dut1$ut1_utc / 1000
-#   dut1$ut1_tai <- dut1$ut1_tai / 1000
-#   dut1$x       <- dut1$x / 1000
-#   dut1$y       <- dut1$y / 1000
-#   dut1$dx      <- dut1$dx / 1000
-#   dut1$dy      <- dut1$dy / 1000
-#   dut1$lod     <- dut1$lod / 1000
-#   
-#   
-#   dut1$tai_utc <- dut1$ut1_utc - dut1$ut1_tai
-#   
-#   # equation from http://maia.usno.navy.mil/
-#   # monthly values http://maia.usno.navy.mil/ser7/deltat.data
-#   dut1$ddt <- 32.184 + (dut1$tai_utc - dut1$ut1_utc)
-#   
-#   dut1 <- dut1[, c('datetime', 'ddt', 'ut1_utc', 'tai_utc', 'lod', 'x', 'y',
-#                    'dx', 'dy')]
-#   dut1
-#   
-# }
-
-
-
-
-# below are the new ones --------------------------------------------------
-
-
-
 # download leap second data
 get_tai_utc <- function(tai_utc_path) {
   
   tf <- tempfile()
-  #utils::download.file('http://maia.usno.navy.mil/ser7/tai-utc.dat', tf)
   utils::download.file(tai_utc_path, tf) # this may need to be updated
   
   widths  <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
@@ -263,54 +203,40 @@ get_iers_b <- function(b_path, tai_utc_path) {
 # Bulletin A
 get_iers_a <- function(a_path, daily_path, tai_utc_path){
   
-  tf_all <- tempfile()
   widths = c(2,2,2,1,8,1,1,1,9,9,1,9,9,2,1,10,10,1,7,7,2,1,1,9,9,1,9,9,10,10,11,10,10)
   
   # historical
-  #utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.all', tf_all)
-  # utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.all', tf_all)
-  # utils::download.file('ftp://ftp.iers.org/products/eop/rapid/standard/finals2000A.all', tf_all)
+  tf_all <- tempfile()
   utils::download.file(a_path, tf_all)
-  
   iers_all   <- read.fwf(tf_all, widths = widths, stringsAsFactors=FALSE)
-  
   wh <- c(5,9,12,16,19,24,27)
   wh_names <- c('mjd', 'x', 'y', 'ut1_utc', 'lod', 'dx', 'dy')
   iers_all <- iers_all[, wh]
   names(iers_all) <- wh_names
-
   iers_all$datetime   <- mod_julian_utc(iers_all$mjd)
-  
-  iers_all$dx <- iers_all$dx/1000
-  iers_all$dy <- iers_all$dy/1000
-  
-  iers_all$lod <- iers_all$lod / 1000
-  
+  iers_all$dx <- iers_all$dx / 1000.0
+  iers_all$dy <- iers_all$dy / 1000.0
+  iers_all$lod <- iers_all$lod / 1000.0
   iers_all$ddt <- 32.184 + (mjd_tai_utc(iers_all$mjd, tai_utc_path) - iers_all$ut1_utc)
-
   iers_all <- iers_all[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
                            'dx', 'dy')]
-  # iers_all <- iers_all[iers_all$ut1_utc != 0, ]
-  # return(iers_all)  
+  
   
   # daily set for update
-  #utils::download.file('http://maia.usno.navy.mil/ser7/finals2000A.daily', tf_daily)
-  # utils::download.file('ftp://cddis.gsfc.nasa.gov/pub/products/iers/finals2000A.daily', tf_daily)
-  # utils::download.file('https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.daily', tf_daily)
   tf_daily <- tempfile()
   utils::download.file(daily_path, tf_daily)
   iers_daily <- read.fwf(tf_daily, widths = widths, stringsAsFactors=FALSE)
   iers_daily <- iers_daily[, wh]
   names(iers_daily) <- wh_names
   iers_daily$datetime <- mod_julian_utc(iers_daily$mjd)
-  iers_daily$dx <- iers_daily$dx/1000
-  iers_daily$dy <- iers_daily$dy/1000
-  iers_daily$lod <- iers_daily$lod / 1000
+  iers_daily$dx <- iers_daily$dx / 1000.0
+  iers_daily$dy <- iers_daily$dy / 1000.0
+  iers_daily$lod <- iers_daily$lod / 1000.0
   iers_daily$ddt <- 32.184 + (mjd_tai_utc(iers_daily$mjd, tai_utc_path) - iers_daily$ut1_utc)
   iers_daily <- iers_daily[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
                            'dx', 'dy')]
-  iers_all <- iers_all[iers_all$datetime < min(iers_daily$datetime),]
-
+  
+  iers_all <- iers_all[iers_all$datetime < min(iers_daily$datetime), ]
   return(rbind(iers_all, iers_daily))
   
 }
@@ -343,11 +269,23 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path){
 #' }
 #' 
 get_iers <- function(
-  a_path = 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all',
-  b_path ='http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now',
-  daily_path = 'https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt',
-  tai_utc_path = 'http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt') {
+  a_path = NULL,
+  b_path = NULL,
+  daily_path = NULL,
+  tai_utc_path = NULL) {
   
+  if (is.null(a_path)) {
+    a_path <- 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all'
+  }
+  if (is.null(b_path)) {
+    b_path <- 'http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now'
+  }
+  if (is.null(daily_path)) {
+    daily_path <- 'https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt'
+  }
+  if (is.null(tai_utc_path)) {
+    tai_utc_path <- 'http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt'
+  }
 # http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now
 # ftp://ftp.iers.org/products/eop/rapid/standard/finals2000A.all
 # ftp://ftp.iers.org/products/eop/rapid/daily/finals2000A.daily
@@ -359,7 +297,6 @@ get_iers <- function(
   bull_ab <- rbind(bull_b, bull_a)
   bull_ab <- bull_ab[rowSums(is.na(bull_ab[, 2:8])) < 7,]
   bull_ab[is.na(bull_ab)] <- 0
-  # bull_ab <- na.omit(bull_ab)
   bull_ab
 }
 

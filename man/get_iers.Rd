@@ -4,13 +4,7 @@
 \alias{get_iers}
 \title{get_iers}
 \usage{
-get_iers(
-  a_path = "https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all",
-  b_path = "http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now",
- 
-    daily_path = "https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt",
-  tai_utc_path = "http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt"
-)
+get_iers(a_path = NULL, b_path = NULL, daily_path = NULL, tai_utc_path = NULL)
 }
 \arguments{
 \item{a_path}{ftp or http path to download IERS bullitin A}
