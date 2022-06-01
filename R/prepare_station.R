@@ -39,10 +39,10 @@
   # earth info
   curvature    <- earth_radius /
     sqrt(1.0 - earth_eccen * sin_lat^2)
-  geo_latitude <- 180 / pi * atan(
+  geo_latitude <- 180.0 / pi * atan(
     ((curvature * (1.0 - earth_eccen) + elevation) * sin_lat) /
       ((curvature + elevation) * cos_lat))                       
-  theta <- 90 - geo_latitude
+  theta <- 90.0 - geo_latitude
   geo_radius <- sqrt((curvature + elevation)^2 *
                        cos_lat^2 + (curvature * (1.0 - earth_eccen) + elevation)^2 * sin_lat^2)
   df <- 180.0 / pi * 3.600e-3 / gravity

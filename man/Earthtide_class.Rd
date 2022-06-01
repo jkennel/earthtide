@@ -4,15 +4,11 @@
 \name{Earthtide}
 \alias{Earthtide}
 \alias{Earthtide-class}
-\title{Earthtide class
-
-Class to generate synthetic earthtide signals.}
+\title{Earthtide class}
 \format{
 An \code{\link{R6Class}} generator object
 }
 \description{
-Earthtide class
-
 Class to generate synthetic earthtide signals.
 }
 \section{Usage}{
@@ -40,9 +36,9 @@ et$print()
 \itemize{
   \item{et: }{An \code{Earthtide} object.}
   \item{utc: }{The date-time in UTC (POSIXct vector).}
-  \item{latitude: }{The station latitude (numeric) defaults to 0.}
-  \item{longitude: }{The station longitude (numeric) defaults to 0.}
-  \item{elevation: }{The station elevation (m) (numeric) defaults to 0.}
+  \item{latitude: }{The station latitude (WGS84) (degree) (numeric) defaults to 0.}
+  \item{longitude: }{The station longitude (WGS84) (degree) (numeric) defaults to 0.}
+  \item{elevation: }{The station ellipsoidal height (WGS84) (m) (numeric) defaults to 0.}
   \item{azimuth: }{Earth azimuth (numeric) defaults to 0 (degrees)}
   \item{gravity: }{Gravity at the station (m/s^2) (numeric) 0 to 
     estimate gravity from elevation and latitude.}

@@ -1,3 +1,6 @@
+# earthtide 0.0.13
+* updated the documentation for latitude, longitude and elevation (thanks kohlerjl)
+
 # earthtide 0.0.12
 
 * updated the get_iers download locations (thanks kohlerjl)
