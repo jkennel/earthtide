@@ -1,42 +1,63 @@
 
-earthtide [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2673048.svg)](https://doi.org/10.5281/zenodo.2673048) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master) [![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide)
-===========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+    ## ✔ Setting active project to '/Users/jonathankennel/Documents/r_packages/
+    ## earthtide'
 
-The **earthtide** package simplifies the generation of earth tides and wave group harmonics for analysis in **R**.
+# earthtide [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2673048.svg)](https://doi.org/10.5281/zenodo.2673048) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master) [![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide)
 
-Background
-----------
+The **earthtide** package simplifies the generation of earth tides and
+wave group harmonics for analysis in **R**.
 
-**earthtide** is a port of the 'Fortran ETERNA 3.4' (Wenzel, 1996) predict and part of the analyze codes with the Kudryavtsev 2004 update. The original 'Fortran' code was rewritten in **R**, and **C++** using the great **Rcpp**, **RcppArmadillo**, and **RcppParallel**. The package is useful for generating synthetic earth tides using highly accurate tidal catalogs for prediction and regression. Attempts were made to ensure that results were consistent with the 'ETERNA 3.4', however, there is always the possibility that a bug was introduced in during the conversion and update. For the most feature rich and up-to-date version of 'ETERNA' please see <http://ggp.bkg.bund.de/eterna/> maintained by Klaus Schueller.
+## Background
 
-Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553–3556. (<https://doi.org/10.1029/95GL03324>)
+**earthtide** is a port of the ‘Fortran ETERNA 3.4’ (Wenzel, 1996)
+predict and part of the analyze codes with the Kudryavtsev 2004 update.
+The original ‘Fortran’ code was rewritten in **R**, and **C++** using
+the great **Rcpp**, **RcppArmadillo**, and **RcppParallel**. The package
+is useful for generating synthetic earth tides using highly accurate
+tidal catalogs for prediction and regression. Attempts were made to
+ensure that results were consistent with the ‘ETERNA 3.4’, however,
+there is always the possibility that a bug was introduced in during the
+conversion and update. For the most feature rich and up-to-date version
+of ‘ETERNA’ please see <http://ggp.bkg.bund.de/eterna/> maintained by
+Klaus Schueller.
 
-Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829–838. (<https://doi.org/10.1007/s00190-003-0361-2>)
+Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue.
+Geophys. Res. Lett. 22, 3553–3556.
+\\url(<https://doi.org/10.1029/95GL03324>)
 
-Wenzel, H.G. 1996: The nanogal software: Earth tide data processing package ETERNA 3.30. Bull. Inf. Marges Terrestres. 124, 9425-9439. (<http://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM>)
+Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth
+tide-generating potential. J. Geod. 77, 829–838.
+\\url(<https://doi.org/10.1007/s00190-003-0361-2>)
 
-Installation
-------------
+Wenzel, H.G. 1996: The nanogal software: Earth tide data processing
+package ETERNA 3.30. Bull. Inf. Marges Terrestres. 124, 9425-9439.
+\\url(<http://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM>)
 
-You can install the [CRAN](https://CRAN.R-project.org/package=earthtide) version with the following command:
+## Installation
+
+You can install the [CRAN](https://CRAN.R-project.org/package=earthtide)
+version with the following command:
 
 ``` r
 install.packages('earthtide')
 ```
 
-The development version can be installed from github using the following commands:
+The development version can be installed from github using the following
+commands:
 
 ``` r
 library(remotes)
 remotes::install_github('jkennel/earthtide')
 ```
 
-I will try to keep the IERS orientation datasets up-to-date in the development version (weekly update).
+I will try to keep the IERS orientation datasets up-to-date in the
+development version (weekly update).
 
-Predict
--------
+## Predict
 
-The following code computes the synthetic gravity, LOD tide, and pole tide and returns a `data.frame` of results. To see the list of possible arguments and methods of the Earthtide class use `?Earthtide`.
+The following code computes the synthetic gravity, LOD tide, and pole
+tide and returns a `data.frame` of results. To see the list of possible
+arguments and methods of the Earthtide class use `?Earthtide`.
 
 ``` r
 library(earthtide)
@@ -53,12 +74,13 @@ tide <-  Earthtide$
   tide()                                            # return result
 ```
 
-![](README_files/figure-markdown_github/plot-1.png)
+![](README_files/figure-gfm/plot-1.png)<!-- -->
 
-Analyze
--------
+## Analyze
 
-To generate curves for regression applications we can use the analyze method. For each wave group, normalized sin and cosine curves are generated.
+To generate curves for regression applications we can use the analyze
+method. For each wave group, normalized sin and cosine curves are
+generated.
 
 ``` r
 wave_groups <- na.omit(eterna_wavegroups[eterna_wavegroups$time == '1 month', 
@@ -109,10 +131,12 @@ print(str(tide_groups))
     ##  $ sin_2.451944_7       : num  0.073 0.802 1.084 0.773 0.045 ...
     ## NULL
 
-Non-R6 function
----------------
+## Non-R6 function
 
-There are two main methods for using the **earthtide** package. The codes were developed using R6 classes, but wrappers have been written if a more typical interface is desired. Both should give the same results, but R6 stores more information about the calculations.
+There are two main methods for using the **earthtide** package. The
+codes were developed using R6 classes, but wrappers have been written if
+a more typical interface is desired. Both should give the same results,
+but R6 stores more information about the calculations.
 
 For example (the standard method):
 
