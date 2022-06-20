@@ -9,7 +9,7 @@ library("badger")
 ```
 
 
-```{r, echo = FALSE, results='asis'}
+```{r, echo = FALSE, results='asis', message = FALSE}
 
 cat('# earthtide',
   '[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2673048.svg)](https://doi.org/10.5281/zenodo.2673048)',
