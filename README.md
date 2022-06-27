@@ -1,5 +1,5 @@
 
-# earthtide [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2673048.svg)](https://doi.org/10.5281/zenodo.2673048) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![](https://travis-ci.org/jkennel/earthtide.svg?branch=master)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master) [![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide)
+# earthtide [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2673048.svg)](https://doi.org/10.5281/zenodo.2673048) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![](https://travis-ci.org/jkennel/earthtide.svg?branch=main)](https://travis-ci.org/jkennel/earthtide) [![Coverage Status](https://img.shields.io/codecov/c/github/jkennel/earthtide/master.svg)](https://codecov.io/github/jkennel/earthtide?branch=master) [![](https://www.r-pkg.org/badges/version/earthtide?color=green)](https://cran.r-project.org/package=earthtide) [![](http://cranlogs.r-pkg.org/badges/grand-total/earthtide?color=green)](https://cran.r-project.org/package=earthtide)
 
 The **earthtide** package simplifies the generation of earth tides and
 wave group harmonics for analysis in **R**.
@@ -14,9 +14,7 @@ is useful for generating synthetic earth tides using highly accurate
 tidal catalogs for prediction and regression. Attempts were made to
 ensure that results were consistent with the ‘ETERNA 3.4’, however,
 there is always the possibility that a bug was introduced in during the
-conversion and update. For the most feature rich and up-to-date version
-of ‘ETERNA’ please see <http://ggp.bkg.bund.de/eterna/> maintained by
-Klaus Schueller.
+conversion and update.
 
 Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue.
 Geophys. Res. Lett. 22, 3553–3556.

@@ -1,9 +1,9 @@
 #' @title Hartmann and Wenzel (1995) (ETERNA 3.4) wavegroups
-#' 
+#'
 #' @description This data.frame contains wavegroups for different data time
 #' spans.  The wavegroups should be subset prior to use and the 'time' column
 #' provides guidelines based on your input time span.
-#' 
+#'
 #' @format A \code{data.frame} The columns are:
 #' \describe{
 #'  \item{\code{name}}{wave group name}
@@ -11,7 +11,7 @@
 #'  \item{\code{end}}{highest frequency of the wave group}
 #'  \item{\code{time}}{applicable to data of what length}
 #' }
-#' 
+#'
 #' @examples
 #' utils::data(eterna_wavegroups)
 'eterna_wavegroups'
@@ -43,9 +43,9 @@
 #  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
 #  \item{\code{phase}}{phase of the tidal wave at J2000}
 # }
-# 
+#
 # @keywords internal
-# 
+#
 # @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553-3556. \doi{10.1029/95GL03324}
 #
 # @examples
@@ -82,11 +82,11 @@
 #  \item{\code{amplitude}}{amplitude of the tidal wave at J2000}
 #  \item{\code{frequency_cpd}}{frequency of the tidal wave at J2000 in cycles per day}
 # }
-# 
+#
 # @references Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth tide-generating potential. J. Geod. 77, 829-838. \doi{10.1007/s00190-003-0361-2}
-# 
+#
 # @keywords internal
-# 
+#
 # @examples
 # ksm04
 # 'ksm04'
@@ -104,16 +104,16 @@
 #  \item{\code{t4}}{t4}
 # }
 # @references Simon JL, Bretagnon P, Chapront J, Chapront-Touzè M, Francou G, Laskar J (1994) Numerical expressions for precession formulae and mean elements for the Moon and planets. Astron Astrophys 282:663-683
-# 
+#
 # @keywords internal
-# 
+#
 # @examples
 # simon_coef_1994
-# 
+#
 # 'simon_coef_1994'
 
 
-# @title dut1 
+# @title dut1
 # @format A \code{data.frame} The columns are:
 # \describe{
 #  \item{\code{datetime}}{UTC time}
@@ -122,11 +122,11 @@
 #  \item{\code{tai_utc}}{TAI - UTC}
 #  \item{\code{lod}}{length of day correction}
 # }
-# 
-# @references http://hpiers.obspm.fr/eop-pc/index.php 
-# 
+#
+# @references http://hpiers.obspm.fr/eop-pc/index.php
+#
 # @keywords internal
-# 
+#
 # @examples
 # dut1
 # 'dut1'
@@ -135,38 +135,38 @@
 
 # download leap second data
 get_tai_utc <- function(tai_utc_path) {
-  
+
   tf <- tempfile()
   utils::download.file(tai_utc_path, tf) # this may need to be updated
-  
+
   widths  <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
   tai_utc <- read.fwf(tf, widths = widths, stringsAsFactors=FALSE)
   tai_utc <- tai_utc[, c(2, 4, 6, 8)]
   names(tai_utc) <- c('jd', 'tai_utc', 'minus_date', 'factor')
-  
+
   tai_utc$mjd <- julian_mod_julian(tai_utc$jd)
-  
+
   tai_utc
-  
+
 }
 
 # get tai - utc
 mjd_tai_utc <- function(mjd, tai_utc_path) {
-  
+
   tai_utc <- get_tai_utc(tai_utc_path)
-  
+
   tu <- c()
-  
+
   for (i in 1:length(mjd)) {
-    
+
     di <- mjd[i] - tai_utc$mjd
-    
+
     wh <- max(which(di >= 0))
-    
+
     tu[i] <- tai_utc$tai_utc[wh] + (mjd[i] - tai_utc$minus_date[wh]) * tai_utc$factor[wh]
 
   }
-  
+
   tu
 
 }
@@ -180,20 +180,20 @@ get_iers_b <- function(b_path, tai_utc_path) {
 
   len  <- length(readLines(tf))
   dut1 <- utils::read.table(tf, skip = 14, stringsAsFactors = FALSE,
-                            col.names = c('year', 'month', 'day', 'mjd', 
+                            col.names = c('year', 'month', 'day', 'mjd',
                                           'x', 'y', 'ut1_utc', 'lod',
                                           'dx', 'dy', 'x_sig',  'y_sig',
                                            'ut1_utc_sig', 'lod_sig',
                                            'dx_sig',  'dy_sig'),
                             colClasses = c('integer', 'integer', 'integer',
                                            rep('numeric', 13)))
-  
+
   dut1$datetime <- mod_julian_utc(dut1$mjd)
-  
+
   # equation from http://maia.usno.navy.mil/
   dut1$ddt <- 32.184 + (mjd_tai_utc(dut1$mjd, tai_utc_path) - dut1$ut1_utc)
-  
-  
+
+
   dut1 <- dut1[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
                    'dx', 'dy')]
 
@@ -202,9 +202,9 @@ get_iers_b <- function(b_path, tai_utc_path) {
 
 # Bulletin A
 get_iers_a <- function(a_path, daily_path, tai_utc_path){
-  
+
   widths = c(2,2,2,1,8,1,1,1,9,9,1,9,9,2,1,10,10,1,7,7,2,1,1,9,9,1,9,9,10,10,11,10,10)
-  
+
   # historical
   tf_all <- tempfile()
   utils::download.file(a_path, tf_all)
@@ -220,8 +220,8 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path){
   iers_all$ddt <- 32.184 + (mjd_tai_utc(iers_all$mjd, tai_utc_path) - iers_all$ut1_utc)
   iers_all <- iers_all[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
                            'dx', 'dy')]
-  
-  
+
+
   # daily set for update
   tf_daily <- tempfile()
   utils::download.file(daily_path, tf_daily)
@@ -235,45 +235,45 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path){
   iers_daily$ddt <- 32.184 + (mjd_tai_utc(iers_daily$mjd, tai_utc_path) - iers_daily$ut1_utc)
   iers_daily <- iers_daily[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
                            'dx', 'dy')]
-  
+
   iers_all <- iers_all[iers_all$datetime < min(iers_daily$datetime), ]
   return(rbind(iers_all, iers_daily))
-  
+
 }
 
 
-# 
+#
 
 #' get_iers
 #'
-#' \code{get_iers} returns a \code{data.frame} of earth orientation 
-#' parameters from (1962-present).  This function requires an active internet connection. 
-#' Bulletins A and B are combined giving precedence to B. 
+#' \code{get_iers} returns a \code{data.frame} of earth orientation
+#' parameters from (1962-present).  This function requires an active internet connection.
+#' Bulletins A and B are combined giving precedence to B.
 #' Approximately (~ 7 MB) of data are downloaded. This function is brittle and
 #' may fail when data sources change.
-#' 
+#'
 #' @param a_path ftp or http path to download IERS bullitin A
 #' @param b_path ftp or http path to download IERS bullitin B
 #' @param daily_path ftp or http path to download IERS daily data
 #' @param tai_utc_path ftp or http path to tai-utc data
-#' 
-#' @return \code{data.frame} of earth orientation parameters with the following 
+#'
+#' @return \code{data.frame} of earth orientation parameters with the following
 #' columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy.
-#' 
-#' 
+#'
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' eop <- get_iers()
 #' }
-#' 
+#'
 get_iers <- function(
   a_path = NULL,
   b_path = NULL,
   daily_path = NULL,
   tai_utc_path = NULL) {
-  
+
   if (is.null(a_path)) {
     a_path <- 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all'
   }
@@ -292,7 +292,7 @@ get_iers <- function(
 
   bull_a <- get_iers_a(a_path, daily_path, tai_utc_path) # bulletin A
   bull_b <- get_iers_b(b_path, tai_utc_path) # bulletin B
-  
+
   bull_a  <- bull_a[bull_a$datetime > max(bull_b$datetime),]
   bull_ab <- rbind(bull_b, bull_a)
   bull_ab <- bull_ab[rowSums(is.na(bull_ab[, 2:8])) < 7,]
