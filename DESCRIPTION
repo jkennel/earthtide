@@ -28,7 +28,8 @@ LinkingTo:
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 RoxygenNote: 7.2.0
 VignetteBuilder: knitr
 Encoding: UTF-8
