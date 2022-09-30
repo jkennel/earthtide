@@ -100,7 +100,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // legendre
-Rcpp::NumericMatrix legendre(int l_max, double x);
+arma::mat legendre(int l_max, double x);
 RcppExport SEXP _earthtide_legendre(SEXP l_maxSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
