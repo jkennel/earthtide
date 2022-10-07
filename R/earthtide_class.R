@@ -494,6 +494,7 @@ Earthtide <- R6Class(
       }
     },
     calculate = function(astro_update = 1L, predict = TRUE, scale = TRUE) {
+
       et_calculate(self$astro$astro,
                    self$astro$astro_der,
                    self$catalog$k,

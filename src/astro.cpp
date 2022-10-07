@@ -1,8 +1,8 @@
 
 #define BOOST_DISABLE_ASSERTS
-#define ARMA_DONT_PRINT_ERRORS
+// #define ARMA_DONT_PRINT_ERRORS
 // #define ARMA_USE_TBB_ALLOC
-#define ARMA_DONT_USE_OPENMP
+// #define ARMA_DONT_USE_OPENMP
 
 // [[Rcpp::depends(BH)]]
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -65,10 +65,9 @@ T mod(T a, int n)
 // [[Rcpp::export]]
 arma::mat time_mat(const arma::rowvec time) {
 
-  unsigned len = time.n_elem;
+  arma::uword len = time.n_elem;
   arma::mat t_mat(5, len, arma::fill::ones);
 
-  // t_mat.ones();
   t_mat.row(1) = time;
   t_mat.row(2) = t_mat.row(1) % time;
   t_mat.row(3) = t_mat.row(2) % time;
@@ -103,11 +102,10 @@ arma::mat time_der_mat(const arma::rowvec time) {
   unsigned len = time.n_elem;
   arma::mat td_mat(5, len, arma::fill::zeros);
 
-  // td_mat.zeros();
   td_mat.row(1).ones();
   td_mat.row(2) = time * 2.0;
-  td_mat.row(3) = td_mat.row(1) % time * 3.0;
-  td_mat.row(4) = td_mat.row(2) % time * 4.0;
+  td_mat.row(3) = td_mat.row(2) % time * 3.0;  // should this be row 2?
+  td_mat.row(4) = td_mat.row(3) % time * 4.0;
 
   return(td_mat);
 }
@@ -551,7 +549,7 @@ arma::mat et_predict(const arma::mat astro,
 
     j2000_sq = j2000[0] * j2000[0];
 
-    output(0, 0) = arma::dot(fac % (x0 + x1 * j2000[0] + x2 * j2000_sq), cos_dc2)+
+    output(0, 0) = arma::dot(fac % (x0 + x1 * j2000[0] + x2 * j2000_sq), cos_dc2) +
       arma::dot(fac % (y0 + y1 * j2000[0] + y2 * j2000_sq), sin_dc2);
 
   } else {
@@ -815,7 +813,6 @@ arma::mat et_calculate(const arma::mat astro,
     output = arma::zeros(nt, 2 * ng);
   };
 
-
   arma::uvec i_max(ng);                   // index of wave group max
   arma::field<arma::uvec> inds(ng);       // indices for each wave group
   arma::field<arma::uvec> body_inds(ng);  // indices for each wave group
@@ -829,7 +826,6 @@ arma::mat et_calculate(const arma::mat astro,
   arma::vec x2 = c2 % dgk(jcof) * 1.e-10;
   arma::vec y2 = s2 % dgk(jcof) * 1.e-10;
 
-
   // get the subsets for each wave group
   // get equilibrium wave amplitude
   arma::vec amplitude = arma::sqrt(pow(x0, 2) + pow(y0, 2));
@@ -837,12 +833,13 @@ arma::mat et_calculate(const arma::mat astro,
   for(int j = 0; j < ng; j++) {
     arma::uvec sub = arma::find(index == j+1);
     inds(j)        = sub;
+
     pk(j)          = phases.elem(jcof.elem(sub));
     body(j)        = delta.elem(jcof.elem(sub));
+
     i_max(j)       = amplitude.elem(sub).index_max();
     body_inds(j)   = find((jcof.elem(sub) + 1) == 2);
   }
-
 
   earthtide_worker ew(astro,
                       astro_der,
@@ -877,359 +874,7 @@ arma::mat et_calculate(const arma::mat astro,
 }
 
 
-
-// //==============================================================================
-// // The below prediction method typically 10-50% faster for cutoff > 1e-5
-// //==============================================================================
-
-// //==============================================================================
-// //' @title
-// //' et_predict_one
-// //'
-// //' @description
-// //' Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
-// //'
-// //' @param astro vector astronomical parameters
-// //' @param astro_der vector derivative of astronomical parameters
-// //' @param k_mat matrix tidal catalog values
-// //' @param phases vector phases
-// //' @param delta vector body
-// //' @param deltar double gravimentric factor
-// //' @param x0 vector tidal catalog values
-// //' @param y0 vector tidal catalog values
-// //' @param x1 vector tidal catalog values
-// //' @param y1 vector tidal catalog values
-// //' @param x2 vector tidal catalog values
-// //' @param y2 vector tidal catalog values
-// //' @param j2000 double Julian date
-// //' @param o1 double frequency
-// //' @param resonance double frequency
-// //' @param max_amp int index of the wave with maximum amplitude in wave group
-// //'
-// //' @return synthetic gravity
-// //'
-// //' @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-// //'
-// //' @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// //' processing package ETERNA 3.3. Bulletin d'Informations
-// //' Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-// //'
-// //' @export
-// //'
-// // [[Rcpp::export]]
-// arma::vec et_predict_one(const arma::mat astro,
-//                          const arma::mat astro_der,
-//                          const arma::mat k_mat,
-//                          const arma::vec pk,
-//                          const arma::vec body,
-//                          double delta,
-//                          double deltar,
-//                          const arma::vec x0,
-//                          const arma::vec y0,
-//                          const arma::vec x1,
-//                          const arma::vec y1,
-//                          const arma::vec x2,
-//                          const arma::vec y2,
-//                          const arma::vec j2000,
-//                          double o1,
-//                          double resonance,
-//                          const arma::uvec indices,
-//                          const arma::uvec max_amp,
-//                          double update_coef) {
-//
-//
-//   int nr = k_mat.n_rows;  // number of constituents
-//   int nt = astro.n_cols;  // number of times
-//
-//   double j2000_sq;
-//   double to_rad = M_PI / 180.0;
-//   // double coef =  to_rad * 1.0 / 3600.0;
-//
-//   arma::vec dc2(nr), dc3(nr);
-//   arma::vec cos_dc2(nr), sin_dc2(nr);
-//   arma::vec dummy(nr), cos_c(nr), sin_c(nr);
-//   arma::vec fac = body;
-//   arma::vec output(nt);
-//
-//
-//
-//   dc2 = arma::vectorise(k_mat * astro.col(0) + pk + 360.0);
-//   dc2 = mod(dc2, 360) * to_rad;
-//   dc3 = arma::vectorise(k_mat * astro_der.col(0));
-//
-//
-//   // normalize to max of group
-//   fac(indices) = delta + deltar * (dc3(indices) - o1) / (resonance - dc3(indices));
-//   fac = fac / fac(max_amp);
-//
-//
-//   // determine phase correction
-//   cos_dc2 = arma::cos(dc2);
-//   sin_dc2 = arma::sin(dc2);
-//
-//
-//   if (nt == 1) {
-//
-//     j2000_sq = j2000[0] * j2000[0];
-//
-//     output(0) = arma::dot(fac % (x0 + x1 * j2000[0] + x2 * j2000_sq), cos_dc2) +
-//                 arma::dot(fac % (y0 + y1 * j2000[0] + y2 * j2000_sq), sin_dc2);
-//
-//   } else {
-//
-//     dc3 = dc3 * update_coef;
-//
-//     // speed enhancement but sacrifices precision
-//     cos_c = arma::cos(dc3);
-//     sin_c = arma::sin(dc3);
-//
-//     // loop through each time group
-//     for (int k = 0; k < nt; k++) {
-//
-//       j2000_sq = j2000[k] * j2000[k];
-//
-//       output(k) = arma::dot(fac % (x0 + x1 * j2000[k] + x2 * j2000_sq), cos_dc2) +
-//         arma::dot(fac % (y0 + y1 * j2000[k] + y2 * j2000_sq), sin_dc2);
-//
-//       // update
-//       dummy   = cos_dc2 % cos_c - sin_dc2 % sin_c;
-//       sin_dc2 = sin_dc2 % cos_c + cos_dc2 % sin_c;
-//       cos_dc2 = dummy;
-//
-//     }
-//   }
-//
-//
-//   return(output);
-//
-// }
-//
-//
-//
-//
-// //==============================================================================
-// // Main parallel structure for time and wave groups
-// struct earthtide_predict_worker : public Worker
-// {
-//   const arma::mat astro;
-//   const arma::mat astro_der;
-//   const arma::mat k_mat;
-//   const arma::vec pk;
-//   const arma::vec body;
-//   double delta;
-//   double deltar;
-//   const arma::vec x0;
-//   const arma::vec y0;
-//   const arma::vec x1;
-//   const arma::vec y1;
-//   const arma::vec x2;
-//   const arma::vec y2;
-//   const arma::vec j2000;
-//   double o1;
-//   double resonance;
-//   const arma::uvec indices;
-//   const arma::uvec i_max;
-//   int astro_update;
-//   double update_coef;
-//   arma::vec& output;
-//
-//   earthtide_predict_worker(const arma::mat astro,
-//                         const arma::mat astro_der,
-//                         const arma::mat k_mat,
-//                         const arma::vec pk,
-//                         const arma::vec body,
-//                         double delta,
-//                         double deltar,
-//                         const arma::vec x0,
-//                         const arma::vec y0,
-//                         const arma::vec x1,
-//                         const arma::vec y1,
-//                         const arma::vec x2,
-//                         const arma::vec y2,
-//                         const arma::vec j2000,
-//                         double o1,
-//                         double resonance,
-//                         const arma::uvec indices,
-//                         const arma::uvec i_max,
-//                         int astro_update,
-//                         double update_coef,
-//                         arma::vec& output)
-//     : astro(astro), astro_der(astro_der), k_mat(k_mat), pk(pk), body(body), delta(delta), deltar(deltar),
-//       x0(x0),  y0(y0), x1(x1), y1(y1), x2(x2), y2(y2),
-//       j2000(j2000), o1(o1), resonance(resonance), indices(indices), i_max(i_max),
-//       astro_update(astro_update),update_coef(update_coef), output(output) {}
-//
-//
-//   void operator()(std::size_t begin_row, std::size_t end_row) {
-//
-//     int start;
-//     int end;
-//
-//     // loop through each time chunk
-//     for (std::size_t k = begin_row; k < end_row; k += astro_update) {
-//
-//       start = k;
-//       end   = std::min(k + astro_update - 1, end_row-1);
-//
-//       output(arma::span(start, end)) = et_predict_one(
-//         astro.cols(arma::span(start, end)),
-//         astro_der.cols(arma::span(start, end)),
-//         k_mat,
-//         pk,
-//         body,
-//         delta,
-//         deltar,
-//         x0,
-//         y0,
-//         x1,
-//         y1,
-//         x2,
-//         y2,
-//         j2000(arma::span(start, end)),
-//         o1,
-//         resonance,
-//         indices,
-//         i_max,
-//         update_coef);
-//     }
-//
-//   }
-// };
-//
-//
-// //==============================================================================
-// //' @title
-// //' et_predict
-// //'
-// //' @description
-// //' Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
-// //'
-// //' @param astro matrix astronomical parameters
-// //' @param astro_der matrix derivative of astronomical parameters
-// //' @param k_mat matrix tidal catalog values
-// //' @param pk vector phases
-// //' @param delta vector body
-// //' @param deltar double gravimentric factor
-// //' @param c0 vector tidal catalog values
-// //' @param s0 vector tidal catalog values
-// //' @param c1 vector tidal catalog values
-// //' @param s1 vector tidal catalog values
-// //' @param c2 vector tidal catalog values
-// //' @param s2 vector tidal catalog values
-// //' @param dgk vector geodetic coefficients
-// //' @param jcof vector wave index
-// //' @param j2000 double Julian date
-// //' @param o1 double frequency
-// //' @param resonance double frequency
-// //' @param index vector wave group index
-// //' @param astro_update how often to recalculate astronomical parameters
-// //'
-// //' @return synthetic gravity
-// //'
-// //' @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-// //'
-// //' @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// //' processing package ETERNA 3.3. Bulletin d'Informations
-// //' Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-// //'
-// //' @export
-// //'
-// // [[Rcpp::export]]
-// arma::vec et_predict(const arma::mat astro,
-//                      const arma::mat astro_der,
-//                      const arma::mat k_mat,
-//                      const arma::vec phases,
-//                      const arma::vec delta,
-//                      double deltar,
-//                      const arma::vec c0,
-//                      const arma::vec s0,
-//                      const arma::vec c1,
-//                      const arma::vec s1,
-//                      const arma::vec c2,
-//                      const arma::vec s2,
-//                      const arma::vec dgk,
-//                      const arma::uvec jcof,
-//                      const arma::vec j2000,
-//                      double o1,
-//                      double resonance,
-//                      const arma::ivec index,
-//                      int astro_update,
-//                      double update_coef) {
-//
-//
-//   // number of times
-//   int nt = astro.n_cols;
-//
-//
-//   // number of wave groups
-//   arma::ivec un = arma::unique(index);
-//   int ng = un.n_elem;
-//
-//
-//   // two columns for each wave group and one row for each time
-//   arma::vec output(nt);
-//   output.fill(0.0);
-//
-//
-//   arma::uvec i_max(index.size());    // index of wave group max
-//
-//   arma::vec x0 = c0 % dgk(jcof) * 1.e-10;
-//   arma::vec y0 = s0 % dgk(jcof) * 1.e-10;
-//   arma::vec x1 = c1 % dgk(jcof) * 1.e-10;
-//   arma::vec y1 = s1 % dgk(jcof) * 1.e-10;
-//   arma::vec x2 = c2 % dgk(jcof) * 1.e-10;
-//   arma::vec y2 = s2 % dgk(jcof) * 1.e-10;
-//
-//
-//   // get the subsets for each wave group
-//   // get equilibrium wave amplitude
-//   arma::vec amplitude = arma::sqrt(pow(x0, 2) + pow(y0, 2));
-//
-//   int n_count = 0;
-//   for(int j = 0; j < ng; j++) {
-//     arma::uvec sub = arma::find(index == j+1);
-//     int n_sub = sub.size();
-//     arma::uvec max_ind(n_sub);
-//     max_ind.fill(n_count + amplitude.elem(sub).index_max());
-//     i_max.elem(sub) = max_ind; // need to remove empty subsets
-//     n_count += n_sub;
-//   }
-//
-//
-//   arma::vec pk = phases(jcof);
-//   arma::vec body = delta(jcof);
-//   arma::uvec indices = find((jcof + 1) == 2);
-//
-//   earthtide_predict_worker ew(astro,
-//                            astro_der,
-//                            k_mat,
-//                            pk,
-//                            body,
-//                            delta(1),
-//                            deltar,
-//                            x0,
-//                            y0,
-//                            x1,
-//                            y1,
-//                            x2,
-//                            y2,
-//                            j2000,
-//                            o1,
-//                            resonance,
-//                            indices,
-//                            i_max,
-//                            astro_update,
-//                            update_coef,
-//                            output);
-//
-//   RcppParallel::parallelFor(0, nt, ew);
-//
-//
-//   return(output);
-// }
-
-
-
 //==============================================================================
 /*** R
+
 */
