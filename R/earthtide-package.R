@@ -22,5 +22,4 @@
 #' @importFrom stats approx
 #' @importFrom utils data download.file
 #' @importFrom Rcpp evalCpp
-#' @importFrom RcppParallel RcppParallelLibs
 "_PACKAGE"

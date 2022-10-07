@@ -9,7 +9,7 @@ wave group harmonics for analysis in **R**.
 **earthtide** is a port of the ‘Fortran ETERNA 3.4’ (Wenzel, 1996)
 predict and part of the analyze codes with the Kudryavtsev 2004 update.
 The original ‘Fortran’ code was rewritten in **R**, and **C++** using
-the great **Rcpp**, **RcppArmadillo**, and **RcppParallel**. The package
+the great **Rcpp**, **RcppEigen**, and **RcppThread**. The package
 is useful for generating synthetic earth tides using highly accurate
 tidal catalogs for prediction and regression. Attempts were made to
 ensure that results were consistent with the ‘ETERNA 3.4’, however,

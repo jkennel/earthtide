@@ -33,15 +33,39 @@ legendre <- function(l_max, x) {
     .Call(`_earthtide_legendre`, l_max, x)
 }
 
-et_analyze <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x0, y0, x1, y1, x2, y2, j2000, o1, resonance, max_amp, update_coef, scale) {
-    .Call(`_earthtide_et_analyze`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x0, y0, x1, y1, x2, y2, j2000, o1, resonance, max_amp, update_coef, scale)
+get_catalog_indices <- function(index, ng) {
+    .Call(`_earthtide_get_catalog_indices`, index, ng)
 }
 
-et_predict <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x0, y0, x1, y1, x2, y2, j2000, o1, resonance, max_amp, update_coef) {
-    .Call(`_earthtide_et_predict`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x0, y0, x1, y1, x2, y2, j2000, o1, resonance, max_amp, update_coef)
+subset_2_eigen <- function(input) {
+    .Call(`_earthtide_subset_2_eigen`, input)
 }
 
-et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, magnifier, predict, scale) {
-    .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, c0, s0, c1, s1, c2, s2, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, magnifier, predict, scale)
+subset_eigen <- function(input, subs) {
+    .Call(`_earthtide_subset_eigen`, input, subs)
+}
+
+unique_eigen <- function(index) {
+    .Call(`_earthtide_unique_eigen`, index)
+}
+
+calc_dc2 <- function(k_mat, astro, pk) {
+    .Call(`_earthtide_calc_dc2`, k_mat, astro, pk)
+}
+
+set_fac <- function(body, body_inds, k_mat, astro_der, delta, deltar, o1, resonance, max_amp) {
+    .Call(`_earthtide_set_fac`, body, body_inds, k_mat, astro_der, delta, deltar, o1, resonance, max_amp)
+}
+
+et_analyze_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef, scale) {
+    .Call(`_earthtide_et_analyze_one`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef, scale)
+}
+
+et_predict_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef) {
+    .Call(`_earthtide_et_predict_one`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef)
+}
+
+et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, multiplier, predict, scale) {
+    .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, multiplier, predict, scale)
 }
 

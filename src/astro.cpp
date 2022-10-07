@@ -1,211 +1,99 @@
+// This function is faster than the R based ones though.
 
-#define BOOST_DISABLE_ASSERTS
-// #define ARMA_DONT_PRINT_ERRORS
-// #define ARMA_USE_TBB_ALLOC
-// #define ARMA_DONT_USE_OPENMP
-
+// [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::depends(RcppThread)]]
 // [[Rcpp::depends(BH)]]
-// [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::depends(RcppParallel)]]
 
-
-#include <RcppArmadillo.h>
-#include <RcppParallel.h>
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 
-using namespace RcppParallel;
-using namespace Rcpp;
+#include <RcppEigen.h>
+#include <Eigen/StdVector>
 
+#include <RcppThread.h>
 
-/**
- * Possible scenarios
- *   - single sum of entire earth tides
- *   - sum for each earthtide group
- *   - sin, cos for each earthtide group
- */
-
-
-
-//==============================================================================
-/**
- * Extend division reminder to vectors
- * https://stackoverflow.com/questions/27686319/c-armadillo-modulus-function
- *
- * @param   a       Dividend
- * @param   n       Divisor
- */
-template<typename T>
-T mod(T a, int n)
-{
-  return a - floor(a / n) * n;
-}
-
+using namespace Eigen;
+using Eigen::MatrixXd;
+using Eigen::MatrixXi;
+using Eigen::VectorXd;
+using Eigen::VectorXi;
+using Eigen::ArrayXd;
+using Eigen::ArrayXi;
+using Eigen::MatrixXcd;
+using Eigen::VectorXcd;
+using Eigen::Vector3d;
+using Eigen::Vector2d;
 
 
 //==============================================================================
-// @title
-// time_mat
-//
-// @description
-// Matrix to multiply by astrological.  Code adapted from ETERNA.
-//
-// @param time the times to calculate astrological parameters
-//
-// @return matrix of times
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
-arma::mat time_mat(const arma::rowvec time) {
+Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 
-  arma::uword len = time.n_elem;
-  arma::mat t_mat(5, len, arma::fill::ones);
+  size_t n = time.size();
+  MatrixXd t_mat = MatrixXd::Ones(n,5);
 
-  t_mat.row(1) = time;
-  t_mat.row(2) = t_mat.row(1) % time;
-  t_mat.row(3) = t_mat.row(2) % time;
-  t_mat.row(4) = t_mat.row(3) % time;
+  t_mat.col(1) = time;
+  t_mat.col(2) = t_mat.col(1).array() * time;
+  t_mat.col(3) = t_mat.col(2).array() * time;
+  t_mat.col(4) = t_mat.col(3).array() * time;
 
   return(t_mat);
 }
 
-
-//==============================================================================
-// @title
-// time_der_mat
-//
-// @description
-// Matrix to multiply by astrological.  Code adapted from ETERNA.
-//
-// @param time the times to calculate the derivatives of the astrological parameters
-//
-// @return matrix of time derivatives
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
-arma::mat time_der_mat(const arma::rowvec time) {
+Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 
-  unsigned len = time.n_elem;
-  arma::mat td_mat(5, len, arma::fill::zeros);
+  size_t n = time.size();
+  MatrixXd t_mat = MatrixXd::Zero(n,5);
 
-  td_mat.row(1).ones();
-  td_mat.row(2) = time * 2.0;
-  td_mat.row(3) = td_mat.row(2) % time * 3.0;  // should this be row 2?
-  td_mat.row(4) = td_mat.row(3) % time * 4.0;
+  t_mat.col(1).setOnes();
+  t_mat.col(2) = time * 2.0;
+  t_mat.col(3) = t_mat.col(2).array() * time * 3.0; // time*time*3.0 need to check
+  t_mat.col(4) = t_mat.col(3).array() * time * 4.0;
 
-  return(td_mat);
+  return(t_mat);
+
 }
 
-
-//==============================================================================
-// @title
-// astro
-//
-// @description
-// Calculate astronomical parameters.  Code adapted from ETERNA.
-//
-// @param t_astro astronomical time
-// @param simon coefficient matrix
-// @param longitude the longitude
-// @param hours hour or measurement
-// @param ddt time in ddt
-//
-// @return astonomical parameters
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
-arma::mat astro(const arma::rowvec t_astro,
-                const arma::mat simon,
-                double longitude,
-                const arma::rowvec hours,
-                const arma::rowvec ddt) {
+Eigen::MatrixXd astro(const Eigen::ArrayXd& t_astro,
+                      const Eigen::MatrixXd simon,
+                      double longitude,
+                      Eigen::RowVectorXd hours,
+                      Eigen::RowVectorXd ddt) {
 
-  arma::mat at_mat = simon * time_mat(t_astro);
+  MatrixXd at_mat = simon * time_mat(t_astro).transpose();
 
-  at_mat.row(0) = at_mat.row(2) - at_mat.row(1) + longitude + hours * 15.0 -
-    0.0027 * ddt * 15.0 / 3600.0;
 
-  at_mat = mod(at_mat, 360);
+  // First row needs correction
+  at_mat.row(0) = at_mat.row(2).array() - at_mat.row(1).array() +
+    (longitude + hours.array() * 15.0) -
+    (0.0027 * ddt.array() * 15.0 / 3600.0);
+
+  // modulus
+  at_mat = at_mat.array() - (at_mat.array() / 360).floor() * 360;
 
   return(at_mat);
 }
 
 
 
-
-
-//==============================================================================
-// @title
-// astro_der
-//
-// @description
-// Calculate derivatives of astronomical parameters.  Code adapted from ETERNA.
-//
-// @param t_astro astronomical time
-// @param simon coefficient matrix
-//
-// @return derivative astonomical parameters
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-//
 // [[Rcpp::export]]
-arma::mat astro_der(const arma::rowvec t_astro,
-                    const arma::mat simon) {
+Eigen::MatrixXd astro_der(const Eigen::ArrayXd& t_astro,
+                          const Eigen::MatrixXd simon) {
 
   double time_scale = 1.0 / (365250.0 * 24.0);
+  MatrixXd at_mat = simon * time_der_mat(t_astro).transpose() * time_scale;
 
-  arma::mat at_mat = simon * time_der_mat(t_astro) * time_scale;
-
-  at_mat.row(0) = at_mat.row(2) - at_mat.row(1) + 15.0;
+  // First row needs correction
+  at_mat.row(0) = at_mat.row(2).array() - at_mat.row(1).array() + 15.0;
 
   return(at_mat);
-
 }
 
 
-// helpful content https://www.mat.univie.ac.at/~westra/associatedlegendrefunctions.pdf
-//==============================================================================
-// @title
-// legendre_bh
-//
-// @description
-// legendre function
-//
-// @param l maximum degree
-// @param m order
-// @param x the x value
-// @param csphase the csphase value
-//
-// @return legendre scale
-//
-// @keywords internal
-//
+
 // [[Rcpp::export]]
 double legendre_bh(int l, int m, double x, int csphase = -1) {
 
@@ -213,23 +101,6 @@ double legendre_bh(int l, int m, double x, int csphase = -1) {
 
 }
 
-
-// helpful content https://www.mat.univie.ac.at/~westra/associatedlegendrefunctions.pdf
-//==============================================================================
-// @title
-// legendre_deriv_bh
-//
-// @description
-// Scaling for legendre function
-//
-// @param l (integer) maximum degree
-// @param m (integer) the order
-// @param x the x value
-//
-// @return legendre scale
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
 double legendre_deriv_bh(int l, int m, double x) {
 
@@ -240,21 +111,6 @@ double legendre_deriv_bh(int l, int m, double x) {
 
 }
 
-
-//==============================================================================
-// @title
-// scale_legendre_bh
-//
-// @description
-// Scaling for legendre function
-//
-// @param l maximum degree
-// @param m the order
-//
-// @return legendre scale
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
 double scale_legendre_bh(int l, int m) {
 
@@ -273,28 +129,13 @@ double scale_legendre_bh(int l, int m) {
 
 }
 
-
-//==============================================================================
-// @title
-// legendre
-//
-// @description
-// Calculate legendre
-//
-// @param l_max maximum degree
-// @param x the x value
-//
-// @return legendre polynomials
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
-arma::mat legendre(int l_max, double x) {
+Eigen::MatrixXd legendre(int l_max, double x) {
 
   double scale;
 
-  int n = Rcpp::sum(Rcpp::seq(3, l_max + 1));
-  arma::mat out(n, 4);
+  size_t n = VectorXi::LinSpaced(l_max - 1, 3, l_max + 1).sum();
+  MatrixXd out(n, 4);
 
 
   int i = 0;
@@ -313,568 +154,562 @@ arma::mat legendre(int l_max, double x) {
   return(out);
 }
 
-//==============================================================================
-// @title
-// et_analyze
-//
-// @description
-// Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
-//
-// @param astro vector astronomical parameters
-// @param astro_der vector derivative of astronomical parameters
-// @param k_mat matrix tidal catalog values
-// @param pk vector of phases for each group
-// @param body vector of body tide for each group
-// @param body_inds indices of body max for each group
-// @param delta vector body
-// @param deltar double gravimentric factor
-// @param x0 vector tidal catalog values
-// @param y0 vector tidal catalog values
-// @param x1 vector tidal catalog values
-// @param y1 vector tidal catalog values
-// @param x2 vector tidal catalog values
-// @param y2 vector tidal catalog values
-// @param j2000 double Julian date
-// @param o1 double frequency
-// @param resonance double frequency
-// @param max_amp int index of the wave with maximum amplitude in wave group
-// @param update_coef double constant for phase updating
-//
-// @return synthetic gravity
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
-arma::mat et_analyze(const arma::mat astro,
-                     const arma::mat astro_der,
-                     const arma::mat k_mat,
-                     const arma::vec pk,
-                     const arma::vec body,
-                     const arma::uvec body_inds,
-                     double delta,
-                     double deltar,
-                     const arma::vec x0,
-                     const arma::vec y0,
-                     const arma::vec x1,
-                     const arma::vec y1,
-                     const arma::vec x2,
-                     const arma::vec y2,
-                     const arma::vec j2000,
-                     double o1,
-                     double resonance,
-                     const arma::uword max_amp,
-                     double update_coef,
-                     bool scale) {
+Eigen::MatrixXi get_catalog_indices(Eigen::VectorXi index, size_t ng) {
 
+  size_t nw = index.size();
+  size_t counter = 1;
 
-  int nr = k_mat.n_rows;  // number of constituents
-  int nt = astro.n_cols;  // number of times
+  MatrixXi inds(ng, 2);
 
-  double j2000_sq;
-  double to_rad = M_PI / 180.0;
-  //  double coef =  to_rad * 1.0 / 3600.0;
+  inds(0, 0) = 0;
+  inds(ng - 1, 1) = nw - 1;
 
-  arma::vec dc2(nr), dc3(nr);
-  arma::vec cos_dc2(nr), sin_dc2(nr);
-  arma::vec dummy(nr), cos_c(nr), sin_c(nr);
-  arma::vec dtham(nr), dthph(nr);
-  arma::vec fac = body;
-  arma::vec fac_x(nr), fac_y(nr);
-  arma::mat output(nt, 2, arma::fill::zeros);
-  // output.zeros();
-
-
-  dc2 = arma::vectorise(k_mat * astro.col(0) + pk + 360.0);
-  dc2 = mod(dc2, 360) * to_rad;
-  dc3 = arma::vectorise(k_mat * astro_der.col(0));
-
-
-  // normalize to max of group
-  fac(body_inds) = delta + deltar * (dc3(body_inds) - o1) / (resonance - dc3(body_inds));
-  fac = fac / fac(max_amp);
-
-  j2000_sq = j2000[0] * j2000[0];
-
-  fac_x = fac % (x0 + x1 * j2000[0] + x2 * j2000_sq);
-  fac_y = fac % (y0 + y1 * j2000[0] + y2 * j2000_sq);
-
-  dtham = arma::sqrt(fac_x % fac_x + fac_y % fac_y);
-  dthph = dc2 - arma::atan2(fac_y, fac_x);
-
-  // determine phase correction
-  cos_dc2 = cos(dthph); //dc0
-  sin_dc2 = sin(dthph); //ds0
-
-
-  if (nt == 1) {
-
-    if (scale) {
-      output(0, 0) = arma::dot(dtham, cos_dc2) / arma::max(dtham);
-      output(0, 1) = arma::dot(dtham, sin_dc2) / arma::max(dtham);
-    } else {
-      output(0, 0) = arma::dot(dtham, cos_dc2);
-      output(0, 1) = arma::dot(dtham, sin_dc2);
-    }
-
-  } else {
-
-    dc3 = dc3 * update_coef; // tidal frequencies in radian per hour. dthfr
-
-    // speed enhancement but sacrifices precision
-    cos_c = arma::cos(dc3); // ddc
-    sin_c = arma::sin(dc3); // dds
-
-    // loop through each time group
-    for (int k = 0; k < nt; k++) {
-
-      if (scale) {
-        output(k, 0) = arma::dot(dtham, cos_dc2) / arma::max(dtham);
-        output(k, 1) = arma::dot(dtham, sin_dc2) / arma::max(dtham);
-      } else {
-        output(k, 0) = arma::dot(dtham, cos_dc2);
-        output(k, 1) = arma::dot(dtham, sin_dc2);
-      }
-
-      // update
-      dummy   = cos_dc2 % cos_c - sin_dc2 % sin_c;
-      sin_dc2 = sin_dc2 % cos_c + cos_dc2 % sin_c;
-      cos_dc2 = dummy;
-
+  for (size_t i = 1; i < nw; ++i) {
+    if(index[i] != index[i-1]) {
+      inds(counter, 0) = i;
+      inds(counter - 1, 1) = i - 1;
+      counter = counter + 1;
     }
   }
 
-
-  return(output);
-
+  return(inds);
 }
 
-
-
-//==============================================================================
-// @title
-// et_predict
-//
-// @description
-// Calculate tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
-//
-// @param astro vector astronomical parameters
-// @param astro_der vector derivative of astronomical parameters
-// @param k_mat matrix tidal catalog values
-// @param pk vector of phases for each group
-// @param body vector of body tide for each group
-// @param body_inds indices of body max for each group
-// @param delta vector body
-// @param deltar double gravimentric factor
-// @param x0 vector tidal catalog values
-// @param y0 vector tidal catalog values
-// @param x1 vector tidal catalog values
-// @param y1 vector tidal catalog values
-// @param x2 vector tidal catalog values
-// @param y2 vector tidal catalog values
-// @param j2000 double Julian date
-// @param o1 double frequency
-// @param resonance double frequency
-// @param max_amp int index of the wave with maximum amplitude in wave group
-// @param update_coef double constant for phase updating
-//
-// @return synthetic gravity
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-//
-// @keywords internal
-//
 // [[Rcpp::export]]
-arma::mat et_predict(const arma::mat astro,
-                     const arma::mat astro_der,
-                     const arma::mat k_mat,
-                     const arma::vec pk,
-                     const arma::vec body,
-                     const arma::uvec body_inds,
-                     double delta,
-                     double deltar,
-                     const arma::vec x0,
-                     const arma::vec y0,
-                     const arma::vec x1,
-                     const arma::vec y1,
-                     const arma::vec x2,
-                     const arma::vec y2,
-                     const arma::vec j2000,
-                     double o1,
-                     double resonance,
-                     const arma::uword max_amp,
-                     double update_coef) {
-
-
-  int nr = k_mat.n_rows;  // number of constituents
-  int nt = astro.n_cols;  // number of times
-
-  double j2000_sq;
-  double to_rad = M_PI / 180.0;
-
-  arma::vec dc2(nr), dc3(nr);
-  arma::vec cos_dc2(nr), sin_dc2(nr);
-  arma::vec dummy(nr), cos_c(nr), sin_c(nr);
-  arma::vec fac = body;
-  arma::mat output(nt, 1);
-
-
-  dc2 = arma::vectorise(k_mat * astro.col(0) + pk + 360.0);
-  dc2 = mod(dc2, 360) * to_rad;
-  dc3 = arma::vectorise(k_mat * astro_der.col(0));
-
-
-  // normalize to max of group
-  fac(body_inds) = delta + deltar * (dc3(body_inds) - o1) / (resonance - dc3(body_inds));
-  fac = fac / fac(max_amp);
-
-
-  // determine phase correction
-  cos_dc2 = arma::cos(dc2);
-  sin_dc2 = arma::sin(dc2);
-
-
-
-  if (nt == 1) {
-
-    j2000_sq = j2000[0] * j2000[0];
-
-    output(0, 0) = arma::dot(fac % (x0 + x1 * j2000[0] + x2 * j2000_sq), cos_dc2) +
-      arma::dot(fac % (y0 + y1 * j2000[0] + y2 * j2000_sq), sin_dc2);
-
-  } else {
-
-    dc3 = dc3 * update_coef;
-
-    // speed enhancement but sacrifices precision
-    cos_c = arma::cos(dc3);
-    sin_c = arma::sin(dc3);
-
-    // loop through each time group
-    for (int k = 0; k < nt; k++) {
-
-      j2000_sq = j2000[k] * j2000[k];
-
-      output(k, 0) = arma::dot(fac % (x0 + x1 * j2000[0] + x2 * j2000_sq), cos_dc2) +
-        arma::dot(fac % (y0 + y1 * j2000[0] + y2 * j2000_sq), sin_dc2);
-
-      // update
-      dummy   = cos_dc2 % cos_c - sin_dc2 % sin_c;
-      sin_dc2 = sin_dc2 % cos_c + cos_dc2 % sin_c;
-      cos_dc2 = dummy;
-
-    }
-  }
-
-
-  return(output);
-
-}
-
-
-
-//==============================================================================
-// Main parallel structure for time and wave groups
-struct earthtide_worker : public Worker
+Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
 {
-  const arma::mat astro;
-  const arma::mat astro_der;
-  const arma::mat k_mat;
-  const arma::field<arma::vec> pk;
-  const arma::field<arma::vec> body;
-  const arma::field<arma::uvec> body_inds;
-  double delta;
-  double deltar;
-  const arma::vec x0;
-  const arma::vec y0;
-  const arma::vec x1;
-  const arma::vec y1;
-  const arma::vec x2;
-  const arma::vec y2;
-  const arma::vec j2000;
-  double o1;
-  double resonance;
-  const arma::field<arma::uvec> inds;
-  const arma::uvec i_max;
-  int astro_update;
-  double update_coef;
-  const arma::vec multiplier;
-  bool predict;
-  bool scale;
-  arma::mat& output;
+  size_t n = input.size();
+  size_t counter = 0;
+  Eigen::VectorXi out(n);
 
-  earthtide_worker(const arma::mat astro,
-                   const arma::mat astro_der,
-                   const arma::mat k_mat,
-                   const arma::field<arma::vec> pk,
-                   const arma::field<arma::vec> body,
-                   const arma::field<arma::uvec> body_inds,
-                   double delta,
-                   double deltar,
-                   const arma::vec x0,
-                   const arma::vec y0,
-                   const arma::vec x1,
-                   const arma::vec y1,
-                   const arma::vec x2,
-                   const arma::vec y2,
-                   const arma::vec j2000,
-                   double o1,
-                   double resonance,
-                   const arma::field<arma::uvec> inds,
-                   const arma::uvec i_max,
-                   int astro_update,
-                   double update_coef,
-                   const arma::vec multiplier,
-                   bool predict,
-                   bool scale,
-                   arma::mat& output)
-    : astro(astro), astro_der(astro_der), k_mat(k_mat), pk(pk), body(body),body_inds(body_inds), delta(delta), deltar(deltar),
-      x0(x0),  y0(y0), x1(x1), y1(y1), x2(x2), y2(y2),
-      j2000(j2000), o1(o1), resonance(resonance), inds(inds), i_max(i_max),
-      astro_update(astro_update), update_coef(update_coef), multiplier(multiplier),
-      predict(predict), scale(scale), output(output) {}
-
-
-  void operator()(std::size_t begin_row, std::size_t end_row) {
-
-    int start;
-    int end;
-    arma::uword r_start;
-    arma::uword r_end;
-
-    if (predict) {
-      // loop through each time chunk
-      for (std::size_t k = begin_row; k < end_row; k += astro_update) {
-
-        start = k;
-        end   = std::min(k + astro_update - 1, end_row-1);
-
-        // loop through each time wave group
-        for(std::size_t j = 0; j < inds.n_elem; j++) {
-
-          // r_start = (j * 2);
-          // r_end = (j * 2 + 1);
-
-          output(arma::span(start, end), 0) += multiplier[j] * et_predict(
-            astro.cols(arma::span(start, end)),
-            astro_der.cols(arma::span(start, end)),
-            k_mat.rows(inds(j)),
-            pk(j),
-            body(j),
-            body_inds(j),
-            delta,
-            deltar,
-            x0(inds(j)),
-            y0(inds(j)),
-            x1(inds(j)),
-            y1(inds(j)),
-            x2(inds(j)),
-            y2(inds(j)),
-            j2000(arma::span(start, end)),
-            o1,
-            resonance,
-            i_max(j),
-            update_coef);
-        }
-      }
-    } else {
-
-      // loop through each time chunk
-      for (std::size_t k = begin_row; k < end_row; k += astro_update) {
-
-        start = k;
-        end   = std::min(k + astro_update - 1, end_row-1);
-
-        // loop through each time wave group
-        for(std::size_t j = 0; j < inds.n_elem; j++) {
-
-          r_start = (j * 2);
-          r_end = (j * 2 + 1);
-
-          output(arma::span(start, end), arma::span(r_start, r_end)) = multiplier[j] * et_analyze(
-            astro.cols(arma::span(start, end)),
-            astro_der.cols(arma::span(start, end)),
-            k_mat.rows(inds(j)),
-            pk(j),
-            body(j),
-            body_inds(j),
-            delta,
-            deltar,
-            x0(inds(j)),
-            y0(inds(j)),
-            x1(inds(j)),
-            y1(inds(j)),
-            x2(inds(j)),
-            y2(inds(j)),
-            j2000(arma::span(start, end)),
-            o1,
-            resonance,
-            i_max(j),
-            update_coef,
-            scale);
-        }
-      }
+  for (size_t i=0; i < n; ++i)
+  {
+    if(input[i] + 1 == 2) {
+      out[counter] = i;
+      counter += 1;
     }
   }
-};
 
+  out.conservativeResize(counter);
 
-//==============================================================================
-// @title
-// et_calculate
-//
-// @description
-// Parallel calculation of tidal potential for a single time and multiple waves.  Code adapted from ETERNA.
-//
-// @param astro matrix astronomical parameters
-// @param astro_der matrix derivative of astronomical parameters
-// @param k_mat matrix tidal catalog values
-// @param phases vector phases
-// @param delta vector body
-// @param deltar double gravimentric factor
-// @param c0 vector tidal catalog values
-// @param s0 vector tidal catalog values
-// @param c1 vector tidal catalog values
-// @param s1 vector tidal catalog values
-// @param c2 vector tidal catalog values
-// @param s2 vector tidal catalog values
-// @param dgk vector geodetic coefficients
-// @param jcof vector wave index
-// @param j2000 double Julian date
-// @param o1 double frequency
-// @param resonance double frequency
-// @param index vector wave group index
-// @param astro_update how often to recalculate astronomical parameters
-// @param update_coef time for approx
-// @param magnifier scale the wave group value
-// @param predict predict or analyze
-//
-// @return synthetic gravity
-//
-// @author Jonathan Kennel, \email{jkennel@uoguelph.ca}
-//
-// @references Wenzel, H.-G. (1996): The nanogal software: Earth tide data
-// processing package ETERNA 3.3. Bulletin d'Informations
-// Marees Terrestres vol. 124, 9425-9439, Bruxelles 1996.
-//
-// @keywords internal
-//
+  return out;
+}
+
 // [[Rcpp::export]]
-arma::mat et_calculate(const arma::mat astro,
-                       const arma::mat astro_der,
-                       const arma::mat k_mat,
-                       const arma::vec phases,
-                       const arma::vec delta,
-                       double deltar,
-                       const arma::vec c0,
-                       const arma::vec s0,
-                       const arma::vec c1,
-                       const arma::vec s1,
-                       const arma::vec c2,
-                       const arma::vec s2,
-                       const arma::vec dgk,
-                       const arma::uvec jcof,
-                       const arma::vec j2000,
-                       double o1,
-                       double resonance,
-                       const arma::ivec index,
-                       int astro_update,
-                       double update_coef,
-                       const arma::vec magnifier,
-                       bool predict,
-                       bool scale) {
+Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
+                            const Eigen::VectorXi& subs)
+{
+  size_t n = subs.size();
+  Eigen::VectorXd out(n);
 
+
+  for (size_t i=0; i < n; ++i)
+  {
+    out[i] = input[subs[i]];
+  }
+
+  return out;
+}
+
+
+//[[Rcpp::export]]
+Eigen::VectorXi unique_eigen(Eigen::VectorXi index) {
+
+  std::vector<int> v(index.data(), index.data() + index.size());
+
+  std::sort(v.begin(), v.end());
+  std::vector<int>::iterator it;
+  it = std::unique(v.begin(), v.end());
+  v.resize(std::distance(v.begin(), it));
+
+  Eigen::VectorXi index_unique = Eigen::Map<Eigen::VectorXi, Eigen::Unaligned>(v.data(), v.size());
+
+  return(index_unique);
+
+}
+
+//[[Rcpp::export]]
+Eigen::ArrayXd calc_dc2(const Eigen::MatrixXd& k_mat,
+                        const Eigen::VectorXd& astro,
+                        const Eigen::ArrayXd& pk) {
+
+  double to_rad = M_PI / 180.0;
+
+  // is there a way to vectorize this?  matrix size issue
+  ArrayXd dc2 = (k_mat * astro).array() + pk + 360.0;
+  dc2 = (dc2 - (dc2 / 360).floor() * 360) * to_rad;
+
+  return(dc2);
+}
+
+// [[Rcpp::export]]
+Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
+                        const Eigen::ArrayXi& body_inds,
+                        const Eigen::MatrixXd& k_mat,
+                        const Eigen::VectorXd& astro_der,
+                        double delta,
+                        double deltar,
+                        double o1,
+                        double resonance,
+                        size_t max_amp
+)
+{
+
+  // size_t n = body.size();
+  size_t n = body_inds.size();
+  Eigen::ArrayXd out = body;
+
+  // size_t k;
+  double dc3;
+
+  for(size_t i = 0; i < n; ++i) {
+    dc3 = k_mat.row(body_inds[i]) * astro_der;
+    out(body_inds[i]) = delta + deltar * (dc3 - o1) / (resonance - dc3);
+  }
+
+  out = out / out[max_amp];
+
+  return(out);
+}
+
+// [[Rcpp::export]]
+Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
+                               const Eigen::VectorXd& astro_der,
+                               const Eigen::MatrixXd& k_mat,
+                               const Eigen::ArrayXd& pk,
+                               const Eigen::ArrayXd& body,
+                               const Eigen::ArrayXi& body_inds,
+                               double delta,
+                               double deltar,
+                               const Eigen::MatrixXd& x,
+                               const Eigen::MatrixXd& y,
+                               double j2000,
+                               double o1,
+                               double resonance,
+                               size_t max_amp,
+                               double update_coef,
+                               bool scale) {
+
+
+  MatrixXd output(1, 2);
+
+
+  // is there a way to vectorize this?  matrix size issue
+  ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
+
+  const ArrayXd fac = set_fac(body,
+                              body_inds,
+                              k_mat,
+                              astro_der,
+                              delta,
+                              deltar,
+                              o1,
+                              resonance,
+                              max_amp);
+
+  const Eigen::Vector3d v(1.0, j2000, j2000 * j2000);
+  ArrayXd fac_x = fac * (x * v).array();
+  ArrayXd fac_y = fac * (y * v).array();
+
+
+  RowVectorXd dtham = (fac_x * fac_x + fac_y * fac_y).sqrt();
+  ArrayXd dthph = dc2 -  fac_y.binaryExpr(fac_x, [] (double a, double b) { return std::atan2(a, b);} );
+
+  // determine phase correction
+  VectorXd cos_dc2 = dthph.cos(); //dc0
+  VectorXd sin_dc2 = dthph.sin(); //ds0
+
+  double cc = dtham * cos_dc2;
+  double ss = dtham * sin_dc2;
+
+  if (scale) {
+    cc = cc / dtham.maxCoeff();
+    ss = ss / dtham.maxCoeff();
+  }
+
+  output(0, 0) = cc;
+  output(0, 1) = ss;
+
+
+  // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
+  //                  ((y0 + y1 * j2000 + y2 * j2000_sq) * sin_dc2))).sum();
+
+
+  return(output);
+
+}
+
+// [[Rcpp::export]]
+double et_predict_one(const Eigen::VectorXd& astro,
+                      const Eigen::VectorXd& astro_der,
+                      const Eigen::MatrixXd& k_mat,
+                      const Eigen::ArrayXd& pk,
+                      const Eigen::ArrayXd& body,
+                      const Eigen::ArrayXi& body_inds,
+                      double delta,
+                      double deltar,
+                      const Eigen::MatrixXd& x,
+                      const Eigen::MatrixXd& y,
+                      double j2000,
+                      double o1,
+                      double resonance,
+                      size_t max_amp,
+                      double update_coef) {
+
+
+  double output;
+
+
+  // is there a way to vectorize this?  matrix size issue
+  ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
+
+  const ArrayXd fac = set_fac(body,
+                              body_inds,
+                              k_mat,
+                              astro_der,
+                              delta,
+                              deltar,
+                              o1,
+                              resonance,
+                              max_amp);
+
+  const Eigen::Vector3d v(1.0, j2000, j2000 * j2000);
+
+  output = (fac * ((x * v).array().colwise() * dc2.cos() +
+    (y * v).array().colwise() * dc2.sin())).sum();
+
+
+  // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
+  //                  ((y0 + y1 * j2000 + y2 * j2000_sq) * sin_dc2))).sum();
+
+
+  return(output);
+
+}
+
+
+//[[Rcpp::export]]
+Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
+                             const Eigen::MatrixXd& astro_der,
+                             const Eigen::MatrixXd& k_mat,
+                             const Eigen::ArrayXd& phases,
+                             const Eigen::ArrayXd& delta,
+                             double deltar,
+                             const Eigen::MatrixXd& cc,
+                             const Eigen::MatrixXd& ss,
+                             const Eigen::ArrayXd& dgk,
+                             const Eigen::VectorXi& jcof,
+                             const Eigen::ArrayXd& j2000,
+                             double o1,
+                             double resonance,
+                             const Eigen::VectorXi& index,
+                             size_t astro_update,
+                             double update_coef,
+                             const Eigen::ArrayXd& multiplier,
+                             bool predict,
+                             bool scale) {
+
+
+
+  Eigen::Index max_elem;
+  size_t i_max;
 
   // number of times
-  int nt = astro.n_cols;
-
+  size_t nt = astro.cols();
 
   // number of wave groups
-  arma::ivec un = arma::unique(index);
-  int ng = un.n_elem;
+  const VectorXi un = unique_eigen(index);
+  size_t ng = un.size();
+  size_t start_seg, n_seg;
 
+  // sin and cos terms
+  const ArrayXd dgk_sub = jcof.unaryExpr(dgk);
+  const MatrixXd x = cc.array().colwise() * dgk_sub * 1.e-10;
+  const MatrixXd y = ss.array().colwise() * dgk_sub * 1.e-10;
 
-  // two columns for each wave group and one row for each time
-  arma::mat output;
-
-  if(predict) {
-    output = arma::zeros(nt,1);
-  } else {
-    output = arma::zeros(nt, 2 * ng);
-  };
-
-  arma::uvec i_max(ng);                   // index of wave group max
-  arma::field<arma::uvec> inds(ng);       // indices for each wave group
-  arma::field<arma::uvec> body_inds(ng);  // indices for each wave group
-  arma::field<arma::vec> body(ng);        // indices for each wave group
-  arma::field<arma::vec> pk(ng);          // indices for each wave group
-
-  arma::vec x0 = c0 % dgk(jcof) * 1.e-10;
-  arma::vec y0 = s0 % dgk(jcof) * 1.e-10;
-  arma::vec x1 = c1 % dgk(jcof) * 1.e-10;
-  arma::vec y1 = s1 % dgk(jcof) * 1.e-10;
-  arma::vec x2 = c2 % dgk(jcof) * 1.e-10;
-  arma::vec y2 = s2 % dgk(jcof) * 1.e-10;
+  // get equilibrium wave amplitude
+  const VectorXd amplitude = (pow(x.col(0).array(), 2) +
+                              pow(y.col(0).array(), 2)).sqrt();
 
   // get the subsets for each wave group
-  // get equilibrium wave amplitude
-  arma::vec amplitude = arma::sqrt(pow(x0, 2) + pow(y0, 2));
+  const MatrixXi sub = get_catalog_indices(index, ng);
 
-  for(int j = 0; j < ng; j++) {
-    arma::uvec sub = arma::find(index == j+1);
-    inds(j)        = sub;
+  MatrixXd output;
 
-    pk(j)          = phases.elem(jcof.elem(sub));
-    body(j)        = delta.elem(jcof.elem(sub));
-
-    i_max(j)       = amplitude.elem(sub).index_max();
-    body_inds(j)   = find((jcof.elem(sub) + 1) == 2);
+  if(predict) {
+    output = Eigen::MatrixXd::Zero(nt,1);
+  } else {
+    output = Eigen::MatrixXd::Zero(nt,ng*2);
   }
 
-  earthtide_worker ew(astro,
-                      astro_der,
-                      k_mat,
-                      pk,
-                      body,
-                      body_inds,
-                      delta(1),
-                      deltar,
-                      x0,
-                      y0,
-                      x1,
-                      y1,
-                      x2,
-                      y2,
-                      j2000,
-                      o1,
-                      resonance,
-                      inds,
-                      i_max,
-                      astro_update,
-                      update_coef,
-                      magnifier,
-                      predict,
-                      scale,
-                      output);
+  // subset for each wave group
+  for(std::size_t j = 0; j < ng; ++j) {
 
-  RcppParallel::parallelFor(0, nt, ew);
+    start_seg = sub(j, 0);
+    n_seg = sub(j, 1) - sub(j, 0) + 1;
 
+    const ArrayXd pk   = subset_eigen(phases, jcof.segment(start_seg, n_seg));
+    const ArrayXd body = subset_eigen(delta, jcof.segment(start_seg, n_seg));
+
+    amplitude.segment(start_seg, n_seg).maxCoeff(&max_elem);
+    i_max = max_elem;
+    const ArrayXi body_inds = subset_2_eigen(jcof.segment(start_seg, n_seg));
+
+    const MatrixXd k_mat_sub = k_mat.middleRows(start_seg, n_seg);
+    const MatrixXd x_sub = x.middleRows(start_seg, n_seg);
+    const MatrixXd y_sub = y.middleRows(start_seg, n_seg);
+    double mult = multiplier[j];
+
+    if (predict) {
+      // subset for each time
+      RcppThread::parallelFor(0, nt, [&] (size_t k) {
+
+        output(k,0) += mult * et_predict_one(
+          astro.col(k),
+          astro_der.col(k),
+          k_mat_sub,
+          pk,
+          body,
+          body_inds,
+          delta(1),
+          deltar,
+          x_sub,
+          y_sub,
+          j2000(k),
+          o1,
+          resonance,
+          i_max,
+          update_coef);
+      });
+    } else {
+      // subset for each time
+      RcppThread::parallelFor(0, nt, [&] (size_t k) {
+
+        output.block(k, j * 2, 1, 2) = mult * et_analyze_one(
+          astro.col(k),
+          astro_der.col(k),
+          k_mat_sub,
+          pk,
+          body,
+          body_inds,
+          delta(1),
+          deltar,
+          x_sub,
+          y_sub,
+          j2000(k),
+          o1,
+          resonance,
+          i_max,
+          update_coef,
+          scale);
+      });
+    }
+  }
 
   return(output);
 }
 
 
-//==============================================================================
+// ***********Just for testing*********
+// //[[Rcpp::export]]
+// Eigen::ArrayXd fac_xy(Eigen::MatrixXd x, Eigen::ArrayXd fac, double j2000 ){
+//   const Eigen::Vector3d v(1.0, j2000, j2000 * j2000);
+//   ArrayXd fac_x = fac * (x * v).array();
+//   return(fac_x);
+// }
+//
+// //[[Rcpp::export]]
+// Eigen::RowVectorXd fac_2(Eigen::ArrayXd fac_x, Eigen::ArrayXd fac_y){
+//   RowVectorXd dtham = (fac_x * fac_x + fac_y * fac_y).sqrt();
+//   return(dtham);
+// }
+//
+// //[[Rcpp::export]]
+// Eigen::VectorXd phase(Eigen::ArrayXd dc2, Eigen::ArrayXd fac_x, Eigen::ArrayXd fac_y){
+//
+//   VectorXd dthph = dc2 -  fac_y.binaryExpr(fac_x, [] (double a, double b) { return std::atan2(a, b);} );
+//
+//   return(dthph.cos());
+// }
+
 /*** R
 
+set.seed(10)
+dc2 <- earthtide:::calc_dc2(matrix(rnorm(1100), ncol = 11), matrix(rnorm(11), ncol = 1), 1:100)
+a   <- earthtide:::fac_xy(matrix(rnorm(300), ncol = 3), 1:100, 0.5)
+b   <- earthtide:::fac_xy(matrix(rnorm(300), ncol = 3), 1:100, 0.5)
+amp <- earthtide:::fac_2(a,b);
+earthtide:::phase(dc2, a,b);
+
+
+
+library(earthtide)
+tms <- seq.POSIXt(as.POSIXct('1995-01-01', tz = 'UTC'), as.POSIXct('1995-01-01 00:00:30', tz = 'UTC'),1)
+wave_groups = data.frame(start = c(0, 1), end = c(1,2))
+et <- Earthtide$new(utc = tms,
+                    latitude = 49.00937,
+                    longitude = 8.40444,
+                    elevation = 120,
+                    gravity = 9.8127,
+                    cutoff = 1.0e-10,
+                    wave_groups = wave_groups)
+x <- 1:1e6
+astro_args <- as.matrix(earthtide:::simon_coef_1994[, -1])
+longitude <- 8.40444
+tms_2 <- earthtide:::.prepare_datetime(tms)
+# recipes6:::time_mat(tms)
+
+
+bench::mark(
+  a <- t(recipes6:::time_mat(tms)),
+  b <- earthtide:::time_mat(tms),
+  check = TRUE
+)
+
+bench::mark(
+  a <- t(recipes6:::time_der_mat(tms)),
+  b <- earthtide:::time_der_mat(tms),
+  check = TRUE
+)
+
+
+bench::mark(
+  a <-  recipes6:::astro(tms_2$t_astro, astro_args, longitude, tms_2$hours, tms_2$ddt),
+  b <- earthtide:::astro(tms_2$t_astro, astro_args, longitude, tms_2$hours, tms_2$ddt),
+  check = TRUE
+)
+
+bench::mark(
+  a <-  recipes6:::astro_der(tms_2$t_astro, astro_args),
+  b <- earthtide:::astro_der(tms_2$t_astro, astro_args),
+  check = TRUE
+)
+
+
+bench::mark(
+  a <- recipes6:::legendre(5, 0.1),
+  b <- earthtide:::legendre(5, 0.1),
+  check = TRUE
+)
+
+
+
+
+library(data.table)
+library(recipes6)
+library(earthtide)
+
+wave_groups = na.omit(eterna_wavegroups[eterna_wavegroups$time == '1 month',])
+
+tms <- seq.POSIXt(as.POSIXct('1995-01-01', tz = 'UTC'), as.POSIXct('1995-01-01 02:00:00', tz = 'UTC'), 1)
+
+et <- Earthtide$new(utc = tms,
+                    latitude = 52.3868,
+                    longitude = 9.7144,
+                    elevation = 110,
+                    gravity = 9.8127,
+                    cutoff = 1.0e-10,
+                    catalog = 'hw95s',
+                    wave_groups = wave_groups)
+et$analyze(method = 'tidal_potential',
+           scale = FALSE)
+bench::mark(
+et$analyze(method = 'tidal_potential')
+)
+et$tides
+
+et$delta[1:12] <- et$love_params$dklat
+et$deltar <- et$love_params$dkr
+
+x <- cbind(et$catalog$c0,
+           et$catalog$c1,
+           et$catalog$c2)
+y <- cbind(et$catalog$s0,
+           et$catalog$s1,
+           et$catalog$s2)
+
+a <- bench::mark(
+  cc <- recipes6:::et_calculate(et$astro$astro,
+                                et$astro$astro_der,
+                                et$catalog$k,
+                                et$pk,
+                                et$delta,
+                                et$deltar,
+                                x,
+                                y,
+                                et$station$dgk,
+                                et$catalog$jcof - 1,
+                                et$datetime$j2000,
+                                et$love_params$dom0,
+                                et$love_params$domr,
+                                et$catalog$id,
+                                1,
+                                et$update_coef,
+                                et$catalog$wave_groups$multiplier,
+                                TRUE,
+                                TRUE),
+  dd <- as.numeric(et$calculate()),
+  check = TRUE
+)
+setDT(a)
+a
+head(dd)
+head(cc)
+plot(tidal_potential~datetime, et$tides, type = 'l')
+
+
+
+# const Eigen::ArrayXd& fac,
+# const Eigen::MatrixXd& x,
+# const Eigen::MatrixXd& y,
+# double j2000,
+# const Eigen::ArrayXd& cos_dc2,
+# const Eigen::ArrayXd& sin_dc2
+n <- 10000
+fac <- rnorm(n)
+x <- matrix(rnorm(3*n), ncol = 3)
+y <- matrix(rnorm(3*n), ncol = 3)
+cos_dc2 <-  rnorm(n)
+tmp <- matrix(cos_dc2, nrow = 1)
+sin_dc2 <-  rnorm(n)
+tmp2 <- matrix(sin_dc2, nrow = 1)
+
+sum((fac*tmp) %*% x * c(1,22,22*22) + (fac*tmp2) %*% y * c(1,22,22*22))
+
+a <- bench::mark(
+  b <- recipes6:::test_2(fac,
+                         x,
+                         y,
+                         22.0,
+                         cos_dc2,
+                         sin_dc2),
+  d <- recipes6:::test_3(fac,
+                         x,
+                         y,
+                         22.0,
+                         tmp,
+                         tmp2),
+  check = FALSE
+)
+data.table::setDT(a)
+a
+
+
+c <- bench::mark(
+  d <- recipes6:::test_1(fac,
+                         x[,1],
+                         y[,1],
+                         x[,2],
+                         y[,2],
+                         x[,3],
+                         y[,3],
+                         22.0,
+                         cos_dc2,
+                         sin_dc2)
+)
+setDT(c)
+c
+
 */
+
