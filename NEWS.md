@@ -1,3 +1,10 @@
+# earthtide 0.1.0
+
+* switched from RcppParallel to RcppEigen. Eigen performs well regardless 
+of the BLAS installed.
+* switched to RcppThread from RcppParallel.
+* Reordered C++ loops to improve performance.
+
 # earthtide 0.0.13
 * updated the documentation for latitude, longitude and elevation (thanks kohlerjl)
 
