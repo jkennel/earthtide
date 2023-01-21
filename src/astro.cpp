@@ -10,7 +10,6 @@
 
 #include <RcppEigen.h>
 #include <Eigen/StdVector>
-
 #include <RcppThread.h>
 
 using namespace Eigen;
@@ -100,6 +99,7 @@ double legendre_bh(int l, int m, double x, int csphase = -1) {
   return(boost::math::legendre_p(l, m, x) * std::pow(csphase, m));
 
 }
+
 
 // [[Rcpp::export]]
 double legendre_deriv_bh(int l, int m, double x) {
@@ -534,182 +534,4 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 // }
 
 /*** R
-
-set.seed(10)
-dc2 <- earthtide:::calc_dc2(matrix(rnorm(1100), ncol = 11), matrix(rnorm(11), ncol = 1), 1:100)
-a   <- earthtide:::fac_xy(matrix(rnorm(300), ncol = 3), 1:100, 0.5)
-b   <- earthtide:::fac_xy(matrix(rnorm(300), ncol = 3), 1:100, 0.5)
-amp <- earthtide:::fac_2(a,b);
-earthtide:::phase(dc2, a,b);
-
-
-
-library(earthtide)
-tms <- seq.POSIXt(as.POSIXct('1995-01-01', tz = 'UTC'), as.POSIXct('1995-01-01 00:00:30', tz = 'UTC'),1)
-wave_groups = data.frame(start = c(0, 1), end = c(1,2))
-et <- Earthtide$new(utc = tms,
-                    latitude = 49.00937,
-                    longitude = 8.40444,
-                    elevation = 120,
-                    gravity = 9.8127,
-                    cutoff = 1.0e-10,
-                    wave_groups = wave_groups)
-x <- 1:1e6
-astro_args <- as.matrix(earthtide:::simon_coef_1994[, -1])
-longitude <- 8.40444
-tms_2 <- earthtide:::.prepare_datetime(tms)
-# recipes6:::time_mat(tms)
-
-
-bench::mark(
-  a <- t(recipes6:::time_mat(tms)),
-  b <- earthtide:::time_mat(tms),
-  check = TRUE
-)
-
-bench::mark(
-  a <- t(recipes6:::time_der_mat(tms)),
-  b <- earthtide:::time_der_mat(tms),
-  check = TRUE
-)
-
-
-bench::mark(
-  a <-  recipes6:::astro(tms_2$t_astro, astro_args, longitude, tms_2$hours, tms_2$ddt),
-  b <- earthtide:::astro(tms_2$t_astro, astro_args, longitude, tms_2$hours, tms_2$ddt),
-  check = TRUE
-)
-
-bench::mark(
-  a <-  recipes6:::astro_der(tms_2$t_astro, astro_args),
-  b <- earthtide:::astro_der(tms_2$t_astro, astro_args),
-  check = TRUE
-)
-
-
-bench::mark(
-  a <- recipes6:::legendre(5, 0.1),
-  b <- earthtide:::legendre(5, 0.1),
-  check = TRUE
-)
-
-
-
-
-library(data.table)
-library(recipes6)
-library(earthtide)
-
-wave_groups = na.omit(eterna_wavegroups[eterna_wavegroups$time == '1 month',])
-
-tms <- seq.POSIXt(as.POSIXct('1995-01-01', tz = 'UTC'), as.POSIXct('1995-01-01 02:00:00', tz = 'UTC'), 1)
-
-et <- Earthtide$new(utc = tms,
-                    latitude = 52.3868,
-                    longitude = 9.7144,
-                    elevation = 110,
-                    gravity = 9.8127,
-                    cutoff = 1.0e-10,
-                    catalog = 'hw95s',
-                    wave_groups = wave_groups)
-et$analyze(method = 'tidal_potential',
-           scale = FALSE)
-bench::mark(
-et$analyze(method = 'tidal_potential')
-)
-et$tides
-
-et$delta[1:12] <- et$love_params$dklat
-et$deltar <- et$love_params$dkr
-
-x <- cbind(et$catalog$c0,
-           et$catalog$c1,
-           et$catalog$c2)
-y <- cbind(et$catalog$s0,
-           et$catalog$s1,
-           et$catalog$s2)
-
-a <- bench::mark(
-  cc <- recipes6:::et_calculate(et$astro$astro,
-                                et$astro$astro_der,
-                                et$catalog$k,
-                                et$pk,
-                                et$delta,
-                                et$deltar,
-                                x,
-                                y,
-                                et$station$dgk,
-                                et$catalog$jcof - 1,
-                                et$datetime$j2000,
-                                et$love_params$dom0,
-                                et$love_params$domr,
-                                et$catalog$id,
-                                1,
-                                et$update_coef,
-                                et$catalog$wave_groups$multiplier,
-                                TRUE,
-                                TRUE),
-  dd <- as.numeric(et$calculate()),
-  check = TRUE
-)
-setDT(a)
-a
-head(dd)
-head(cc)
-plot(tidal_potential~datetime, et$tides, type = 'l')
-
-
-
-# const Eigen::ArrayXd& fac,
-# const Eigen::MatrixXd& x,
-# const Eigen::MatrixXd& y,
-# double j2000,
-# const Eigen::ArrayXd& cos_dc2,
-# const Eigen::ArrayXd& sin_dc2
-n <- 10000
-fac <- rnorm(n)
-x <- matrix(rnorm(3*n), ncol = 3)
-y <- matrix(rnorm(3*n), ncol = 3)
-cos_dc2 <-  rnorm(n)
-tmp <- matrix(cos_dc2, nrow = 1)
-sin_dc2 <-  rnorm(n)
-tmp2 <- matrix(sin_dc2, nrow = 1)
-
-sum((fac*tmp) %*% x * c(1,22,22*22) + (fac*tmp2) %*% y * c(1,22,22*22))
-
-a <- bench::mark(
-  b <- recipes6:::test_2(fac,
-                         x,
-                         y,
-                         22.0,
-                         cos_dc2,
-                         sin_dc2),
-  d <- recipes6:::test_3(fac,
-                         x,
-                         y,
-                         22.0,
-                         tmp,
-                         tmp2),
-  check = FALSE
-)
-data.table::setDT(a)
-a
-
-
-c <- bench::mark(
-  d <- recipes6:::test_1(fac,
-                         x[,1],
-                         y[,1],
-                         x[,2],
-                         y[,2],
-                         x[,3],
-                         y[,3],
-                         22.0,
-                         cos_dc2,
-                         sin_dc2)
-)
-setDT(c)
-c
-
 */
-

@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' utils::data(eterna_wavegroups)
-'eterna_wavegroups'
+"eterna_wavegroups"
 
 # @title Hartmann and Wenzel (1995) tidal potential catalogue
 # @format A \code{data.frame} The columns are:
@@ -135,58 +135,57 @@
 
 # download leap second data
 get_tai_utc <- function(tai_utc_path) {
-
   tf <- tempfile()
   utils::download.file(tai_utc_path, tf) # this may need to be updated
 
-  widths  <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
-  tai_utc <- read.fwf(tf, widths = widths, stringsAsFactors=FALSE)
+  widths <- c(17, 9, 10, 12, 12, 6, 4, 9, 1)
+  tai_utc <- read.fwf(tf, widths = widths, stringsAsFactors = FALSE)
   tai_utc <- tai_utc[, c(2, 4, 6, 8)]
-  names(tai_utc) <- c('jd', 'tai_utc', 'minus_date', 'factor')
+  names(tai_utc) <- c("jd", "tai_utc", "minus_date", "factor")
 
   tai_utc$mjd <- julian_mod_julian(tai_utc$jd)
 
   tai_utc
-
 }
 
 # get tai - utc
 mjd_tai_utc <- function(mjd, tai_utc_path) {
-
   tai_utc <- get_tai_utc(tai_utc_path)
 
   tu <- c()
 
-  for (i in 1:length(mjd)) {
-
+  for (i in seq_along(mjd)) {
     di <- mjd[i] - tai_utc$mjd
 
     wh <- max(which(di >= 0))
 
-    tu[i] <- tai_utc$tai_utc[wh] + (mjd[i] - tai_utc$minus_date[wh]) * tai_utc$factor[wh]
-
+    tu[i] <- tai_utc$tai_utc[wh] + (mjd[i] - tai_utc$minus_date[wh]) *
+      tai_utc$factor[wh]
   }
 
   tu
-
 }
 
 
 # Bulletin B
 get_iers_b <- function(b_path, tai_utc_path) {
-
   tf <- tempfile()
   utils::download.file(b_path, tf)
 
-  len  <- length(readLines(tf))
-  dut1 <- utils::read.table(tf, skip = 14, stringsAsFactors = FALSE,
-                            col.names = c('year', 'month', 'day', 'mjd',
-                                          'x', 'y', 'ut1_utc', 'lod',
-                                          'dx', 'dy', 'x_sig',  'y_sig',
-                                           'ut1_utc_sig', 'lod_sig',
-                                           'dx_sig',  'dy_sig'),
-                            colClasses = c('integer', 'integer', 'integer',
-                                           rep('numeric', 13)))
+  dut1 <- utils::read.table(tf,
+    skip = 14, stringsAsFactors = FALSE,
+    col.names = c(
+      "year", "month", "day", "mjd",
+      "x", "y", "ut1_utc", "lod",
+      "dx", "dy", "x_sig", "y_sig",
+      "ut1_utc_sig", "lod_sig",
+      "dx_sig", "dy_sig"
+    ),
+    colClasses = c(
+      "integer", "integer", "integer",
+      rep("numeric", 13)
+    )
+  )
 
   dut1$datetime <- mod_julian_utc(dut1$mjd)
 
@@ -194,51 +193,60 @@ get_iers_b <- function(b_path, tai_utc_path) {
   dut1$ddt <- 32.184 + (mjd_tai_utc(dut1$mjd, tai_utc_path) - dut1$ut1_utc)
 
 
-  dut1 <- dut1[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
-                   'dx', 'dy')]
-
+  dut1 <- dut1[, c(
+    "datetime", "ddt", "ut1_utc", "lod", "x", "y",
+    "dx", "dy"
+  )]
 }
 
 
 # Bulletin A
-get_iers_a <- function(a_path, daily_path, tai_utc_path){
-
-  widths = c(2,2,2,1,8,1,1,1,9,9,1,9,9,2,1,10,10,1,7,7,2,1,1,9,9,1,9,9,10,10,11,10,10)
+get_iers_a <- function(a_path, daily_path, tai_utc_path) {
+  widths <- c(
+    2, 2, 2, 1, 8, 1, 1, 1, 9, 9, 1, 9, 9, 2, 1,
+    10, 10, 1, 7, 7, 2, 1, 1, 9, 9, 1, 9, 9, 10,
+    10, 11, 10, 10
+  )
 
   # historical
   tf_all <- tempfile()
   utils::download.file(a_path, tf_all)
-  iers_all   <- read.fwf(tf_all, widths = widths, stringsAsFactors=FALSE)
-  wh <- c(5,9,12,16,19,24,27)
-  wh_names <- c('mjd', 'x', 'y', 'ut1_utc', 'lod', 'dx', 'dy')
+  iers_all <- read.fwf(tf_all, widths = widths, stringsAsFactors = FALSE)
+  wh <- c(5, 9, 12, 16, 19, 24, 27)
+  wh_names <- c("mjd", "x", "y", "ut1_utc", "lod", "dx", "dy")
   iers_all <- iers_all[, wh]
   names(iers_all) <- wh_names
-  iers_all$datetime   <- mod_julian_utc(iers_all$mjd)
+  iers_all$datetime <- mod_julian_utc(iers_all$mjd)
   iers_all$dx <- iers_all$dx / 1000.0
   iers_all$dy <- iers_all$dy / 1000.0
   iers_all$lod <- iers_all$lod / 1000.0
-  iers_all$ddt <- 32.184 + (mjd_tai_utc(iers_all$mjd, tai_utc_path) - iers_all$ut1_utc)
-  iers_all <- iers_all[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
-                           'dx', 'dy')]
+  iers_all$ddt <- 32.184 + (mjd_tai_utc(iers_all$mjd, tai_utc_path) -
+    iers_all$ut1_utc)
+  iers_all <- iers_all[, c(
+    "datetime", "ddt", "ut1_utc", "lod", "x", "y",
+    "dx", "dy"
+  )]
 
 
   # daily set for update
   tf_daily <- tempfile()
   utils::download.file(daily_path, tf_daily)
-  iers_daily <- read.fwf(tf_daily, widths = widths, stringsAsFactors=FALSE)
+  iers_daily <- read.fwf(tf_daily, widths = widths, stringsAsFactors = FALSE)
   iers_daily <- iers_daily[, wh]
   names(iers_daily) <- wh_names
   iers_daily$datetime <- mod_julian_utc(iers_daily$mjd)
   iers_daily$dx <- iers_daily$dx / 1000.0
   iers_daily$dy <- iers_daily$dy / 1000.0
   iers_daily$lod <- iers_daily$lod / 1000.0
-  iers_daily$ddt <- 32.184 + (mjd_tai_utc(iers_daily$mjd, tai_utc_path) - iers_daily$ut1_utc)
-  iers_daily <- iers_daily[, c('datetime', 'ddt', 'ut1_utc', 'lod', 'x', 'y',
-                           'dx', 'dy')]
+  iers_daily$ddt <- 32.184 + (mjd_tai_utc(iers_daily$mjd, tai_utc_path) -
+    iers_daily$ut1_utc)
+  iers_daily <- iers_daily[, c(
+    "datetime", "ddt", "ut1_utc", "lod", "x", "y",
+    "dx", "dy"
+  )]
 
   iers_all <- iers_all[iers_all$datetime < min(iers_daily$datetime), ]
   return(rbind(iers_all, iers_daily))
-
 }
 
 
@@ -247,8 +255,8 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path){
 #' get_iers
 #'
 #' \code{get_iers} returns a \code{data.frame} of earth orientation
-#' parameters from (1962-present).  This function requires an active internet connection.
-#' Bulletins A and B are combined giving precedence to B.
+#' parameters from (1962-present).  This function requires an active internet
+#' connection. Bulletins A and B are combined giving precedence to B.
 #' Approximately (~ 7 MB) of data are downloaded. This function is brittle and
 #' may fail when data sources change.
 #'
@@ -269,33 +277,32 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path){
 #' }
 #'
 get_iers <- function(
-  a_path = NULL,
-  b_path = NULL,
-  daily_path = NULL,
-  tai_utc_path = NULL) {
-
+    a_path = NULL,
+    b_path = NULL,
+    daily_path = NULL,
+    tai_utc_path = NULL) {
   if (is.null(a_path)) {
-    a_path <- 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all'
+    a_path <- "https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all"
   }
   if (is.null(b_path)) {
-    b_path <- 'http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now'
+    b_path <- "http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now"
   }
   if (is.null(daily_path)) {
-    daily_path <- 'https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt'
+    daily_path <- "https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt"
   }
   if (is.null(tai_utc_path)) {
-    tai_utc_path <- 'http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt'
+    tai_utc_path <- "http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt"
   }
-# http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now
-# ftp://ftp.iers.org/products/eop/rapid/standard/finals2000A.all
-# ftp://ftp.iers.org/products/eop/rapid/daily/finals2000A.daily
+  # http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now
+  # ftp://ftp.iers.org/products/eop/rapid/standard/finals2000A.all
+  # ftp://ftp.iers.org/products/eop/rapid/daily/finals2000A.daily
 
   bull_a <- get_iers_a(a_path, daily_path, tai_utc_path) # bulletin A
   bull_b <- get_iers_b(b_path, tai_utc_path) # bulletin B
 
-  bull_a  <- bull_a[bull_a$datetime > max(bull_b$datetime),]
+  bull_a <- bull_a[bull_a$datetime > max(bull_b$datetime), ]
   bull_ab <- rbind(bull_b, bull_a)
-  bull_ab <- bull_ab[rowSums(is.na(bull_ab[, 2:8])) < 7,]
+  bull_ab <- bull_ab[rowSums(is.na(bull_ab[, 2:8])) < 7, ]
   bull_ab[is.na(bull_ab)] <- 0
   bull_ab
 }

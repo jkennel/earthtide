@@ -21,8 +21,8 @@ columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy.
 }
 \description{
 \code{get_iers} returns a \code{data.frame} of earth orientation
-parameters from (1962-present).  This function requires an active internet connection.
-Bulletins A and B are combined giving precedence to B.
+parameters from (1962-present).  This function requires an active internet
+connection. Bulletins A and B are combined giving precedence to B.
 Approximately (~ 7 MB) of data are downloaded. This function is brittle and
 may fail when data sources change.
 }

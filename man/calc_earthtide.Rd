@@ -30,18 +30,18 @@ calc_earthtide(
 
 \item{do_predict}{run in predict or analyze mode}
 
-\item{method}{One or more of "gravity", 
-"tidal_potential", "tidal_tilt", "vertical_displacement", 
+\item{method}{One or more of "gravity",
+"tidal_potential", "tidal_tilt", "vertical_displacement",
 "horizontal_displacement", "n_s_displacement", "e_w_displacement",
 "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain",
-or "ocean_tides", "pole_tide", "lod_tide". The pole tide and lod_tide 
+or "ocean_tides", "pole_tide", "lod_tide". The pole tide and lod_tide
 are used in predict mode even if do_predict is FALSE. More than one value
 can only be used if do_predict == TRUE.}
 
 \item{astro_update}{Integer that
 determines how often to phases are updated in number of samples. Defaults
 to 1 (every sample), but speed gains are realized with larger values.
-Typically updating every hour will have speed gains and keep precision 
+Typically updating every hour will have speed gains and keep precision
 (ie 3600 for one second data, 60 for minute data, 1 for hourly data).}
 
 \item{latitude}{The station latitude (numeric) defaults to 0.}
@@ -52,30 +52,30 @@ Typically updating every hour will have speed gains and keep precision
 
 \item{azimuth}{Earth azimuth (numeric) defaults to 0.}
 
-\item{gravity}{Gravity at the station (m/s^2) (numeric) 0 to 
+\item{gravity}{Gravity at the station (m/s^2) (numeric) 0 to
 estimate gravity from elevation and latitude.}
 
 \item{earth_radius}{Radius of earth (m) (numeric) defaults to 6378136.3}
 
-\item{earth_eccen}{Eccentricity of earth (numeric) 
+\item{earth_eccen}{Eccentricity of earth (numeric)
 defaults to 6.69439795140e-3}
 
-\item{cutoff}{Cutoff amplitude for constituents (numeric) 
+\item{cutoff}{Cutoff amplitude for constituents (numeric)
 defaults to 1e-6.}
 
-\item{wave_groups}{Two column data.frame having start and end of 
+\item{wave_groups}{Two column data.frame having start and end of
 frequency groups (data.frame). This data.frame must have two columns
-with the names 'start', and 'end' signifying the start and end of the 
-wave groupings.  An optional third column 'multiplier' can be provided 
+with the names 'start', and 'end' signifying the start and end of the
+wave groupings.  An optional third column 'multiplier' can be provided
 to scale the particular wave group.  If column names do no match, the
 inferred column positions are start, end, multiplier.}
 
 \item{catalog}{Use the "hw95s" catalog or "ksm04" catalog (character).}
 
-\item{eop}{User defined Earth Orientation Parameter (EOP) data.frame with the 
-following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
+\item{eop}{User defined Earth Orientation Parameter (EOP) data.frame with
+the following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 
-\item{return_matrix}{Return a matrix of tidal values instead of data.frame. 
+\item{return_matrix}{Return a matrix of tidal values instead of data.frame.
 The datetime column will not be present in this case (logical).}
 
 \item{scale}{Scale results when do_predict is FALSE}
@@ -86,8 +86,8 @@ The datetime column will not be present in this case (logical).}
 data.frame of tidal results
 }
 \description{
-This is a wrapper to the Earthtide R6 class for the prediction 
-of Earth tides. This function is provided for users who would prefer a more 
+This is a wrapper to the Earthtide R6 class for the prediction
+of Earth tides. This function is provided for users who would prefer a more
 typical R function.
 }
 \examples{
@@ -101,7 +101,7 @@ et <- calc_earthtide(utc = tms,
                     latitude = 52.3868,
                     longitude = 9.7144,
                     elevation = 110,
-                    gravity = 9.8127, 
+                    gravity = 9.8127,
                     cutoff = 1.0e-5,
                     catalog = 'ksm04',
                     wave_groups = wave_groups)

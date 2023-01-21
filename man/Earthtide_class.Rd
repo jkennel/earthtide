@@ -106,11 +106,12 @@ et <- Earthtide$new(
   latitude = 52.3868,
   longitude = 9.7144,
   catalog = "ksm04",
-  wave_groups = data.frame(start = 0.0, end = 6.0))
+  wave_groups = data.frame(start = 0.0, end = 6.0)
+)
 
 et$predict(method = "gravity", astro_update = 1)
 
-plot(gravity~datetime, et$tide(), type='l')
+plot(gravity ~ datetime, et$tide(), type = "l")
 
 }
 \references{
