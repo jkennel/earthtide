@@ -13,16 +13,17 @@
 #include <RcppThread.h>
 
 using namespace Eigen;
+
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
+using Eigen::MatrixXcd;
 using Eigen::VectorXd;
 using Eigen::VectorXi;
-using Eigen::ArrayXd;
-using Eigen::ArrayXi;
-using Eigen::MatrixXcd;
 using Eigen::VectorXcd;
 using Eigen::Vector3d;
 using Eigen::Vector2d;
+using Eigen::ArrayXd;
+using Eigen::ArrayXi;
 
 
 //==============================================================================
@@ -181,7 +182,7 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
 {
   size_t n = input.size();
   size_t counter = 0;
-  Eigen::VectorXi out(n);
+  VectorXi out(n);
 
   for (size_t i=0; i < n; ++i)
   {
@@ -201,7 +202,7 @@ Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
                             const Eigen::VectorXi& subs)
 {
   size_t n = subs.size();
-  Eigen::VectorXd out(n);
+  VectorXd out(n);
 
 
   for (size_t i=0; i < n; ++i)
@@ -223,7 +224,7 @@ Eigen::VectorXi unique_eigen(Eigen::VectorXi index) {
   it = std::unique(v.begin(), v.end());
   v.resize(std::distance(v.begin(), it));
 
-  Eigen::VectorXi index_unique = Eigen::Map<Eigen::VectorXi, Eigen::Unaligned>(v.data(), v.size());
+  VectorXi index_unique = Eigen::Map<VectorXi, Eigen::Unaligned>(v.data(), v.size());
 
   return(index_unique);
 
@@ -258,7 +259,7 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
 
   // size_t n = body.size();
   size_t n = body_inds.size();
-  Eigen::ArrayXd out = body;
+  ArrayXd out = body;
 
   // size_t k;
   double dc3;
@@ -308,7 +309,7 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                               resonance,
                               max_amp);
 
-  const Eigen::Vector3d v(1.0, j2000, j2000 * j2000);
+  const Vector3d v(1.0, j2000, j2000 * j2000);
   ArrayXd fac_x = fac * (x * v).array();
   ArrayXd fac_y = fac * (y * v).array();
 
@@ -374,7 +375,7 @@ double et_predict_one(const Eigen::VectorXd& astro,
                               resonance,
                               max_amp);
 
-  const Eigen::Vector3d v(1.0, j2000, j2000 * j2000);
+  const Vector3d v(1.0, j2000, j2000 * j2000);
 
   output = (fac * ((x * v).array().colwise() * dc2.cos() +
     (y * v).array().colwise() * dc2.sin())).sum();
@@ -438,9 +439,9 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
   MatrixXd output;
 
   if(predict) {
-    output = Eigen::MatrixXd::Zero(nt,1);
+    output = MatrixXd::Zero(nt,1);
   } else {
-    output = Eigen::MatrixXd::Zero(nt,ng*2);
+    output = MatrixXd::Zero(nt,ng*2);
   }
 
   // subset for each wave group
