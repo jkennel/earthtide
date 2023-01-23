@@ -31,7 +31,7 @@ using Eigen::ArrayXi;
 Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 
   size_t n = time.size();
-  MatrixXd t_mat = MatrixXd::Ones(n,5);
+  MatrixXd t_mat = MatrixXd::Ones(n, 5);
 
   t_mat.col(1) = time;
   t_mat.col(2) = t_mat.col(1).array() * time;
@@ -45,7 +45,7 @@ Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 
   size_t n = time.size();
-  MatrixXd t_mat = MatrixXd::Zero(n,5);
+  MatrixXd t_mat = MatrixXd::Zero(n, 5);
 
   t_mat.col(1).setOnes();
   t_mat.col(2) = time * 2.0;
@@ -105,10 +105,10 @@ double legendre_bh(int l, int m, double x, int csphase = -1) {
 // [[Rcpp::export]]
 double legendre_deriv_bh(int l, int m, double x) {
 
-  double pm1 = legendre_bh(l, m-1,  x);
-  double pp1 = legendre_bh(l, m+1,  x);
+  double pm1 = legendre_bh(l, m - 1,  x);
+  double pp1 = legendre_bh(l, m + 1,  x);
 
-  return(0.5 * ((l+m) * (l-m+1) * pm1 - pp1));
+  return(0.5 * ((l + m) * (l - m + 1) * pm1 - pp1));
 
 }
 
@@ -117,7 +117,7 @@ double scale_legendre_bh(int l, int m) {
 
   double k;
 
-  if(m == 0) {
+  if (m == 0) {
     k = 1.0;
   } else {
     k = 2.0;
@@ -141,8 +141,8 @@ Eigen::MatrixXd legendre(int l_max, double x) {
 
   int i = 0;
 
-  for (int l=2; l <= l_max; l++){
-    for(int m=0; m <= l; m++){
+  for (int l = 2; l <= l_max; ++l){
+    for (int m = 0; m <= l; ++m){
       scale = scale_legendre_bh(l, m);
       out(i, 0) = l;
       out(i, 1) = m;
@@ -167,7 +167,7 @@ Eigen::MatrixXi get_catalog_indices(Eigen::VectorXi index, size_t ng) {
   inds(ng - 1, 1) = nw - 1;
 
   for (size_t i = 1; i < nw; ++i) {
-    if(index[i] != index[i-1]) {
+    if (index[i] != index[i - 1]) {
       inds(counter, 0) = i;
       inds(counter - 1, 1) = i - 1;
       counter = counter + 1;
@@ -184,9 +184,9 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
   size_t counter = 0;
   VectorXi out(n);
 
-  for (size_t i=0; i < n; ++i)
+  for (size_t i = 0; i < n; ++i)
   {
-    if(input[i] + 1 == 2) {
+    if (input[i] + 1 == 2) {
       out[counter] = i;
       counter += 1;
     }
@@ -205,7 +205,7 @@ Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
   VectorXd out(n);
 
 
-  for (size_t i=0; i < n; ++i)
+  for (size_t i = 0; i < n; ++i)
   {
     out[i] = input[subs[i]];
   }
@@ -438,10 +438,10 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 
   MatrixXd output;
 
-  if(predict) {
-    output = MatrixXd::Zero(nt,1);
+  if (predict) {
+    output = MatrixXd::Zero(nt, 1);
   } else {
-    output = MatrixXd::Zero(nt,ng*2);
+    output = MatrixXd::Zero(nt, ng * 2);
   }
 
   // subset for each wave group
@@ -510,29 +510,6 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 
   return(output);
 }
-
-
-// ***********Just for testing*********
-// //[[Rcpp::export]]
-// Eigen::ArrayXd fac_xy(Eigen::MatrixXd x, Eigen::ArrayXd fac, double j2000 ){
-//   const Eigen::Vector3d v(1.0, j2000, j2000 * j2000);
-//   ArrayXd fac_x = fac * (x * v).array();
-//   return(fac_x);
-// }
-//
-// //[[Rcpp::export]]
-// Eigen::RowVectorXd fac_2(Eigen::ArrayXd fac_x, Eigen::ArrayXd fac_y){
-//   RowVectorXd dtham = (fac_x * fac_x + fac_y * fac_y).sqrt();
-//   return(dtham);
-// }
-//
-// //[[Rcpp::export]]
-// Eigen::VectorXd phase(Eigen::ArrayXd dc2, Eigen::ArrayXd fac_x, Eigen::ArrayXd fac_y){
-//
-//   VectorXd dthph = dc2 -  fac_y.binaryExpr(fac_x, [] (double a, double b) { return std::atan2(a, b);} );
-//
-//   return(dthph.cos());
-// }
 
 /*** R
 */

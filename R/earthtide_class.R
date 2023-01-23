@@ -26,9 +26,12 @@
 #' \itemize{
 #'   \item{et: }{An \code{Earthtide} object.}
 #'   \item{utc: }{The date-time in UTC (POSIXct vector).}
-#'   \item{latitude: }{The station latitude (WGS84) (degree) (numeric) defaults to 0.}
-#'   \item{longitude: }{The station longitude (WGS84) (degree) (numeric) defaults to 0.}
-#'   \item{elevation: }{The station ellipsoidal height (WGS84) (m) (numeric) defaults to 0.}
+#'   \item{latitude: }{The station latitude (WGS84) (degree) (numeric)
+#'     defaults to 0.0}
+#'   \item{longitude: }{The station longitude (WGS84) (degree) (numeric)
+#'     defaults to 0.0}
+#'   \item{elevation: }{The station ellipsoidal height (WGS84) (m) (numeric)
+#'     defaults to 0.0}
 #'   \item{azimuth: }{Earth azimuth (numeric) defaults to 0 (degrees)}
 #'   \item{gravity: }{Gravity at the station (m/s^2) (numeric) 0 to
 #'     estimate gravity from elevation and latitude.}
@@ -44,8 +47,8 @@
 #'     to scale the particular wave group.  If column names do no match, the
 #'     inferred column positions are start, end, multiplier.}
 #'   \item{catalog: }{Use the "hw95s" catalog or "ksm04" catalog (character).}
-#'   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame with the
-#'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
+#'   \item{eop: }{User defined Earth Orientation Parameter (EOP) data.frame
+#'     with the following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 #'   \item{...: }{Currently not used.}
 #' }
 #'
@@ -70,7 +73,8 @@
 #'
 #' \code{$new(utc, latitude, longitude, elevation, azimuth, gravity,} \cr
 #' \code{earth_radius, earth_eccen, cutoff, wave_groups, catalog, ...)} \cr
-#' create a new \code{Earthtide} object and initialize catalog, station and times.
+#' create a new \code{Earthtide} object and initialize catalog, station
+#' and times.
 #'
 #' \code{$predict(method, astro_argument, return_matrix)} generate a combined
 #'   synthetic Earth tide.
@@ -310,7 +314,8 @@ Earthtide <- R6Class(
       scale <- c(rep(-6, 3), rep(-12, 4), rep(-20, 5))
 
       self$station$dgk[1:12] <- self$station$dgk[1:12] * dfak *
-        (2.0 * self$love_params$dhlat[1:12] + scale * self$love_params$dllat[1:12]) /
+        (2.0 * self$love_params$dhlat[1:12] +
+          scale * self$love_params$dllat[1:12]) /
         (self$station$gravity * self$station$geo_radius)
     },
     horizontal_strain = function() {
@@ -340,7 +345,8 @@ Earthtide <- R6Class(
       dfak <- 1e9 / (self$station$geo_radius * self$station$gravity)
 
 
-      dgx[1] <- (dhlat[1] - (6.0 * dllat[1] * c2t) / (3.0 * ct2 - 1.0)) * caz^2 +
+      dgx[1] <-
+        (dhlat[1] - (6.0 * dllat[1] * c2t) / (3.0 * ct2 - 1.0)) * caz^2 +
         (dhlat[1] - (6.0 * dllat[1] * ct2) / (3.0 * ct2 - 1.0)) * saz^2
       dgy[1] <- 0.0
 
@@ -352,11 +358,13 @@ Earthtide <- R6Class(
         (dhlat[3] - 4.0 * dllat[3] / st2 + 2.0 * dllat[3] * cott^2) * saz^2
       dgy[3] <- 4.0 * dllat[3] * cott * csts / st
 
-      dgx[4] <- (dhlat[4] + dllat[4] * (33.0 - 45.0 * ct2) / (5.0 * ct2 - 3.0)) * caz^2 +
+      dgx[4] <-
+        (dhlat[4] + dllat[4] * (33.0 - 45.0 * ct2) / (5.0 * ct2 - 3.0)) * caz^2 +
         (dhlat[4] - dllat[4] * (1.00 + 10.0 * ct2 / (5.0 * ct2 - 3.0))) * saz^2
       dgy[4] <- 0.0
 
-      dgx[5] <- (dhlat[5] - dllat[5] * (1.0 + 10.0 * (1.0 - 4.0 * ct2) / (1.0 - 5.0 * ct2))) * caz^2 +
+      dgx[5] <-
+        (dhlat[5] - dllat[5] * (1.0 + 10.0 * (1.0 - 4.0 * ct2) / (1.0 - 5.0 * ct2))) * caz^2 +
         (dhlat[5] + dllat[5] * (cott^2 - 1.0 / st2 - 10.0 * ct2 / (5.0 * ct2 - 1.0))) * saz^2
       dgy[5] <- -20.0 * dllat[5] * ct * csts / (5.0 * ct2 - 1.0)
 
@@ -368,17 +376,21 @@ Earthtide <- R6Class(
         (dhlat[7] + dllat[7] * (3.0 * cott^2 - 9.0 / st2)) * saz^2
       dgy[7] <- 12.0 * dllat[7] * cott * csts / st
 
-      dgx[8] <- (dhlat[8] - 4.0 * dllat[8] * (4.0 - 3.0 * (5.0 * ct2 - 1.0) / (35.0 * ct2 * ct2 - 30.0 * ct2 + 3.0))) * caz^2 +
+      dgx[8] <-
+        (dhlat[8] - 4.0 * dllat[8] * (4.0 - 3.0 * (5.0 * ct2 - 1.0) / (35.0 * ct2 * ct2 - 30.0 * ct2 + 3.0))) * caz^2 +
         (dhlat[8] - 4.0 * dllat[8] * (1.0 + 3.0 * (5.0 * ct2 - 1.0) / (35.0 * ct2 * ct2 - 30.0 * ct2 + 3.0))) * saz^2
       dgy[8] <- 0.0
 
-      dgx[9] <- (dhlat[9] - 2.0 * dllat[9] * (8.0 - 3.0 / (7.0 * ct2 - 3.0))) * caz^2 +
+      dgx[9] <-
+        (dhlat[9] - 2.0 * dllat[9] * (8.0 - 3.0 / (7.0 * ct2 - 3.0))) * caz^2 +
         (dhlat[9] - 2.0 * dllat[9] * (2.0 + 3.0 / (7.0 * ct2 - 3.0))) * saz^2
       dgy[9] <- dllat[9] * 3.0 / ct * (1.0 + 2.0 / (7.0 * ct2 - 3.0)) * saz2
 
-      dgx[10] <- (dhlat[10] - 4.0 * dllat[10] * (4.0 + 3.0 * ct2 / (7.0 * ct2^2 - 8.0 * ct2 + 1.0))) * caz^2 +
+      dgx[10] <-
+        (dhlat[10] - 4.0 * dllat[10] * (4.0 + 3.0 * ct2 / (7.0 * ct2^2 - 8.0 * ct2 + 1.0))) * caz^2 +
         (dhlat[10] - 4.0 * dllat[10] * (1.0 - 3.0 * ct2 / (7.0 * ct2^2 - 8.0 * ct2 + 1.0))) * saz^2
-      dgy[10] <- -dllat[10] * 6.0 * ct / st^2 * (1.0 - 4.0 / (7.0 * ct2 - 1.0)) * saz2
+      dgy[10] <-
+        -dllat[10] * 6.0 * ct / st^2 * (1.0 - 4.0 / (7.0 * ct2 - 1.0)) * saz2
 
       dgx[11] <- (dhlat[11] - 2.0 * dllat[11] * (8.0 - 3.0 / st2)) * caz^2 +
         (dhlat[11] - 2.0 * dllat[11] * (2.0 + 3.0 / st2)) * saz^2
@@ -391,7 +403,8 @@ Earthtide <- R6Class(
       self$station$dgx <- dgx
       self$station$dgy <- dgy
 
-      self$station$dgk[1:12] <- self$station$dgk[1:12] * sqrt(dgx[1:12]^2 + dgy[1:12]^2) * dfak
+      self$station$dgk[1:12] <-
+        self$station$dgk[1:12] * sqrt(dgx[1:12]^2 + dgy[1:12]^2) * dfak
       self$pk[1:12] <- self$pk[1:12] + atan2(dgy[1:12], dgx[1:12]) * to_radians
     },
     ocean_tides = function() {
@@ -399,7 +412,9 @@ Earthtide <- R6Class(
       self$station$dgk <- self$station$dgk * dfak
       self$pk[] <- 0.0
     },
-    predict = function(method = "gravity", astro_update = 1L, return_matrix = FALSE) {
+    predict = function(method = "gravity",
+                       astro_update = 1L,
+                       return_matrix = FALSE) {
       self$apply_method(method)
       astro_update <- self$check_time_increment(astro_update)
       if (return_matrix) {
@@ -408,7 +423,10 @@ Earthtide <- R6Class(
         return(mat)
       } else {
         self$tides[[method]] <-
-          as.numeric(self$calculate(astro_update = astro_update, predict = TRUE))
+          as.numeric(self$calculate(
+            astro_update = astro_update,
+            predict = TRUE
+          ))
       }
 
       # reset parameters after calculation
@@ -535,8 +553,6 @@ Earthtide <- R6Class(
       cat("    cutoff:      ", head(self$catalog$cutoff), "\n", sep = "")
       cat("    n waves:     ", head(self$catalog$n_constituents), "\n", sep = "")
       cat("    n groups:    ", nrow(self$catalog$wave_groups), "\n", sep = "")
-      # cat("  Tides: \n")
-      # print(head(self$tides), row.names = FALSE)
 
       invisible(self)
     },

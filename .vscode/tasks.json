@@ -1,14 +1,63 @@
 {
 	"version": "2.0.0",
+	"options": {
+		"shell": {
+			"executable": "Rscript",
+			"args": [
+				"-e"
+			]
+		}
+	},
+	"presentation": {
+		"reveal": "always",
+		"panel": "shared",
+		"showReuseMessage": false,
+		"group": "build"
+	},
+	"type": "shell",
+	"problemMatcher": [],
 	"tasks": [
+		{
+			"label": "Document",
+			"command": "devtools::document(roclets = c('rd', 'collate', 'namespace'))",
+			"problemMatcher": []
+		},
+		{
+			"label": "Install",
+			"command": "devtools::install(quick = TRUE, upgrade = 'never')",
+			"group": "build",
+			"dependsOn": "Document"
+		},
+		{
+			"label": "Test",
+			"command": "devtools::test()",
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Check",
+			"command": "devtools::check(error_on = 'warning')",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"dependsOn": "Document"
+		},
+		{
+			"label": "Build and Test",
+			"dependsOn": [
+				"Pkgdown",
+				"Check"
+			]
+		},
 		{
 			"type": "R",
 			"code": [
-				"devtools::build()"
+				"devtools::check()"
 			],
-			"group": "build",
+			"group": "test",
 			"problemMatcher": [],
-			"label": "R: Build"
+			"label": "R: Check"
 		}
 	]
 }
