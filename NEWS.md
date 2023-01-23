@@ -1,6 +1,6 @@
 # earthtide 0.1.0
 
-* switched from RcppParallel to RcppEigen. Eigen performs well regardless 
+* switched from RcppArmadillo to RcppEigen. Eigen performs well regardless 
 of the BLAS installed.
 * switched to RcppThread from RcppParallel.
 * Reordered C++ loops to improve performance.
