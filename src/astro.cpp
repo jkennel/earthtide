@@ -264,7 +264,7 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
   // size_t k;
   double dc3;
 
-  for(size_t i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i) {
     dc3 = k_mat.row(body_inds[i]) * astro_der;
     out(body_inds[i]) = delta + deltar * (dc3 - o1) / (resonance - dc3);
   }
@@ -441,7 +441,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
   }
 
   // subset for each wave group
-  for(std::size_t j = 0; j < ng; ++j) {
+  for (std::size_t j = 0; j < ng; ++j) {
 
     start_seg = sub(j, 0);
     n_seg = sub(j, 1) - sub(j, 0) + 1;
@@ -462,7 +462,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
       // subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
 
-        output(k,0) += mult * et_predict_one(
+        output(k) += mult * et_predict_one(
           astro.col(k),
           astro_der.col(k),
           k_mat_sub,

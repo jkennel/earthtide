@@ -42,93 +42,86 @@
 #' @export
 #'
 #' @examples
-#' tms <- as.POSIXct('1990-01-01', tz = 'UTC') + c(0, 3600)
-#' wave_groups = data.frame(start = 0, end = 8, multiplier = 1.5)
+#' tms <- as.POSIXct("1990-01-01", tz = "UTC") + c(0, 3600)
+#' wave_groups <- data.frame(start = 0, end = 8, multiplier = 1.5)
 #'
-#' et <- calc_earthtide(utc = tms,
-#'                     do_predict = TRUE,
-#'                     method = c('tidal_potential', 'lod_tide', 'pole_tide'),
-#'                     latitude = 52.3868,
-#'                     longitude = 9.7144,
-#'                     elevation = 110,
-#'                     gravity = 9.8127,
-#'                     cutoff = 1.0e-5,
-#'                     catalog = 'ksm04',
-#'                     wave_groups = wave_groups)
+#' et <- calc_earthtide(
+#'   utc = tms,
+#'   do_predict = TRUE,
+#'   method = c("tidal_potential", "lod_tide", "pole_tide"),
+#'   latitude = 52.3868,
+#'   longitude = 9.7144,
+#'   elevation = 110,
+#'   gravity = 9.8127,
+#'   cutoff = 1.0e-5,
+#'   catalog = "ksm04",
+#'   wave_groups = wave_groups
+#' )
 calc_earthtide <- function(utc,
-                      do_predict = TRUE,
-                      method = 'gravity',
-                      latitude = 0,
-                      longitude = 0,
-                      elevation = 0,
-                      azimuth = 0,
-                      gravity = 0,
-                      earth_radius = 6378136.3,
-                      earth_eccen = 6.69439795140e-3,
-                      cutoff = 1e-6,
-                      wave_groups = NULL,
-                      catalog = 'ksm04',
-                      eop = NULL,
-                      return_matrix = FALSE,
-                      scale = TRUE,
-                      ...){
+                           do_predict = TRUE,
+                           method = "gravity",
+                           latitude = 0,
+                           longitude = 0,
+                           elevation = 0,
+                           azimuth = 0,
+                           gravity = 0,
+                           earth_radius = 6378136.3,
+                           earth_eccen = 6.69439795140e-3,
+                           cutoff = 1e-6,
+                           wave_groups = NULL,
+                           catalog = "ksm04",
+                           eop = NULL,
+                           return_matrix = FALSE,
+                           scale = TRUE,
+                           ...) {
+  et <- Earthtide$new(
+    utc = utc,
+    latitude = latitude,
+    longitude = longitude,
+    elevation = elevation,
+    gravity = gravity,
+    cutoff = cutoff,
+    catalog = catalog,
+    wave_groups = wave_groups,
+    eop = eop,
+    azimuth = azimuth,
+    earth_radius = earth_radius,
+    earth_eccen = earth_eccen
+  )
 
-
-  et <- Earthtide$new(utc = utc,
-                      latitude = latitude,
-                      longitude = longitude,
-                      elevation = elevation,
-                      gravity = gravity,
-                      cutoff = cutoff,
-                      catalog = catalog,
-                      wave_groups = wave_groups,
-                      eop = eop,
-                      azimuth = azimuth,
-                      earth_radius = earth_radius,
-                      earth_eccen = earth_eccen)
-
-  if(length(method) > 1) {
-    if(!do_predict) {
-      stop('If do_predict is FALSE only one method can be provided.')
+  if (length(method) > 1) {
+    if (!do_predict) {
+      stop("If do_predict is FALSE only one method can be provided.")
     }
   }
 
   for (i in seq_along(method)) {
-
-    if (method[i] == 'pole_tide') {
-
+    if (method[i] == "pole_tide") {
       et$pole_tide()
-
-    } else if (method[i] == 'lod_tide') {
-
+    } else if (method[i] == "lod_tide") {
       et$lod_tide()
-
     } else if (do_predict) {
-
-      if(return_matrix) {
+      if (return_matrix) {
         return(et$predict(method = method[i], return_matrix = return_matrix))
       } else {
         et$predict(method = method[i], return_matrix = return_matrix)
-
       }
     } else {
-      if(return_matrix) {
-        return(et$analyze(method = method[i],
-                          return_matrix = return_matrix,
-                          scale = scale)
-        )
+      if (return_matrix) {
+        return(et$analyze(
+          method = method[i],
+          return_matrix = return_matrix,
+          scale = scale
+        ))
       } else {
-
-        et$analyze(method = method[i],
-                   return_matrix = return_matrix,
-                   scale = scale)
+        et$analyze(
+          method = method[i],
+          return_matrix = return_matrix,
+          scale = scale
+        )
       }
-
     }
-
   }
 
   return(et$tide())
-
 }
-

@@ -387,7 +387,6 @@ Earthtide <- R6Class(
       self$pk[] <- 0.0
     },
     predict = function(method = "gravity", return_matrix = FALSE) {
-
       self$apply_method(method)
       if (return_matrix) {
         mat <- self$calculate(predict = TRUE)

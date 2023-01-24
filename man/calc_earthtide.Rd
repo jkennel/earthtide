@@ -84,17 +84,19 @@ of Earth tides. This function is provided for users who would prefer a more
 typical R function.
 }
 \examples{
-tms <- as.POSIXct('1990-01-01', tz = 'UTC') + c(0, 3600)
-wave_groups = data.frame(start = 0, end = 8, multiplier = 1.5)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + c(0, 3600)
+wave_groups <- data.frame(start = 0, end = 8, multiplier = 1.5)
 
-et <- calc_earthtide(utc = tms,
-                    do_predict = TRUE,
-                    method = c('tidal_potential', 'lod_tide', 'pole_tide'),
-                    latitude = 52.3868,
-                    longitude = 9.7144,
-                    elevation = 110,
-                    gravity = 9.8127,
-                    cutoff = 1.0e-5,
-                    catalog = 'ksm04',
-                    wave_groups = wave_groups)
+et <- calc_earthtide(
+  utc = tms,
+  do_predict = TRUE,
+  method = c("tidal_potential", "lod_tide", "pole_tide"),
+  latitude = 52.3868,
+  longitude = 9.7144,
+  elevation = 110,
+  gravity = 9.8127,
+  cutoff = 1.0e-5,
+  catalog = "ksm04",
+  wave_groups = wave_groups
+)
 }
