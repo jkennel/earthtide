@@ -185,7 +185,7 @@ plot(pole_tide~datetime, tide,
 
 ## Speed for large datasets
 
-There are two primary ways to increase the speed of generating the tidal datasets: increasing the **astro_update** parameter; and increasing the **cutoff** parameter. In general, the speed should be as good as or better than the fortran version of ETERNA, given the parallel computation.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff value means fewer waves will be used leading to a faster but less accurate result.  The **astro_update** parameter determines how often the astronomical arguments are updated.  In ETERNA this value ranges from daily to yearly. The current default in the earthtide package for **astro_update** is 1, which means that the parameters are updated for every time provided, and therefore if you are predicting in hourly increments it will be updated 24 times a day.  Increasing this value typically speeds up computation, and in general values larger than 1 can be safely used unless the time interval between predictions is large. 
+The speed of generating the tidal datasets can be achieved by reducing the number of waves used.  The **cutoff** parameter controls how many waves are used. In general, the speed should be as good as or better than the fortran version of ETERNA, given the parallel computation.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff value means fewer waves will be used leading to a faster but less accurate result.
 
 
 ## References

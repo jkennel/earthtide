@@ -53,7 +53,7 @@ test_that("et_predict works", {
     wave_groups = wave_groups
   )
 
-  et$predict(method = "gravity", astro_update = 24)
+  et$predict(method = "gravity")
   tide <- et$tide()
 
   expect_equal(tide$gravity[1:2],

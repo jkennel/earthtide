@@ -13,8 +13,8 @@
 #'   catalog = "ksm04",
 #'   wave_groups = data.frame(start = 0.0, end = 6.0))
 #'
-#' et$predict(method = "gravity", astro_update = 1)
-#' et$analyze(method = "gravity", astro_update = 1)
+#' et$predict(method = "gravity")
+#' et$analyze(method = "gravity")
 #' et$lod_tide()
 #' et$pole_tide()
 #' et$tide()
@@ -59,11 +59,6 @@
 #'     "horizontal_displacement", "n_s_displacement", "e_w_displacement",
 #'     "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain"
 #'     or "ocean_tides".}
-#'   \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
-#'     determines how often to phases are updated in number of samples. Defaults
-#'     to 1 (every sample), but speed gains are realized with larger values.
-#'     Typically updating every hour will have speed gains and keep precision
-#'     (ie 3600 for one second data, 60 for minute data, 1 for hourly data).}
 #'   \item{return_matrix: }{For \code{predict} and \code{analyze}. Return a
 #'     matrix of tidal values instead of data.frame. The datetime column will
 #'     not be present in this case (logical).}
@@ -115,7 +110,7 @@
 #'   wave_groups = data.frame(start = 0.0, end = 6.0)
 #' )
 #'
-#' et$predict(method = "gravity", astro_update = 1)
+#' et$predict(method = "gravity")
 #'
 #' plot(gravity ~ datetime, et$tide(), type = "l")
 #'
@@ -188,27 +183,6 @@ Earthtide <- R6Class(
       self$pk <- rep(0, 25)
       self$delta <- rep(1.0, 25)
       self$deltar <- 0.0
-    },
-    check_time_increment = function(astro_update) {
-      dt <- unique(diff(as.numeric(self$datetime$utc)))
-
-      if (length(self$datetime$utc) == 1) {
-        self$update_coef <- 0.0
-        return(1L)
-      }
-
-      if (length(dt) != 1L) {
-        if (astro_update != 1L) {
-          warning("Times are not regularly spaced, setting astro_update to 1")
-        }
-
-        astro_update <- 1L
-        self$update_coef <- 0.0
-      } else {
-        self$update_coef <- pi / 180.0 * dt / 3600.0
-        astro_update <- astro_update
-      }
-      astro_update
     },
     gravity = function() {
       self$station$dgk <- self$station$dgz
@@ -413,18 +387,15 @@ Earthtide <- R6Class(
       self$pk[] <- 0.0
     },
     predict = function(method = "gravity",
-                       astro_update = 1L,
                        return_matrix = FALSE) {
       self$apply_method(method)
-      astro_update <- self$check_time_increment(astro_update)
       if (return_matrix) {
-        mat <- self$calculate(astro_update = astro_update, predict = TRUE)
+        mat <- self$calculate( predict = TRUE)
         colnames(mat) <- method
         return(mat)
       } else {
         self$tides[[method]] <-
           as.numeric(self$calculate(
-            astro_update = astro_update,
             predict = TRUE
           ))
       }
@@ -441,13 +412,11 @@ Earthtide <- R6Class(
       )
       invisible(self)
     },
-    analyze = function(method = "gravity", astro_update = 1L,
+    analyze = function(method = "gravity",
                        return_matrix = FALSE, scale = TRUE) {
       self$apply_method(method)
-      astro_update <- self$check_time_increment(astro_update)
 
       mat <- self$calculate(
-        astro_update = astro_update,
         predict = FALSE,
         scale = scale
       )
@@ -499,7 +468,7 @@ Earthtide <- R6Class(
         self$volume_strain()
       }
     },
-    calculate = function(astro_update = 1L, predict = TRUE, scale = TRUE) {
+    calculate = function(predict = TRUE, scale = TRUE) {
       et_calculate(
         self$astro$astro,
         self$astro$astro_der,
@@ -515,8 +484,6 @@ Earthtide <- R6Class(
         self$love_params$dom0,
         self$love_params$domr,
         self$catalog$id,
-        astro_update,
-        self$update_coef,
         self$catalog$wave_groups$multiplier,
         predict,
         scale
@@ -559,7 +526,6 @@ Earthtide <- R6Class(
 
     # time variables
     datetime = list(),
-    update_coef = NA_real_,
 
     # astro arguments
     astro = list(),

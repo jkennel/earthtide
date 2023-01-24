@@ -9,24 +9,24 @@ wave group harmonics for analysis in **R**.
 **earthtide** is a port of the ‘Fortran ETERNA 3.4’ (Wenzel, 1996)
 predict and part of the analyze codes with the Kudryavtsev 2004 update.
 The original ‘Fortran’ code was rewritten in **R**, and **C++** using
-the great **Rcpp**, **RcppEigen**, and **RcppThread**. The package
-is useful for generating synthetic earth tides using highly accurate
-tidal catalogs for prediction and regression. Attempts were made to
-ensure that results were consistent with the ‘ETERNA 3.4’, however,
-there is always the possibility that a bug was introduced in during the
+the great **Rcpp**, **RcppEigen**, and **RcppThread**. The package is
+useful for generating synthetic earth tides using highly accurate tidal
+catalogs for prediction and regression. Attempts were made to ensure
+that results were consistent with the ‘ETERNA 3.4’, however, there is
+always the possibility that a bug was introduced in during the
 conversion and update.
 
 Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue.
 Geophys. Res. Lett. 22, 3553–3556.
-\\url(<https://doi.org/10.1029/95GL03324>)
+\url(<https://doi.org/10.1029/95GL03324>)
 
 Kudryavtsev, S.M., 2004. Improved harmonic development of the Earth
 tide-generating potential. J. Geod. 77, 829–838.
-\\url(<https://doi.org/10.1007/s00190-003-0361-2>)
+\url(<https://doi.org/10.1007/s00190-003-0361-2>)
 
 Wenzel, H.G. 1996: The nanogal software: Earth tide data processing
 package ETERNA 3.30. Bull. Inf. Marges Terrestres. 124, 9425-9439.
-\\url(<https://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM>)
+\url(<https://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM>)
 
 ## Installation
 
@@ -63,7 +63,7 @@ tide <-  Earthtide$
       latitude = 52.3868,
       longitude = 9.7144,
       wave_groups = data.frame(start = 0.0, end = 6.0))$
-  predict(method = "gravity", astro_update = 1)$    # compute gravity
+  predict(method = "gravity")$    # compute gravity
   lod_tide()$                                       # LOD tide column
   pole_tide()$                                      # pole tide column
   tide()                                            # return result
@@ -86,7 +86,7 @@ tide_groups <-  Earthtide$
       latitude = 52.3868,
       longitude = 9.7144,
       wave_groups = wave_groups)$                                     
-  analyze(method = 'gravity', astro_update = 1)$
+  analyze(method = 'gravity')$
   tide()
 
 print(str(tide_groups))

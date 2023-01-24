@@ -49,7 +49,7 @@ test_that("dimensions correct", {
     wave_groups = wave_groups
   )
 
-  out <- et$analyze(method = "gravity", astro_update = 24)$tide()
+  out <- et$analyze(method = "gravity")$tide()
   expect_equal(nrow(out), length(tms))
   expect_equal(ncol(out), 5)
 })
@@ -75,31 +75,14 @@ test_that("scaling is correct", {
   out1 <- et$analyze(
     method = "gravity",
     scale = FALSE,
-    astro_update = 1
   )$tide()
 
-  out2 <- et$analyze(
-    method = "gravity",
-    scale = FALSE,
-    astro_update = 10
-  )$tide()
 
   out3 <- et$analyze(
     method = "gravity",
     scale = TRUE,
-    astro_update = 1
-  )$tide()
-
-  out4 <- et$analyze(
-    method = "gravity",
-    scale = TRUE,
-    astro_update = 10
   )$tide()
 
 
-
-  expect_equal(out1, out2, tolerance = 1e-7)
-  expect_equal(out3, out4, tolerance = 1e-7)
   expect_false(isTRUE(all.equal(out1, out3, tolerance = 1e-2)))
-  expect_false(isTRUE(all.equal(out2, out4, tolerance = 1e-2)))
 })

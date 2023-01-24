@@ -57,15 +57,15 @@ set_fac <- function(body, body_inds, k_mat, astro_der, delta, deltar, o1, resona
     .Call(`_earthtide_set_fac`, body, body_inds, k_mat, astro_der, delta, deltar, o1, resonance, max_amp)
 }
 
-et_analyze_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef, scale) {
-    .Call(`_earthtide_et_analyze_one`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef, scale)
+et_analyze_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, scale) {
+    .Call(`_earthtide_et_analyze_one`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, scale)
 }
 
-et_predict_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef) {
-    .Call(`_earthtide_et_predict_one`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef)
+et_predict_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp) {
+    .Call(`_earthtide_et_predict_one`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp)
 }
 
-et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, multiplier, predict, scale) {
-    .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, multiplier, predict, scale)
+et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale) {
+    .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale)
 }
 

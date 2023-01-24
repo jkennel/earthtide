@@ -16,17 +16,17 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
 
-  et$predict(method = "tidal_potential", astro_update = 1L)
-  et$predict(method = "tidal_tilt", astro_update = 1L)
-  et$predict(method = "vertical_displacement", astro_update = 1L)
-  et$predict(method = "horizontal_displacement", astro_update = 1L)
-  et$predict(method = "n_s_displacement", astro_update = 1L)
-  et$predict(method = "e_w_displacement", astro_update = 1L)
-  et$predict(method = "vertical_strain", astro_update = 1L)
-  et$predict(method = "areal_strain", astro_update = 1L)
-  et$predict(method = "horizontal_strain", astro_update = 1L)
-  et$predict(method = "volume_strain", astro_update = 1L)
-  et$predict(method = "ocean_tides", astro_update = 1L)
+  et$predict(method = "tidal_potential")
+  et$predict(method = "tidal_tilt")
+  et$predict(method = "vertical_displacement")
+  et$predict(method = "horizontal_displacement")
+  et$predict(method = "n_s_displacement")
+  et$predict(method = "e_w_displacement")
+  et$predict(method = "vertical_strain")
+  et$predict(method = "areal_strain")
+  et$predict(method = "horizontal_strain")
+  et$predict(method = "volume_strain")
+  et$predict(method = "ocean_tides")
 
   tide <- et$tide()
   expect_equal(tide$tidal_potential, c(1.422, 1.890), tolerance = 0.001)
@@ -64,8 +64,7 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
 
-  expect_warning(et$predict(method = "tidal_potential", astro_update = 2L))
-  expect_silent(et$predict(method = "tidal_potential", astro_update = 1L))
+  expect_silent(et$predict(method = "tidal_potential"))
 
 
   expect_silent(et <- Earthtide$new(
@@ -108,7 +107,7 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
 
-  et$predict(method = "tidal_potential", astro_update = 1L)
+  et$predict(method = "tidal_potential")
 
   tide <- et$tide()
   expect_equal(tide$tidal_potential, 1.5 * c(1.422, 1.890), tolerance = 0.001)
@@ -147,7 +146,7 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
 
-  et$predict(method = "tidal_potential", astro_update = 1L)
+  et$predict(method = "tidal_potential")
   et$lod_tide()
   et$pole_tide()
   et_r6 <- et$tide()
@@ -156,7 +155,6 @@ test_that("earthtide works", {
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
-    astro_update = 1,
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
@@ -179,7 +177,7 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
   et_mat <- et$predict(
-    method = "tidal_potential", astro_update = 1L,
+    method = "tidal_potential",
     return_matrix = TRUE
   )
   expect_equivalent(as.matrix(et_r6[, c("tidal_potential")]), et_mat)
@@ -188,7 +186,6 @@ test_that("earthtide works", {
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential"),
-    astro_update = 1,
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
@@ -213,14 +210,13 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
 
-  et$analyze(method = "tidal_potential", astro_update = 1L)
+  et$analyze(method = "tidal_potential")
   et_r6 <- et$tide()
 
   et_fun <- calc_earthtide(
     utc = tms,
     do_predict = FALSE,
     method = c("tidal_potential"),
-    astro_update = 1,
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
@@ -247,7 +243,7 @@ test_that("earthtide works", {
   )
 
   et_mat <- et$analyze(
-    method = "tidal_potential", astro_update = 1L,
+    method = "tidal_potential",
     return_matrix = TRUE
   )
   expect_equivalent(as.matrix(et_r6[, -c(1)]), et_mat)
@@ -256,7 +252,6 @@ test_that("earthtide works", {
     utc = tms,
     do_predict = FALSE,
     method = c("tidal_potential"),
-    astro_update = 1,
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
@@ -276,7 +271,6 @@ test_that("earthtide works", {
     utc = tms,
     do_predict = FALSE,
     method = c("tidal_potential", "gravity"),
-    astro_update = 1,
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
@@ -288,39 +282,4 @@ test_that("earthtide works", {
 
 
 
-
-
-  tms <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400 * 5, 3600)
-
-
-  et_mat2 <- calc_earthtide(
-    utc = tms,
-    do_predict = FALSE,
-    method = c("tidal_potential"),
-    astro_update = 1,
-    latitude = 52.3868,
-    longitude = 9.7144,
-    elevation = 110,
-    gravity = 9.8127,
-    cutoff = 1.0e-5,
-    catalog = "ksm04",
-    wave_groups = wave_groups,
-    return_matrix = TRUE
-  )
-
-  et_mat3 <- calc_earthtide(
-    utc = tms,
-    do_predict = FALSE,
-    method = c("tidal_potential"),
-    astro_update = 10,
-    latitude = 52.3868,
-    longitude = 9.7144,
-    elevation = 110,
-    gravity = 9.8127,
-    cutoff = 1.0e-5,
-    catalog = "ksm04",
-    wave_groups = wave_groups,
-    return_matrix = TRUE
-  )
-  expect_equivalent(et_mat2, et_mat3)
 })

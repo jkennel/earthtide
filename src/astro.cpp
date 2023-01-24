@@ -275,7 +275,7 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
 }
 
 // [[Rcpp::export]]
-Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
+Eigen::RowVector2d et_analyze_one(const Eigen::VectorXd& astro,
                                const Eigen::VectorXd& astro_der,
                                const Eigen::MatrixXd& k_mat,
                                const Eigen::ArrayXd& pk,
@@ -289,11 +289,10 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                                double o1,
                                double resonance,
                                size_t max_amp,
-                               double update_coef,
                                bool scale) {
 
 
-  MatrixXd output(1, 2);
+  RowVector2d output;
 
 
   // is there a way to vectorize this?  matrix size issue
@@ -329,8 +328,8 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
     ss = ss / dtham.maxCoeff();
   }
 
-  output(0, 0) = cc;
-  output(0, 1) = ss;
+  output(0) = cc;
+  output(1) = ss;
 
 
   // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
@@ -355,8 +354,7 @@ double et_predict_one(const Eigen::VectorXd& astro,
                       double j2000,
                       double o1,
                       double resonance,
-                      size_t max_amp,
-                      double update_coef) {
+                      size_t max_amp) {
 
 
   double output;
@@ -405,8 +403,6 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
                              double o1,
                              double resonance,
                              const Eigen::VectorXi& index,
-                             size_t astro_update,
-                             double update_coef,
                              const Eigen::ArrayXd& multiplier,
                              bool predict,
                              bool scale) {
@@ -466,7 +462,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
       // subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
 
-        output(k,0) += mult * et_predict_one(
+        output(k) += mult * et_predict_one(
           astro.col(k),
           astro_der.col(k),
           k_mat_sub,
@@ -480,14 +476,12 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
           j2000(k),
           o1,
           resonance,
-          i_max,
-          update_coef);
+          i_max);
       });
     } else {
       // subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
-
-        output.block(k, j * 2, 1, 2) = mult * et_analyze_one(
+        output.row(k).segment(j * 2, 2) = mult * et_analyze_one(
           astro.col(k),
           astro_der.col(k),
           k_mat_sub,
@@ -502,7 +496,6 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
           o1,
           resonance,
           i_max,
-          update_coef,
           scale);
       });
     }

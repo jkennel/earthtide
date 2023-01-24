@@ -21,8 +21,8 @@ et <- Earthtide$new(
   catalog = "ksm04",
   wave_groups = data.frame(start = 0.0, end = 6.0))
 
-et$predict(method = "gravity", astro_update = 1)
-et$analyze(method = "gravity", astro_update = 1)
+et$predict(method = "gravity")
+et$analyze(method = "gravity")
 et$lod_tide()
 et$pole_tide()
 et$tide()
@@ -69,11 +69,6 @@ et$print()
     "horizontal_displacement", "n_s_displacement", "e_w_displacement",
     "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain"
     or "ocean_tides".}
-  \item{astro_update: }{For \code{predict} and \code{analyze}. Integer that
-    determines how often to phases are updated in number of samples. Defaults
-    to 1 (every sample), but speed gains are realized with larger values.
-    Typically updating every hour will have speed gains and keep precision
-    (ie 3600 for one second data, 60 for minute data, 1 for hourly data).}
   \item{return_matrix: }{For \code{predict} and \code{analyze}. Return a
     matrix of tidal values instead of data.frame. The datetime column will
     not be present in this case (logical).}
@@ -113,7 +108,7 @@ et <- Earthtide$new(
   wave_groups = data.frame(start = 0.0, end = 6.0)
 )
 
-et$predict(method = "gravity", astro_update = 1)
+et$predict(method = "gravity")
 
 plot(gravity ~ datetime, et$tide(), type = "l")
 

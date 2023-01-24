@@ -191,8 +191,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // et_analyze_one
-Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro, const Eigen::VectorXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& pk, const Eigen::ArrayXd& body, const Eigen::ArrayXi& body_inds, double delta, double deltar, const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, double j2000, double o1, double resonance, size_t max_amp, double update_coef, bool scale);
-RcppExport SEXP _earthtide_et_analyze_one(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP pkSEXP, SEXP bodySEXP, SEXP body_indsSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP xSEXP, SEXP ySEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP max_ampSEXP, SEXP update_coefSEXP, SEXP scaleSEXP) {
+Eigen::RowVector2d et_analyze_one(const Eigen::VectorXd& astro, const Eigen::VectorXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& pk, const Eigen::ArrayXd& body, const Eigen::ArrayXi& body_inds, double delta, double deltar, const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, double j2000, double o1, double resonance, size_t max_amp, bool scale);
+RcppExport SEXP _earthtide_et_analyze_one(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP pkSEXP, SEXP bodySEXP, SEXP body_indsSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP xSEXP, SEXP ySEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP max_ampSEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -210,15 +210,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type o1(o1SEXP);
     Rcpp::traits::input_parameter< double >::type resonance(resonanceSEXP);
     Rcpp::traits::input_parameter< size_t >::type max_amp(max_ampSEXP);
-    Rcpp::traits::input_parameter< double >::type update_coef(update_coefSEXP);
     Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(et_analyze_one(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef, scale));
+    rcpp_result_gen = Rcpp::wrap(et_analyze_one(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, scale));
     return rcpp_result_gen;
 END_RCPP
 }
 // et_predict_one
-double et_predict_one(const Eigen::VectorXd& astro, const Eigen::VectorXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& pk, const Eigen::ArrayXd& body, const Eigen::ArrayXi& body_inds, double delta, double deltar, const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, double j2000, double o1, double resonance, size_t max_amp, double update_coef);
-RcppExport SEXP _earthtide_et_predict_one(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP pkSEXP, SEXP bodySEXP, SEXP body_indsSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP xSEXP, SEXP ySEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP max_ampSEXP, SEXP update_coefSEXP) {
+double et_predict_one(const Eigen::VectorXd& astro, const Eigen::VectorXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& pk, const Eigen::ArrayXd& body, const Eigen::ArrayXi& body_inds, double delta, double deltar, const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, double j2000, double o1, double resonance, size_t max_amp);
+RcppExport SEXP _earthtide_et_predict_one(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP pkSEXP, SEXP bodySEXP, SEXP body_indsSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP xSEXP, SEXP ySEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP max_ampSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -236,14 +235,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type o1(o1SEXP);
     Rcpp::traits::input_parameter< double >::type resonance(resonanceSEXP);
     Rcpp::traits::input_parameter< size_t >::type max_amp(max_ampSEXP);
-    Rcpp::traits::input_parameter< double >::type update_coef(update_coefSEXP);
-    rcpp_result_gen = Rcpp::wrap(et_predict_one(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef));
+    rcpp_result_gen = Rcpp::wrap(et_predict_one(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp));
     return rcpp_result_gen;
 END_RCPP
 }
 // et_calculate
-Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro, const Eigen::MatrixXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& phases, const Eigen::ArrayXd& delta, double deltar, const Eigen::MatrixXd& cc, const Eigen::MatrixXd& ss, const Eigen::ArrayXd& dgk, const Eigen::VectorXi& jcof, const Eigen::ArrayXd& j2000, double o1, double resonance, const Eigen::VectorXi& index, size_t astro_update, double update_coef, const Eigen::ArrayXd& multiplier, bool predict, bool scale);
-RcppExport SEXP _earthtide_et_calculate(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP phasesSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP ccSEXP, SEXP ssSEXP, SEXP dgkSEXP, SEXP jcofSEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP indexSEXP, SEXP astro_updateSEXP, SEXP update_coefSEXP, SEXP multiplierSEXP, SEXP predictSEXP, SEXP scaleSEXP) {
+Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro, const Eigen::MatrixXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& phases, const Eigen::ArrayXd& delta, double deltar, const Eigen::MatrixXd& cc, const Eigen::MatrixXd& ss, const Eigen::ArrayXd& dgk, const Eigen::VectorXi& jcof, const Eigen::ArrayXd& j2000, double o1, double resonance, const Eigen::VectorXi& index, const Eigen::ArrayXd& multiplier, bool predict, bool scale);
+RcppExport SEXP _earthtide_et_calculate(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP phasesSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP ccSEXP, SEXP ssSEXP, SEXP dgkSEXP, SEXP jcofSEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP indexSEXP, SEXP multiplierSEXP, SEXP predictSEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -261,12 +259,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type o1(o1SEXP);
     Rcpp::traits::input_parameter< double >::type resonance(resonanceSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXi& >::type index(indexSEXP);
-    Rcpp::traits::input_parameter< size_t >::type astro_update(astro_updateSEXP);
-    Rcpp::traits::input_parameter< double >::type update_coef(update_coefSEXP);
     Rcpp::traits::input_parameter< const Eigen::ArrayXd& >::type multiplier(multiplierSEXP);
     Rcpp::traits::input_parameter< bool >::type predict(predictSEXP);
     Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(et_calculate(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, astro_update, update_coef, multiplier, predict, scale));
+    rcpp_result_gen = Rcpp::wrap(et_calculate(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -286,9 +282,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_earthtide_unique_eigen", (DL_FUNC) &_earthtide_unique_eigen, 1},
     {"_earthtide_calc_dc2", (DL_FUNC) &_earthtide_calc_dc2, 3},
     {"_earthtide_set_fac", (DL_FUNC) &_earthtide_set_fac, 9},
-    {"_earthtide_et_analyze_one", (DL_FUNC) &_earthtide_et_analyze_one, 16},
-    {"_earthtide_et_predict_one", (DL_FUNC) &_earthtide_et_predict_one, 15},
-    {"_earthtide_et_calculate", (DL_FUNC) &_earthtide_et_calculate, 19},
+    {"_earthtide_et_analyze_one", (DL_FUNC) &_earthtide_et_analyze_one, 15},
+    {"_earthtide_et_predict_one", (DL_FUNC) &_earthtide_et_predict_one, 14},
+    {"_earthtide_et_calculate", (DL_FUNC) &_earthtide_et_calculate, 17},
     {NULL, NULL, 0}
 };
 

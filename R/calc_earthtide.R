@@ -13,11 +13,6 @@
 #'     or "ocean_tides", "pole_tide", "lod_tide". The pole tide and lod_tide
 #'     are used in predict mode even if do_predict is FALSE. More than one value
 #'     can only be used if do_predict == TRUE.
-#' @param astro_update Integer that
-#'     determines how often to phases are updated in number of samples. Defaults
-#'     to 1 (every sample), but speed gains are realized with larger values.
-#'     Typically updating every hour will have speed gains and keep precision
-#'     (ie 3600 for one second data, 60 for minute data, 1 for hourly data).
 #' @param latitude The station latitude (numeric) defaults to 0.
 #' @param longitude The station longitude (numeric) defaults to 0.
 #' @param elevation The station elevation (m) (numeric) defaults to 0.
@@ -53,7 +48,6 @@
 #' et <- calc_earthtide(utc = tms,
 #'                     do_predict = TRUE,
 #'                     method = c('tidal_potential', 'lod_tide', 'pole_tide'),
-#'                     astro_update = 1,
 #'                     latitude = 52.3868,
 #'                     longitude = 9.7144,
 #'                     elevation = 110,
@@ -64,7 +58,6 @@
 calc_earthtide <- function(utc,
                       do_predict = TRUE,
                       method = "gravity",
-                      astro_update = 1,
                       latitude = 0,
                       longitude = 0,
                       elevation = 0,
@@ -114,25 +107,21 @@ calc_earthtide <- function(utc,
 
       if (return_matrix) {
         return(et$predict(method = method[i],
-                          astro_update = astro_update,
                           return_matrix = return_matrix))
       } else {
         et$predict(method = method[i],
-                   astro_update = astro_update,
                    return_matrix = return_matrix)
 
       }
     } else {
       if (return_matrix) {
         return(et$analyze(method = method[i],
-                          astro_update = astro_update,
                           return_matrix = return_matrix,
                           scale = scale)
         )
       } else {
 
         et$analyze(method = method[i],
-                   astro_update = astro_update,
                    return_matrix = return_matrix,
                    scale = scale)
       }
