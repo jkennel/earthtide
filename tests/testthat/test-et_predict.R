@@ -1,10 +1,9 @@
 context("test-et_predict")
 
 test_that("et_predict works", {
-  tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:10000 #c(0, 3600)
+  tms <- as.POSIXct("1990-01-01", tz = "UTC") + c(0, 3600)
 
   wave_groups <- data.frame(start = 0, end = 8)
-system.time({
 
   et <- Earthtide$new(
     utc = tms,
@@ -18,7 +17,7 @@ system.time({
   )
   et$predict(method = "gravity")
   tide <- et$tide()
-})
+
 
   expect_equal(tide$gravity,
     c(-448.580, -564.521),
