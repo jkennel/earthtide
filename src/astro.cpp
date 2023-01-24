@@ -1,5 +1,3 @@
-// This function is faster than the R based ones though.
-
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::depends(RcppThread)]]
@@ -49,7 +47,7 @@ Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 
   t_mat.col(1).setOnes();
   t_mat.col(2) = time * 2.0;
-  t_mat.col(3) = t_mat.col(2).array() * time * 3.0; // time*time*3.0 need to check
+  t_mat.col(3) = t_mat.col(2).array() * time * 3.0; // time * time * 3.0 need to check
   t_mat.col(4) = t_mat.col(3).array() * time * 4.0;
 
   return(t_mat);
