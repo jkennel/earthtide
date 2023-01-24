@@ -1,4 +1,3 @@
-// This function is faster than the R based ones though.
 
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::plugins(cpp11)]]
