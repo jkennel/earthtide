@@ -386,18 +386,14 @@ Earthtide <- R6Class(
       self$station$dgk <- self$station$dgk * dfak
       self$pk[] <- 0.0
     },
-    predict = function(method = "gravity",
-                       return_matrix = FALSE) {
+    predict = function(method = "gravity", return_matrix = FALSE) {
       self$apply_method(method)
       if (return_matrix) {
-        mat <- self$calculate( predict = TRUE)
+        mat <- self$calculate(predict = TRUE)
         colnames(mat) <- method
         return(mat)
       } else {
-        self$tides[[method]] <-
-          as.numeric(self$calculate(
-            predict = TRUE
-          ))
+        self$tides[[method]] <- as.numeric(self$calculate(predict = TRUE))
       }
 
       # reset parameters after calculation
@@ -413,13 +409,11 @@ Earthtide <- R6Class(
       invisible(self)
     },
     analyze = function(method = "gravity",
-                       return_matrix = FALSE, scale = TRUE) {
+                       return_matrix = FALSE,
+                       scale = TRUE) {
       self$apply_method(method)
 
-      mat <- self$calculate(
-        predict = FALSE,
-        scale = scale
-      )
+      mat <- self$calculate(predict = FALSE, scale = scale)
 
       # reset parameters after calculation
       self$prepare_station(
