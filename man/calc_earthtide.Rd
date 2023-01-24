@@ -65,8 +65,8 @@ inferred column positions are start, end, multiplier.}
 
 \item{catalog}{Use the "hw95s" catalog or "ksm04" catalog (character).}
 
-\item{eop}{User defined Earth Orientation Parameter (EOP) data.frame with
-the following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
+\item{eop}{User defined Earth Orientation Parameter (EOP) data.frame with the
+following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy}
 
 \item{return_matrix}{Return a matrix of tidal values instead of data.frame.
 The datetime column will not be present in this case (logical).}

@@ -1,3 +1,4 @@
+// This function is faster than the R based ones though.
 
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::plugins(cpp11)]]
@@ -274,7 +275,7 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
 }
 
 // [[Rcpp::export]]
-Eigen::RowVector2d et_analyze_one(const Eigen::VectorXd& astro,
+Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                                const Eigen::VectorXd& astro_der,
                                const Eigen::MatrixXd& k_mat,
                                const Eigen::ArrayXd& pk,
@@ -461,7 +462,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
       // subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
 
-        output(k) += mult * et_predict_one(
+        output(k,0) += mult * et_predict_one(
           astro.col(k),
           astro_der.col(k),
           k_mat_sub,
@@ -480,7 +481,8 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
     } else {
       // subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
-        output.row(k).segment(j * 2, 2) = mult * et_analyze_one(
+
+        output.block(k, j * 2, 1, 2) = mult * et_analyze_one(
           astro.col(k),
           astro_der.col(k),
           k_mat_sub,

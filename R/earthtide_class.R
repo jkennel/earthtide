@@ -387,13 +387,17 @@ Earthtide <- R6Class(
       self$pk[] <- 0.0
     },
     predict = function(method = "gravity", return_matrix = FALSE) {
+
       self$apply_method(method)
       if (return_matrix) {
         mat <- self$calculate(predict = TRUE)
         colnames(mat) <- method
         return(mat)
       } else {
-        self$tides[[method]] <- as.numeric(self$calculate(predict = TRUE))
+        self$tides[[method]] <-
+          as.numeric(self$calculate(
+            predict = TRUE
+          ))
       }
 
       # reset parameters after calculation

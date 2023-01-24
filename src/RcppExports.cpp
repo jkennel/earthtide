@@ -191,7 +191,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // et_analyze_one
-Eigen::RowVector2d et_analyze_one(const Eigen::VectorXd& astro, const Eigen::VectorXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& pk, const Eigen::ArrayXd& body, const Eigen::ArrayXi& body_inds, double delta, double deltar, const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, double j2000, double o1, double resonance, size_t max_amp, bool scale);
+Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro, const Eigen::VectorXd& astro_der, const Eigen::MatrixXd& k_mat, const Eigen::ArrayXd& pk, const Eigen::ArrayXd& body, const Eigen::ArrayXi& body_inds, double delta, double deltar, const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, double j2000, double o1, double resonance, size_t max_amp, bool scale);
 RcppExport SEXP _earthtide_et_analyze_one(SEXP astroSEXP, SEXP astro_derSEXP, SEXP k_matSEXP, SEXP pkSEXP, SEXP bodySEXP, SEXP body_indsSEXP, SEXP deltaSEXP, SEXP deltarSEXP, SEXP xSEXP, SEXP ySEXP, SEXP j2000SEXP, SEXP o1SEXP, SEXP resonanceSEXP, SEXP max_ampSEXP, SEXP scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

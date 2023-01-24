@@ -31,8 +31,8 @@
 #'     to scale the particular wave group.  If column names do no match, the
 #'     inferred column positions are start, end, multiplier.
 #' @param catalog Use the "hw95s" catalog or "ksm04" catalog (character).
-#' @param eop User defined Earth Orientation Parameter (EOP) data.frame with
-#'     the following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy
+#' @param eop User defined Earth Orientation Parameter (EOP) data.frame with the
+#'     following columns: datetime, ddt, ut1_utc, lod, x, y, dx, dy
 #' @param return_matrix Return a matrix of tidal values instead of data.frame.
 #'     The datetime column will not be present in this case (logical).
 #' @param scale Scale results when do_predict is FALSE
@@ -57,7 +57,7 @@
 #'                     wave_groups = wave_groups)
 calc_earthtide <- function(utc,
                       do_predict = TRUE,
-                      method = "gravity",
+                      method = 'gravity',
                       latitude = 0,
                       longitude = 0,
                       elevation = 0,
@@ -67,11 +67,11 @@ calc_earthtide <- function(utc,
                       earth_eccen = 6.69439795140e-3,
                       cutoff = 1e-6,
                       wave_groups = NULL,
-                      catalog = "ksm04",
+                      catalog = 'ksm04',
                       eop = NULL,
                       return_matrix = FALSE,
                       scale = TRUE,
-                      ...) {
+                      ...){
 
 
   et <- Earthtide$new(utc = utc,
@@ -87,34 +87,32 @@ calc_earthtide <- function(utc,
                       earth_radius = earth_radius,
                       earth_eccen = earth_eccen)
 
-  if (length(method) > 1) {
-    if (!do_predict) {
-      stop("If do_predict is FALSE only one method can be provided.")
+  if(length(method) > 1) {
+    if(!do_predict) {
+      stop('If do_predict is FALSE only one method can be provided.')
     }
   }
 
   for (i in seq_along(method)) {
 
-    if (method[i] == "pole_tide") {
+    if (method[i] == 'pole_tide') {
 
       et$pole_tide()
 
-    } else if (method[i] == "lod_tide") {
+    } else if (method[i] == 'lod_tide') {
 
       et$lod_tide()
 
     } else if (do_predict) {
 
-      if (return_matrix) {
-        return(et$predict(method = method[i],
-                          return_matrix = return_matrix))
+      if(return_matrix) {
+        return(et$predict(method = method[i], return_matrix = return_matrix))
       } else {
-        et$predict(method = method[i],
-                   return_matrix = return_matrix)
+        et$predict(method = method[i], return_matrix = return_matrix)
 
       }
     } else {
-      if (return_matrix) {
+      if(return_matrix) {
         return(et$analyze(method = method[i],
                           return_matrix = return_matrix,
                           scale = scale)
@@ -133,3 +131,4 @@ calc_earthtide <- function(utc,
   return(et$tide())
 
 }
+
