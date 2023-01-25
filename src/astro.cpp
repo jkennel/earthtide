@@ -242,6 +242,9 @@ Eigen::ArrayXd calc_dc2(const Eigen::MatrixXd& k_mat,
   return(dc2);
 }
 
+
+
+
 // [[Rcpp::export]]
 Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
                         const Eigen::ArrayXi& body_inds,
@@ -255,11 +258,9 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
 )
 {
 
-  // size_t n = body.size();
   size_t n = body_inds.size();
   ArrayXd out = body;
 
-  // size_t k;
   double dc3;
 
   for (size_t i = 0; i < n; ++i) {
@@ -271,6 +272,7 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
 
   return(out);
 }
+
 
 // [[Rcpp::export]]
 Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
@@ -374,7 +376,7 @@ double et_predict_one(const Eigen::VectorXd& astro,
   const Vector3d v(1.0, j2000, j2000 * j2000);
 
   output = (fac * ((x * v).array().colwise() * dc2.cos() +
-    (y * v).array().colwise() * dc2.sin())).sum();
+                   (y * v).array().colwise() * dc2.sin())).sum();
 
 
   // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
