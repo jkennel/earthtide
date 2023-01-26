@@ -202,12 +202,16 @@ Earthtide <- R6Class(
       x_comp <- self$station$dgx[1:12] * cos_azimuth
       y_comp <- self$station$dgy[1:12] * sin_azimuth
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) * self$station$df
+
       wh <- which(x_comp != 0 | y_comp != 0)
+
+      self$pk[] <- 0.0
       self$pk[wh] <- 180 / pi * atan2(y_comp[wh], x_comp[wh])
 
       # from etpots
       self$delta[1:12] <- self$love_params$dtlat
       self$deltar <- self$love_params$dkr - self$love_params$dhr
+
     },
     vertical_displacement = function() {
       dfak <- 1e3 / self$station$gravity
@@ -227,12 +231,16 @@ Earthtide <- R6Class(
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
         self$love_params$dllat[1:12] * dfak
 
+      wh <- which(x_comp != 0 | y_comp != 0)
+
       self$pk[] <- 0.0
+      self$pk[wh] <- 180 / pi * atan2(y_comp[wh], x_comp[wh])
 
-      self$pk[1:12] <- 180 / pi * atan2(y_comp, x_comp)
+      # from etpots
+      self$delta[] <- 1.0
+      self$deltar <- 0.0
 
-      wh <- which(x_comp == 0 & y_comp == 0)
-      self$pk[wh] <- 0.0
+
     },
     n_s_displacement = function() {
       to_radians <- pi / 180
