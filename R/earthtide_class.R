@@ -203,7 +203,7 @@ Earthtide <- R6Class(
       y_comp <- self$station$dgy[1:12] * sin_azimuth
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) * self$station$df
       wh <- which(x_comp != 0 | y_comp != 0)
-      self$pk[wh] <- 180 / pi * atan2(y_comp, x_comp)
+      self$pk[wh] <- 180 / pi * atan2(y_comp[wh], x_comp[wh])
 
       # from etpots
       self$delta[1:12] <- self$love_params$dtlat
