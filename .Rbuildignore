@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^.covrignore$
+^.travis\.yml$
+^README\.Rmd$
+^codecov\.yml$
+^README_files
+^cran-comments\.md$
+^\.github$
+^\.vscode$

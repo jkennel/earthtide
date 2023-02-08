@@ -1,6 +1,5 @@
 .Rproj.user
 .Rhistory
-.Rbuildignore
 .RData
 .Ruserdata
 src/*.o
