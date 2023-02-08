@@ -19,6 +19,7 @@ test_that("et_predict works", {
   tide <- et$tide()
 
 
+
   expect_equal(tide$gravity,
     c(-448.580, -564.521),
     tolerance = .0001
@@ -40,8 +41,6 @@ test_that("et_predict works", {
     c(-448.648, -564.549),
     tolerance = .0001
   )
-
-
 
   tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(24 * 31) * 3600
   et <- Earthtide$new(

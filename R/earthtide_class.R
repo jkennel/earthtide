@@ -228,6 +228,17 @@ Earthtide <- R6Class(
       sin_azimuth <- sin(self$station$azimuth * to_radians)
       x_comp <- self$station$dgx[1:12] * cos_azimuth
       y_comp <- self$station$dgy[1:12] * sin_azimuth
+
+      # # shida numbers
+      # dl0 <- c(
+      #   0.08400, 0.08410, 0.08520, 0.01490, 0.01490, 0.01490,
+      #   0.01490, 0.01000, 0.01000, 0.01000, 0.01000, 0.01000
+      # )
+      #
+      # if(any(abs(self$love_params$dllat[1:12]-dl0) > 0.04)) {
+      #   self$love_params$dllat[1:12] <- dl0
+      # }
+
       self$station$dgk[1:12] <- sqrt((x_comp)^2 + (y_comp)^2) *
         self$love_params$dllat[1:12] * dfak
 
@@ -236,10 +247,10 @@ Earthtide <- R6Class(
       self$pk[] <- 0.0
       self$pk[wh] <- 180 / pi * atan2(y_comp[wh], x_comp[wh])
 
-      # from etpots
-      self$delta[] <- 1.0
-      self$deltar <- 0.0
-
+      # from etpots (this is a modification as I think they are 0 and 1 in ETERNA)
+      # look into this more closely
+      self$delta[1:12] <- 1.0 #self$love_params$dtlat
+      self$deltar <- 0.0 #self$love_params$dkr - self$love_params$dhr
 
     },
     n_s_displacement = function() {

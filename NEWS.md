@@ -2,8 +2,9 @@
 
 * switched from RcppParallel to RcppEigen. Eigen performs well regardless 
 of the BLAS installed.
-* switched to RcppThread from RcppParallel.
+* switched to RcppThread from RcppParallel to simplify code base.
 * Reordered C++ loops to improve performance.
+* astro_update parameter is no longer used - they are updated for each time
 
 # earthtide 0.0.13
 * updated the documentation for latitude, longitude and elevation (thanks kohlerjl)

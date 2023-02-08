@@ -1,5 +1,4 @@
 // [[Rcpp::depends(RcppEigen)]]
-// [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::depends(RcppThread)]]
 // [[Rcpp::depends(BH)]]
 
@@ -243,8 +242,6 @@ Eigen::ArrayXd calc_dc2(const Eigen::MatrixXd& k_mat,
 }
 
 
-
-
 // [[Rcpp::export]]
 Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
                         const Eigen::ArrayXi& body_inds,
@@ -296,7 +293,7 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
 
 
   // is there a way to vectorize this?  matrix size issue
-  ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
+  const ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
 
   const ArrayXd fac = set_fac(body,
                               body_inds,
@@ -309,16 +306,15 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                               max_amp);
 
   const Vector3d v(1.0, j2000, j2000 * j2000);
-  ArrayXd fac_x = fac * (x * v).array();
-  ArrayXd fac_y = fac * (y * v).array();
+  const ArrayXd fac_x = fac * (x * v).array();
+  const ArrayXd fac_y = fac * (y * v).array();
 
-
-  RowVectorXd dtham = (fac_x * fac_x + fac_y * fac_y).sqrt();
-  ArrayXd dthph = dc2 -  fac_y.binaryExpr(fac_x, [] (double a, double b) { return std::atan2(a, b);} );
+  const RowVectorXd dtham = (fac_x * fac_x + fac_y * fac_y).sqrt();
+  const ArrayXd dthph = dc2 - fac_y.binaryExpr(fac_x, [] (double a, double b) { return std::atan2(a, b);} ).array();
 
   // determine phase correction
-  VectorXd cos_dc2 = dthph.cos(); //dc0
-  VectorXd sin_dc2 = dthph.sin(); //ds0
+  const VectorXd cos_dc2 = Eigen::cos(dthph); //dc0
+  const VectorXd sin_dc2 = Eigen::sin(dthph); //ds0
 
   double cc = dtham * cos_dc2;
   double ss = dtham * sin_dc2;
@@ -361,7 +357,7 @@ double et_predict_one(const Eigen::VectorXd& astro,
 
 
   // is there a way to vectorize this?  matrix size issue
-  ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
+  const ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
 
   const ArrayXd fac = set_fac(body,
                               body_inds,
@@ -422,12 +418,13 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 
   // sin and cos terms
   const ArrayXd dgk_sub = jcof.unaryExpr(dgk);
+
   const MatrixXd x = cc.array().colwise() * dgk_sub * 1.e-10;
   const MatrixXd y = ss.array().colwise() * dgk_sub * 1.e-10;
 
   // get equilibrium wave amplitude
-  const VectorXd amplitude = (pow(x.col(0).array(), 2) +
-                              pow(y.col(0).array(), 2)).sqrt();
+  const ArrayXd amplitude = (x.col(0).array() * x.col(0).array() +
+                             y.col(0).array() * y.col(0).array()).sqrt();
 
   // get the subsets for each wave group
   const MatrixXi sub = get_catalog_indices(index, ng);
@@ -459,7 +456,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
     double mult = multiplier[j];
 
     if (predict) {
-      // subset for each time
+      // single curve - subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
 
         output(k) += mult * et_predict_one(
@@ -479,7 +476,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
           i_max);
       });
     } else {
-      // subset for each time
+      // separate curves - subset for each time
       RcppThread::parallelFor(0, nt, [&] (size_t k) {
 
         output.block(k, j * 2, 1, 2) = mult * et_analyze_one(
@@ -506,4 +503,5 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 }
 
 /*** R
+
 */

@@ -206,5 +206,7 @@ This package is still in development.  The following changes are planned:
 - Optional wave group names
 - Ocean loading
 - Updated examples
+- Calculations on a grid
+- Other earth models
 
 

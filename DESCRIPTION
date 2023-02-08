@@ -34,4 +34,4 @@ VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: TRUE
 NeedsCompilation: yes
-SystemRequirements: C++11
+SystemRequirements: C++17

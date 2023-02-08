@@ -72,7 +72,7 @@ love <- function(latitude, elevation) {
   dgr <- -0.000625
   dhr <- -0.002505
   dkr <- -0.001261
-  dlr <- 0.0000781
+  dlr <-  0.0000781
 
   dclat <- cos(latitude * pi / 180)
   dslat <- sin(latitude * pi / 180)
@@ -84,14 +84,23 @@ love <- function(latitude, elevation) {
   dct <- cos(dthet * pi / 180)
   dct2 <- dct * dct
 
+  # 0.335410 = 3/(4*sqrt(5))
   latitude_p[1] <- 0.335410 * (35.0 * dct2 * dct2 - 30.0 * dct2 + 3.0) /
-    (3.0 * dct2 - 1.0)
+    (3.0 * dct2 - 1.0)  # 2,0 +
 
-  latitude_m[1] <- 0.894427 / (3.0 * dct2 - 1.0)
-  latitude_p[2] <- 0.612372 * (7.0 * dct2 - 3.0)
-  latitude_p[3] <- 0.866025 * (7.0 * dct2 - 1.0)
-  latitude_p[7] <- 0.829156 * (9.0 * dct2 - 1.0)
-  latitude_p[12] <- 0.806226 * (11.0 * dct2 - 1.0)
+  latitude_m[1]  <- 0.894427 / (3.0 * dct2 - 1.0)   # 2,0 -
+  latitude_p[2]  <- 0.612372 * (7.0 * dct2 - 3.0)   # 2,1 +
+  latitude_p[3]  <- 0.866025 * (7.0 * dct2 - 1.0)   # 2,2 +
+  latitude_p[7]  <- 0.829156 * (9.0 * dct2 - 1.0)   # 3,3 +
+  latitude_p[12] <- 0.806226 * (11.0 * dct2 - 1.0)  # 4,4 +
+
+  # shida numbers are not reliable - disregard latitude dependence?
+  # ET34-X-V71 manual (2018) which suggests 10 as the cutoff
+  # For horizontal displacements this number may need to be lower
+  # if(any(abs(latitude_p) > 10)) {
+  #   latitude_p[] <- 0
+  #   latitude_m[] <- 0
+  # }
 
   dglat <- dg0 + dgp * latitude_p + dgm * latitude_m
   dhlat <- dh0 + dhp * latitude_p + dhm * latitude_m
