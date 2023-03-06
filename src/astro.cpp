@@ -65,8 +65,8 @@ Eigen::MatrixXd astro(const Eigen::ArrayXd& t_astro,
 
   // First row needs correction
   at_mat.row(0) = at_mat.row(2).array() - at_mat.row(1).array() +
-    (longitude + hours.array() * 15.0) -
-    (0.0027 * ddt.array() * 15.0 / 3600.0);
+    ((longitude + hours.array() * 15.0) -
+    (ddt.array() * (0.0027 * 15.0 / 3600.0)));
 
   // modulus
   at_mat = at_mat.array() - (at_mat.array() / 360).floor() * 360;
@@ -81,7 +81,7 @@ Eigen::MatrixXd astro_der(const Eigen::ArrayXd& t_astro,
                           const Eigen::MatrixXd simon) {
 
   double time_scale = 1.0 / (365250.0 * 24.0);
-  MatrixXd at_mat = simon * time_der_mat(t_astro).transpose() * time_scale;
+  MatrixXd at_mat = (simon * time_scale) * time_der_mat(t_astro).transpose() ;
 
   // First row needs correction
   at_mat.row(0) = at_mat.row(2).array() - at_mat.row(1).array() + 15.0;
