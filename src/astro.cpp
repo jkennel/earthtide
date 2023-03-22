@@ -27,9 +27,10 @@ using Eigen::ArrayXi;
 // [[Rcpp::export]]
 Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 
-  size_t n = time.size();
-  MatrixXd t_mat = MatrixXd::Ones(n, 5);
+  const size_t n = time.size();
+  MatrixXd t_mat(n, 5);
 
+  t_mat.col(0).setOnes();
   t_mat.col(1) = time;
   t_mat.col(2) = t_mat.col(1).array() * time;
   t_mat.col(3) = t_mat.col(2).array() * time;
@@ -38,12 +39,14 @@ Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
   return(t_mat);
 }
 
+
 // [[Rcpp::export]]
 Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 
-  size_t n = time.size();
-  MatrixXd t_mat = MatrixXd::Zero(n, 5);
+  const size_t n = time.size();
+  MatrixXd t_mat(n, 5);
 
+  t_mat.col(0).setZero();
   t_mat.col(1).setOnes();
   t_mat.col(2) = time * 2.0;
   t_mat.col(3) = t_mat.col(2).array() * time * 3.0; // time * time * 3.0 need to check
@@ -56,7 +59,7 @@ Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 // [[Rcpp::export]]
 Eigen::MatrixXd astro(const Eigen::ArrayXd& t_astro,
                       const Eigen::MatrixXd simon,
-                      double longitude,
+                      const double longitude,
                       Eigen::RowVectorXd hours,
                       Eigen::RowVectorXd ddt) {
 
@@ -80,7 +83,7 @@ Eigen::MatrixXd astro(const Eigen::ArrayXd& t_astro,
 Eigen::MatrixXd astro_der(const Eigen::ArrayXd& t_astro,
                           const Eigen::MatrixXd simon) {
 
-  double time_scale = 1.0 / (365250.0 * 24.0);
+  const double time_scale = 1.0 / (365250.0 * 24.0);
   MatrixXd at_mat = (simon * time_scale) * time_der_mat(t_astro).transpose() ;
 
   // First row needs correction
@@ -102,8 +105,8 @@ double legendre_bh(int l, int m, double x, int csphase = -1) {
 // [[Rcpp::export]]
 double legendre_deriv_bh(int l, int m, double x) {
 
-  double pm1 = legendre_bh(l, m - 1,  x);
-  double pp1 = legendre_bh(l, m + 1,  x);
+  const double pm1 = legendre_bh(l, m - 1,  x);
+  const double pp1 = legendre_bh(l, m + 1,  x);
 
   return(0.5 * ((l + m) * (l - m + 1) * pm1 - pp1));
 
@@ -120,8 +123,8 @@ double scale_legendre_bh(int l, int m) {
     k = 2.0;
   }
 
-  double num   = boost::math::factorial<double>(l - m);
-  double denom = boost::math::factorial<double>(l + m);
+  const double num   = boost::math::factorial<double>(l - m);
+  const double denom = boost::math::factorial<double>(l + m);
 
   return(std::sqrt((double) (k * (2.0 * l + 1.0) * num /  denom)));
 
@@ -153,9 +156,10 @@ Eigen::MatrixXd legendre(int l_max, double x) {
 }
 
 // [[Rcpp::export]]
-Eigen::MatrixXi get_catalog_indices(Eigen::VectorXi index, size_t ng) {
+Eigen::MatrixXi get_catalog_indices(const Eigen::VectorXi& index,
+                                    const size_t ng) {
 
-  size_t nw = index.size();
+  const size_t nw = index.size();
   size_t counter = 1;
 
   MatrixXi inds(ng, 2);
@@ -174,10 +178,34 @@ Eigen::MatrixXi get_catalog_indices(Eigen::VectorXi index, size_t ng) {
   return(inds);
 }
 
+// // [[Rcpp::export]]
+// Eigen::MatrixXi get_catalog_indices_2(const Eigen::VectorXi& index,
+//                                       const size_t& ng) {
+//
+//   const size_t nw = index.size();
+//   size_t counter = 1;
+//
+//   Eigen::MatrixXi inds(ng, 2);
+//
+//   inds.row(0) << 0, 0;
+//   inds.row(ng - 1) << nw - 1, nw - 1;
+//
+//   for (size_t i = 1; i < nw; ++i) {
+//     if (index[i] != index[i - 1]) {
+//       inds.row(counter) << i, i - 1;
+//       inds.row(counter - 1)(1) = i - 1;
+//       counter = counter + 1;
+//     }
+//   }
+//
+//   return inds;
+// }
+
+
 // [[Rcpp::export]]
 Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
 {
-  size_t n = input.size();
+  const size_t n = input.size();
   size_t counter = 0;
   VectorXi out(n);
 
@@ -194,19 +222,31 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
   return out;
 }
 
+// // [[Rcpp::export]]
+// Eigen::ArrayXd subset_eigen_2(const Eigen::ArrayXd& input,
+//                             const Eigen::VectorXi& subs)
+// {
+//   const size_t n = subs.size();
+//   VectorXd out(n);
+//
+//
+//   for (size_t i = 0; i < n; ++i)
+//   {
+//     out[i] = input[subs[i]];
+//   }
+//
+//   return out;
+// }
+
 // [[Rcpp::export]]
 Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
-                            const Eigen::VectorXi& subs)
+                              const Eigen::VectorXi& subs)
 {
-  size_t n = subs.size();
-  VectorXd out(n);
-
-
-  for (size_t i = 0; i < n; ++i)
-  {
-    out[i] = input[subs[i]];
-  }
-
+  const size_t out_size = subs.size();
+  Eigen::ArrayXd out(out_size);
+  Eigen::Map<const Eigen::ArrayXd> in(input.data(), input.size());
+  Eigen::Map<const Eigen::VectorXi> idx(subs.data(), out_size);
+  out = in(idx);
   return out;
 }
 
@@ -221,7 +261,7 @@ Eigen::VectorXi unique_eigen(Eigen::VectorXi index) {
   it = std::unique(v.begin(), v.end());
   v.resize(std::distance(v.begin(), it));
 
-  VectorXi index_unique = Eigen::Map<VectorXi, Eigen::Unaligned>(v.data(), v.size());
+  const VectorXi index_unique = Eigen::Map<VectorXi, Eigen::Unaligned>(v.data(), v.size());
 
   return(index_unique);
 
@@ -232,7 +272,7 @@ Eigen::ArrayXd calc_dc2(const Eigen::MatrixXd& k_mat,
                         const Eigen::VectorXd& astro,
                         const Eigen::ArrayXd& pk) {
 
-  double to_rad = M_PI / 180.0;
+  const double to_rad = M_PI / 180.0;
 
   // is there a way to vectorize this?  matrix size issue
   ArrayXd dc2 = (k_mat * astro).array() + pk + 360.0;
@@ -243,19 +283,19 @@ Eigen::ArrayXd calc_dc2(const Eigen::MatrixXd& k_mat,
 
 
 // [[Rcpp::export]]
-Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
+Eigen::ArrayXd set_fac(const Eigen::ArrayXd& body,
                         const Eigen::ArrayXi& body_inds,
                         const Eigen::MatrixXd& k_mat,
                         const Eigen::VectorXd& astro_der,
-                        double delta,
-                        double deltar,
-                        double o1,
-                        double resonance,
+                        const double delta,
+                        const double deltar,
+                        const double o1,
+                        const double resonance,
                         size_t max_amp
 )
 {
 
-  size_t n = body_inds.size();
+  const size_t n = body_inds.size();
   ArrayXd out = body;
 
   double dc3;
@@ -265,7 +305,7 @@ Eigen::VectorXd set_fac(const Eigen::ArrayXd& body,
     out(body_inds[i]) = delta + deltar * (dc3 - o1) / (resonance - dc3);
   }
 
-  out = out / out[max_amp];
+  out /= out[max_amp];
 
   return(out);
 }
@@ -278,14 +318,14 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                                const Eigen::ArrayXd& pk,
                                const Eigen::ArrayXd& body,
                                const Eigen::ArrayXi& body_inds,
-                               double delta,
-                               double deltar,
+                               const double delta,
+                               const double deltar,
                                const Eigen::MatrixXd& x,
                                const Eigen::MatrixXd& y,
-                               double j2000,
-                               double o1,
-                               double resonance,
-                               size_t max_amp,
+                               const double j2000,
+                               const double o1,
+                               const double resonance,
+                               const size_t max_amp,
                                bool scale) {
 
 
@@ -343,13 +383,13 @@ double et_predict_one(const Eigen::VectorXd& astro,
                       const Eigen::ArrayXd& pk,
                       const Eigen::ArrayXd& body,
                       const Eigen::ArrayXi& body_inds,
-                      double delta,
-                      double deltar,
+                      const double delta,
+                      const double deltar,
                       const Eigen::MatrixXd& x,
                       const Eigen::MatrixXd& y,
-                      double j2000,
-                      double o1,
-                      double resonance,
+                      const double j2000,
+                      const double o1,
+                      const double resonance,
                       size_t max_amp) {
 
 
@@ -390,14 +430,14 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
                              const Eigen::MatrixXd& k_mat,
                              const Eigen::ArrayXd& phases,
                              const Eigen::ArrayXd& delta,
-                             double deltar,
+                             const double deltar,
                              const Eigen::MatrixXd& cc,
                              const Eigen::MatrixXd& ss,
                              const Eigen::ArrayXd& dgk,
                              const Eigen::VectorXi& jcof,
                              const Eigen::ArrayXd& j2000,
-                             double o1,
-                             double resonance,
+                             const double o1,
+                             const double resonance,
                              const Eigen::VectorXi& index,
                              const Eigen::ArrayXd& multiplier,
                              bool predict,
@@ -466,7 +506,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
           pk,
           body,
           body_inds,
-          delta(1),
+          delta(1), // is this right?
           deltar,
           x_sub,
           y_sub,
