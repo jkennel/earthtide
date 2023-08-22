@@ -1,10 +1,10 @@
 ---
-title: "Introduction to the *earthtide* package"
+title: "Introduction"
 author: "Jonathan Kennel, Beth Parker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{introduction}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

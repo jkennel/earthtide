@@ -310,18 +310,18 @@ get_iers <- function(
 
 
 
-# library(earthtide)
-# # a_path = 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all'
-# # b_path ='http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now'
-# # daily_path = 'https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt'
-# # tai_utc_path = 'http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt'
-# dut1 <- get_iers()
-# simon_coef_1994 <- earthtide:::simon_coef_1994
-# ksm04 <- earthtide:::ksm04
-# hw95s <- earthtide:::hw95s
-# usethis::use_data(dut1,
-#                   simon_coef_1994,
-#                   ksm04,
-#                   hw95s,
-#                   internal = TRUE,
-#                   overwrite = TRUE)
+library(earthtide)
+# a_path = 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all'
+# b_path ='http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now'
+# daily_path = 'https://datacenter.iers.org/data/latestVersion/10_FINALS.DATA_IAU2000_V2013_0110.txt'
+# tai_utc_path = 'http://astroutils.astronomy.ohio-state.edu/time/tai-utc.txt'
+dut1 <- get_iers()
+simon_coef_1994 <- earthtide:::simon_coef_1994
+ksm04 <- earthtide:::ksm04
+hw95s <- earthtide:::hw95s
+usethis::use_data(dut1,
+                  simon_coef_1994,
+                  ksm04,
+                  hw95s,
+                  internal = TRUE,
+                  overwrite = TRUE)

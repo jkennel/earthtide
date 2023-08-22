@@ -28,9 +28,8 @@ using Eigen::ArrayXi;
 Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 
   const size_t n = time.size();
-  MatrixXd t_mat(n, 5);
+  MatrixXd t_mat = MatrixXd::Ones(n, 5);
 
-  t_mat.col(0).setOnes();
   t_mat.col(1) = time;
   t_mat.col(2) = t_mat.col(1).array() * time;
   t_mat.col(3) = t_mat.col(2).array() * time;
@@ -44,9 +43,8 @@ Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 
   const size_t n = time.size();
-  MatrixXd t_mat(n, 5);
+  MatrixXd t_mat = MatrixXd::Zero(n, 5);
 
-  t_mat.col(0).setZero();
   t_mat.col(1).setOnes();
   t_mat.col(2) = time * 2.0;
   t_mat.col(3) = t_mat.col(2).array() * time * 3.0; // time * time * 3.0 need to check
@@ -115,12 +113,10 @@ double legendre_deriv_bh(int l, int m, double x) {
 // [[Rcpp::export]]
 double scale_legendre_bh(int l, int m) {
 
-  double k;
+  double k = 2.0;
 
   if (m == 0) {
     k = 1.0;
-  } else {
-    k = 2.0;
   }
 
   const double num   = boost::math::factorial<double>(l - m);
@@ -133,10 +129,10 @@ double scale_legendre_bh(int l, int m) {
 // [[Rcpp::export]]
 Eigen::MatrixXd legendre(int l_max, double x) {
 
-  double scale;
+  double scale = 0.0;
 
   size_t n = VectorXi::LinSpaced(l_max - 1, 3, l_max + 1).sum();
-  MatrixXd out(n, 4);
+  MatrixXd out = MatrixXd::Zero(n, 4);
 
 
   int i = 0;
@@ -162,9 +158,8 @@ Eigen::MatrixXi get_catalog_indices(const Eigen::VectorXi& index,
   const size_t nw = index.size();
   size_t counter = 1;
 
-  MatrixXi inds(ng, 2);
+  MatrixXi inds = MatrixXi::Zero(ng, 2);
 
-  inds(0, 0) = 0;
   inds(ng - 1, 1) = nw - 1;
 
   for (size_t i = 1; i < nw; ++i) {
@@ -207,7 +202,7 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
 {
   const size_t n = input.size();
   size_t counter = 0;
-  VectorXi out(n);
+  VectorXi out = VectorXi::Zero(n);
 
   for (size_t i = 0; i < n; ++i)
   {
@@ -243,7 +238,8 @@ Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
                               const Eigen::VectorXi& subs)
 {
   const size_t out_size = subs.size();
-  Eigen::ArrayXd out(out_size);
+  ArrayXd out = ArrayXd::Zero(out_size);
+
   Eigen::Map<const Eigen::ArrayXd> in(input.data(), input.size());
   Eigen::Map<const Eigen::VectorXi> idx(subs.data(), out_size);
   out = in(idx);
@@ -298,7 +294,7 @@ Eigen::ArrayXd set_fac(const Eigen::ArrayXd& body,
   const size_t n = body_inds.size();
   ArrayXd out = body;
 
-  double dc3;
+  double dc3 = 0.0;
 
   for (size_t i = 0; i < n; ++i) {
     dc3 = k_mat.row(body_inds[i]) * astro_der;
@@ -329,7 +325,6 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                                bool scale) {
 
 
-  RowVector2d output;
 
 
   // is there a way to vectorize this?  matrix size issue
@@ -364,8 +359,7 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
     ss = ss / dtham.maxCoeff();
   }
 
-  output(0) = cc;
-  output(1) = ss;
+  const RowVector2d output(cc, ss);
 
 
   // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
@@ -393,8 +387,6 @@ double et_predict_one(const Eigen::VectorXd& astro,
                       size_t max_amp) {
 
 
-  double output;
-
 
   // is there a way to vectorize this?  matrix size issue
   const ArrayXd dc2 = calc_dc2(k_mat, astro, pk);
@@ -411,8 +403,8 @@ double et_predict_one(const Eigen::VectorXd& astro,
 
   const Vector3d v(1.0, j2000, j2000 * j2000);
 
-  output = (fac * ((x * v).array().colwise() * dc2.cos() +
-                   (y * v).array().colwise() * dc2.sin())).sum();
+  const double output = (fac * ((x * v).array().colwise() * dc2.cos() +
+                                (y * v).array().colwise() * dc2.sin())).sum();
 
 
   // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
@@ -446,7 +438,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 
 
   Eigen::Index max_elem;
-  size_t i_max;
+  size_t i_max = 0;
 
   // number of times
   size_t nt = astro.cols();
