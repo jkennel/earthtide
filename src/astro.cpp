@@ -3,11 +3,11 @@
 // [[Rcpp::depends(BH)]]
 
 #include <boost/math/special_functions/legendre.hpp>
-#include <boost/math/special_functions/factorials.hpp>
 
 #include <RcppEigen.h>
 #include <Eigen/StdVector>
 #include <RcppThread.h>
+
 
 using namespace Eigen;
 
@@ -99,6 +99,24 @@ double legendre_bh(int l, int m, double x, int csphase = -1) {
 
 }
 
+// // [[Rcpp::export]]
+// Eigen::VectorXd legendre_cpp(const int n, const double x) {
+//
+//
+//   Eigen::VectorXd out(n);
+//   out(0) = 1.0;
+//   out(1) = x;
+//
+//   for (size_t i = 1; i < n; ++i) {
+//     out(i + 1) = ((2.0 * i) + 1.0) * x * out(i) - i * out(i - 1);
+//     out(i + 1) /= (i + 1);
+//   }
+//
+//   return out;
+// }
+
+
+
 
 // [[Rcpp::export]]
 double legendre_deriv_bh(int l, int m, double x) {
@@ -110,6 +128,21 @@ double legendre_deriv_bh(int l, int m, double x) {
 
 }
 
+// n will generally be small
+// [[Rcpp::export]]
+double factorial(int n) {
+
+  if (n <= 1) return(1.0);
+
+  long out = 1.0;
+
+  for (long i = 2; i <= n; ++i)
+    out *= i;
+
+  return (double)out;
+}
+
+
 // [[Rcpp::export]]
 double scale_legendre_bh(int l, int m) {
 
@@ -119,8 +152,8 @@ double scale_legendre_bh(int l, int m) {
     k = 1.0;
   }
 
-  const double num   = boost::math::factorial<double>(l - m);
-  const double denom = boost::math::factorial<double>(l + m);
+  const double num   = factorial(l - m);
+  const double denom = factorial(l + m);
 
   return(std::sqrt((double) (k * (2.0 * l + 1.0) * num /  denom)));
 
@@ -173,28 +206,7 @@ Eigen::MatrixXi get_catalog_indices(const Eigen::VectorXi& index,
   return(inds);
 }
 
-// // [[Rcpp::export]]
-// Eigen::MatrixXi get_catalog_indices_2(const Eigen::VectorXi& index,
-//                                       const size_t& ng) {
-//
-//   const size_t nw = index.size();
-//   size_t counter = 1;
-//
-//   Eigen::MatrixXi inds(ng, 2);
-//
-//   inds.row(0) << 0, 0;
-//   inds.row(ng - 1) << nw - 1, nw - 1;
-//
-//   for (size_t i = 1; i < nw; ++i) {
-//     if (index[i] != index[i - 1]) {
-//       inds.row(counter) << i, i - 1;
-//       inds.row(counter - 1)(1) = i - 1;
-//       counter = counter + 1;
-//     }
-//   }
-//
-//   return inds;
-// }
+
 
 
 // [[Rcpp::export]]
@@ -217,25 +229,11 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
   return out;
 }
 
-// // [[Rcpp::export]]
-// Eigen::ArrayXd subset_eigen_2(const Eigen::ArrayXd& input,
-//                             const Eigen::VectorXi& subs)
-// {
-//   const size_t n = subs.size();
-//   VectorXd out(n);
-//
-//
-//   for (size_t i = 0; i < n; ++i)
-//   {
-//     out[i] = input[subs[i]];
-//   }
-//
-//   return out;
-// }
+
 
 // [[Rcpp::export]]
 Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
-                              const Eigen::VectorXi& subs)
+                            const Eigen::VectorXi& subs)
 {
   const size_t out_size = subs.size();
   ArrayXd out = ArrayXd::Zero(out_size);
@@ -280,14 +278,14 @@ Eigen::ArrayXd calc_dc2(const Eigen::MatrixXd& k_mat,
 
 // [[Rcpp::export]]
 Eigen::ArrayXd set_fac(const Eigen::ArrayXd& body,
-                        const Eigen::ArrayXi& body_inds,
-                        const Eigen::MatrixXd& k_mat,
-                        const Eigen::VectorXd& astro_der,
-                        const double delta,
-                        const double deltar,
-                        const double o1,
-                        const double resonance,
-                        size_t max_amp
+                       const Eigen::ArrayXi& body_inds,
+                       const Eigen::MatrixXd& k_mat,
+                       const Eigen::VectorXd& astro_der,
+                       const double delta,
+                       const double deltar,
+                       const double o1,
+                       const double resonance,
+                       size_t max_amp
 )
 {
 
@@ -362,10 +360,6 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
   const RowVector2d output(cc, ss);
 
 
-  // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
-  //                  ((y0 + y1 * j2000 + y2 * j2000_sq) * sin_dc2))).sum();
-
-
   return(output);
 
 }
@@ -404,11 +398,7 @@ double et_predict_one(const Eigen::VectorXd& astro,
   const Vector3d v(1.0, j2000, j2000 * j2000);
 
   const double output = (fac * ((x * v).array().colwise() * dc2.cos() +
-                                (y * v).array().colwise() * dc2.sin())).sum();
-
-
-  // output = (fac * (((x0 + x1 * j2000 + x2 * j2000_sq) * cos_dc2) +
-  //                  ((y0 + y1 * j2000 + y2 * j2000_sq) * sin_dc2))).sum();
+                         (y * v).array().colwise() * dc2.sin())).sum();
 
 
   return(output);

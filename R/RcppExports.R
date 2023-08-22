@@ -25,6 +25,10 @@ legendre_deriv_bh <- function(l, m, x) {
     .Call(`_earthtide_legendre_deriv_bh`, l, m, x)
 }
 
+factorial <- function(n) {
+    .Call(`_earthtide_factorial`, n)
+}
+
 scale_legendre_bh <- function(l, m) {
     .Call(`_earthtide_scale_legendre_bh`, l, m)
 }
