@@ -230,17 +230,33 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
 }
 
 
+// Requires updated Eigen 3.4
+// // [[Rcpp::export]]
+// Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
+//                             const Eigen::VectorXi& subs)
+// {
+//   const size_t out_size = subs.size();
+//   ArrayXd out = ArrayXd::Zero(out_size);
+//
+//   Eigen::Map<const Eigen::ArrayXd> in(input.data(), input.size());
+//   Eigen::Map<const Eigen::VectorXi> idx(subs.data(), out_size);
+//
+//   out = in(idx);
+//   return out;
+// }
 
 // [[Rcpp::export]]
 Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
                             const Eigen::VectorXi& subs)
 {
-  const size_t out_size = subs.size();
-  ArrayXd out = ArrayXd::Zero(out_size);
 
-  Eigen::Map<const Eigen::ArrayXd> in(input.data(), input.size());
-  Eigen::Map<const Eigen::VectorXi> idx(subs.data(), out_size);
-  out = in(idx);
+  size_t n = subs.size();
+  ArrayXd out = ArrayXd::Ones(n);
+
+  for (size_t i = 0; i < n; ++i) {
+    out[i] = input[subs[i]];
+  }
+
   return out;
 }
 
@@ -427,8 +443,9 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 
 
 
-  Eigen::Index max_elem;
+  Eigen::ArrayXd::Index max_elem = 0;
   size_t i_max = 0;
+
 
   // number of times
   size_t nt = astro.cols();
