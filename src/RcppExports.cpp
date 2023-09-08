@@ -61,41 +61,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// legendre_bh
-double legendre_bh(int l, int m, double x, int csphase);
-RcppExport SEXP _earthtide_legendre_bh(SEXP lSEXP, SEXP mSEXP, SEXP xSEXP, SEXP csphaseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type l(lSEXP);
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type csphase(csphaseSEXP);
-    rcpp_result_gen = Rcpp::wrap(legendre_bh(l, m, x, csphase));
-    return rcpp_result_gen;
-END_RCPP
-}
-// legendre_deriv_bh
-double legendre_deriv_bh(int l, int m, double x);
-RcppExport SEXP _earthtide_legendre_deriv_bh(SEXP lSEXP, SEXP mSEXP, SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type l(lSEXP);
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(legendre_deriv_bh(l, m, x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // factorial
-double factorial(int n);
-RcppExport SEXP _earthtide_factorial(SEXP nSEXP) {
+double factorial(int x);
+RcppExport SEXP _earthtide_factorial(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(factorial(n));
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(factorial(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// log_factorial
+double log_factorial(int x);
+RcppExport SEXP _earthtide_log_factorial(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_factorial(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -108,6 +92,33 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type l(lSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     rcpp_result_gen = Rcpp::wrap(scale_legendre_bh(l, m));
+    return rcpp_result_gen;
+END_RCPP
+}
+// legendre_cpp
+double legendre_cpp(int l, int m, double x, int csphase);
+RcppExport SEXP _earthtide_legendre_cpp(SEXP lSEXP, SEXP mSEXP, SEXP xSEXP, SEXP csphaseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type l(lSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type csphase(csphaseSEXP);
+    rcpp_result_gen = Rcpp::wrap(legendre_cpp(l, m, x, csphase));
+    return rcpp_result_gen;
+END_RCPP
+}
+// legendre_deriv_cpp
+double legendre_deriv_cpp(int l, int m, double x);
+RcppExport SEXP _earthtide_legendre_deriv_cpp(SEXP lSEXP, SEXP mSEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type l(lSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(legendre_deriv_cpp(l, m, x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -283,10 +294,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_earthtide_time_der_mat", (DL_FUNC) &_earthtide_time_der_mat, 1},
     {"_earthtide_astro", (DL_FUNC) &_earthtide_astro, 5},
     {"_earthtide_astro_der", (DL_FUNC) &_earthtide_astro_der, 2},
-    {"_earthtide_legendre_bh", (DL_FUNC) &_earthtide_legendre_bh, 4},
-    {"_earthtide_legendre_deriv_bh", (DL_FUNC) &_earthtide_legendre_deriv_bh, 3},
     {"_earthtide_factorial", (DL_FUNC) &_earthtide_factorial, 1},
+    {"_earthtide_log_factorial", (DL_FUNC) &_earthtide_log_factorial, 1},
     {"_earthtide_scale_legendre_bh", (DL_FUNC) &_earthtide_scale_legendre_bh, 2},
+    {"_earthtide_legendre_cpp", (DL_FUNC) &_earthtide_legendre_cpp, 4},
+    {"_earthtide_legendre_deriv_cpp", (DL_FUNC) &_earthtide_legendre_deriv_cpp, 3},
     {"_earthtide_legendre", (DL_FUNC) &_earthtide_legendre, 2},
     {"_earthtide_get_catalog_indices", (DL_FUNC) &_earthtide_get_catalog_indices, 2},
     {"_earthtide_subset_2_eigen", (DL_FUNC) &_earthtide_subset_2_eigen, 1},

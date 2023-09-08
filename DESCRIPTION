@@ -22,8 +22,7 @@ Imports:
 LinkingTo: 
     Rcpp (>= 1.0.0), 
     RcppThread, 
-    RcppEigen,
-    BH (>= 1.69.0-1)
+    RcppEigen
 Suggests: 
     testthat (>= 2.1.0),
     knitr,

@@ -17,20 +17,24 @@ astro_der <- function(t_astro, simon) {
     .Call(`_earthtide_astro_der`, t_astro, simon)
 }
 
-legendre_bh <- function(l, m, x, csphase = -1L) {
-    .Call(`_earthtide_legendre_bh`, l, m, x, csphase)
+factorial <- function(x) {
+    .Call(`_earthtide_factorial`, x)
 }
 
-legendre_deriv_bh <- function(l, m, x) {
-    .Call(`_earthtide_legendre_deriv_bh`, l, m, x)
-}
-
-factorial <- function(n) {
-    .Call(`_earthtide_factorial`, n)
+log_factorial <- function(x) {
+    .Call(`_earthtide_log_factorial`, x)
 }
 
 scale_legendre_bh <- function(l, m) {
     .Call(`_earthtide_scale_legendre_bh`, l, m)
+}
+
+legendre_cpp <- function(l, m, x, csphase = -1L) {
+    .Call(`_earthtide_legendre_cpp`, l, m, x, csphase)
+}
+
+legendre_deriv_cpp <- function(l, m, x) {
+    .Call(`_earthtide_legendre_deriv_cpp`, l, m, x)
 }
 
 legendre <- function(l_max, x) {

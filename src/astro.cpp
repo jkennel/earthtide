@@ -1,11 +1,7 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::depends(RcppThread)]]
-// [[Rcpp::depends(BH)]]
-
-#include <boost/math/special_functions/legendre.hpp>
 
 #include <RcppEigen.h>
-#include <Eigen/StdVector>
 #include <RcppThread.h>
 
 
@@ -92,56 +88,20 @@ Eigen::MatrixXd astro_der(const Eigen::ArrayXd& t_astro,
 
 
 
-// [[Rcpp::export]]
-double legendre_bh(int l, int m, double x, int csphase = -1) {
 
-  return(boost::math::legendre_p(l, m, x) * std::pow(csphase, m));
+// [[Rcpp::export]]
+double factorial(int x) {
+
+  return(tgamma((double)x + 1.0));
 
 }
 
-// // [[Rcpp::export]]
-// Eigen::VectorXd legendre_cpp(const int n, const double x) {
-//
-//
-//   Eigen::VectorXd out(n);
-//   out(0) = 1.0;
-//   out(1) = x;
-//
-//   for (size_t i = 1; i < n; ++i) {
-//     out(i + 1) = ((2.0 * i) + 1.0) * x * out(i) - i * out(i - 1);
-//     out(i + 1) /= (i + 1);
-//   }
-//
-//   return out;
-// }
-
-
-
-
 // [[Rcpp::export]]
-double legendre_deriv_bh(int l, int m, double x) {
+double log_factorial(int x) {
 
-  const double pm1 = legendre_bh(l, m - 1,  x);
-  const double pp1 = legendre_bh(l, m + 1,  x);
-
-  return(0.5 * ((l + m) * (l - m + 1) * pm1 - pp1));
+  return(lgamma((double)x + 1.0));
 
 }
-
-// n will generally be small
-// [[Rcpp::export]]
-double factorial(int n) {
-
-  if (n <= 1) return(1.0);
-
-  long out = 1.0;
-
-  for (long i = 2; i <= n; ++i)
-    out *= i;
-
-  return (double)out;
-}
-
 
 // [[Rcpp::export]]
 double scale_legendre_bh(int l, int m) {
@@ -159,6 +119,58 @@ double scale_legendre_bh(int l, int m) {
 
 }
 
+// based on cooltools package alp
+// [[Rcpp::export]]
+double legendre_cpp(int l, int m, double x, int csphase = -1) {
+
+  double f = 1.0;
+  double out = 0.0;
+  double alpha = 0.0;
+  double logx = std::log(std::abs(x));
+  double exponent = 0.0;
+
+  if (m > l + 1) {
+    Rcpp::stop("m should be smaller than l + 1");
+  }
+
+  if (m < 0) {
+    m = -m;
+    f = std::pow(-1.0, m) * factorial(l - m) / factorial(l + m);
+  }
+
+
+  Eigen::ArrayXd a_base = Eigen::ArrayXd::LinSpaced(l, 0.0, l - 1);
+  Eigen::ArrayXd a = Eigen::ArrayXd::Zero(l);
+
+  for (int k = l; k >= m; --k) {
+    alpha = (l + k - 1.0) / 2.0;
+    a = alpha - a_base;
+    exponent = -log_factorial(l - k) - log_factorial(k - m) + (k - m) * logx +
+      ((a.abs()).log()).sum();
+    out += exp(exponent) * a.sign().prod();
+  }
+
+  out = f * std::pow(2.0, l) * std::pow(1.0 - x * x, (m / 2.0)) * out;
+
+  if (x < 0) {
+    out = out * std::pow(-1, l + m);
+  }
+
+  return(out);
+
+}
+
+// [[Rcpp::export]]
+double legendre_deriv_cpp(int l, int m, double x) {
+
+  const double pm1 = legendre_cpp(l, m - 1,  x);
+  const double pp1 = legendre_cpp(l, m + 1,  x);
+
+  return(0.5 * ((l + m) * (l - m + 1) * pm1 - pp1));
+
+}
+
+
 // [[Rcpp::export]]
 Eigen::MatrixXd legendre(int l_max, double x) {
 
@@ -175,14 +187,59 @@ Eigen::MatrixXd legendre(int l_max, double x) {
       scale = scale_legendre_bh(l, m);
       out(i, 0) = l;
       out(i, 1) = m;
-      out(i, 2) = legendre_bh(l, m, x) * scale;
-      out(i, 3) = legendre_deriv_bh(l, m, x) * scale;
+      out(i, 2) = legendre_cpp(l, m, x) * scale;
+      out(i, 3) = legendre_deriv_cpp(l, m, x) * scale;
       i += 1;
     }
   }
 
   return(out);
 }
+
+// BOOST method.  This is faster but requires the BH package.
+//
+// // [[Rcpp::export]]
+// double legendre_bh(int l, int m, double x, int csphase = -1) {
+//
+//   return(boost::math::legendre_p(l, m, x) * std::pow(csphase, m));
+//
+// }
+//
+// // [[Rcpp::export]]
+// double legendre_deriv_bh(int l, int m, double x) {
+//
+//   const double pm1 = legendre_bh(l, m - 1,  x);
+//   const double pp1 = legendre_bh(l, m + 1,  x);
+//
+//   return(0.5 * ((l + m) * (l - m + 1) * pm1 - pp1));
+//
+// }
+//
+// // [[Rcpp::export]]
+// Eigen::MatrixXd legendre(int l_max, double x) {
+//
+//   double scale = 0.0;
+//
+//   size_t n = VectorXi::LinSpaced(l_max - 1, 3, l_max + 1).sum();
+//   MatrixXd out = MatrixXd::Zero(n, 4);
+//
+//
+//   int i = 0;
+//
+//   for (int l = 2; l <= l_max; ++l){
+//     for (int m = 0; m <= l; ++m){
+//       scale = scale_legendre_bh(l, m);
+//       out(i, 0) = l;
+//       out(i, 1) = m;
+//       out(i, 2) = legendre_bh(l, m, x) * scale;
+//       out(i, 3) = legendre_deriv_bh(l, m, x) * scale;
+//       i += 1;
+//     }
+//   }
+//
+//   return(out);
+// }
+
 
 // [[Rcpp::export]]
 Eigen::MatrixXi get_catalog_indices(const Eigen::VectorXi& index,
