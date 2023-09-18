@@ -25,8 +25,8 @@ log_factorial <- function(x) {
     .Call(`_earthtide_log_factorial`, x)
 }
 
-scale_legendre_bh <- function(l, m) {
-    .Call(`_earthtide_scale_legendre_bh`, l, m)
+scale_legendre <- function(l, m) {
+    .Call(`_earthtide_scale_legendre`, l, m)
 }
 
 legendre_cpp <- function(l, m, x) {

@@ -83,15 +83,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// scale_legendre_bh
-double scale_legendre_bh(int l, int m);
-RcppExport SEXP _earthtide_scale_legendre_bh(SEXP lSEXP, SEXP mSEXP) {
+// scale_legendre
+double scale_legendre(int l, int m);
+RcppExport SEXP _earthtide_scale_legendre(SEXP lSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type l(lSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    rcpp_result_gen = Rcpp::wrap(scale_legendre_bh(l, m));
+    rcpp_result_gen = Rcpp::wrap(scale_legendre(l, m));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -295,7 +295,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_earthtide_astro_der", (DL_FUNC) &_earthtide_astro_der, 2},
     {"_earthtide_factorial", (DL_FUNC) &_earthtide_factorial, 1},
     {"_earthtide_log_factorial", (DL_FUNC) &_earthtide_log_factorial, 1},
-    {"_earthtide_scale_legendre_bh", (DL_FUNC) &_earthtide_scale_legendre_bh, 2},
+    {"_earthtide_scale_legendre", (DL_FUNC) &_earthtide_scale_legendre, 2},
     {"_earthtide_legendre_cpp", (DL_FUNC) &_earthtide_legendre_cpp, 3},
     {"_earthtide_legendre_deriv_cpp", (DL_FUNC) &_earthtide_legendre_deriv_cpp, 3},
     {"_earthtide_legendre", (DL_FUNC) &_earthtide_legendre, 2},

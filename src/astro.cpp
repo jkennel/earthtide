@@ -104,7 +104,7 @@ double log_factorial(int x) {
 }
 
 // [[Rcpp::export]]
-double scale_legendre_bh(int l, int m) {
+double scale_legendre(int l, int m) {
 
   double k = 2.0;
 
@@ -182,7 +182,7 @@ Eigen::MatrixXd legendre(int l_max, double x) {
 
   for (int l = 2; l <= l_max; ++l){
     for (int m = 0; m <= l; ++m){
-      scale = scale_legendre_bh(l, m);
+      scale = scale_legendre(l, m);
       out(i, 0) = l;
       out(i, 1) = m;
       out(i, 2) = legendre_cpp(l, m, x) * scale;
@@ -226,7 +226,7 @@ Eigen::MatrixXd legendre(int l_max, double x) {
 //
 //   for (int l = 2; l <= l_max; ++l){
 //     for (int m = 0; m <= l; ++m){
-//       scale = scale_legendre_bh(l, m);
+//       scale = scale_legendre(l, m);
 //       out(i, 0) = l;
 //       out(i, 1) = m;
 //       out(i, 2) = legendre_bh(l, m, x) * scale;
