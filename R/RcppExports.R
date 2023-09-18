@@ -29,8 +29,8 @@ scale_legendre_bh <- function(l, m) {
     .Call(`_earthtide_scale_legendre_bh`, l, m)
 }
 
-legendre_cpp <- function(l, m, x, csphase = -1L) {
-    .Call(`_earthtide_legendre_cpp`, l, m, x, csphase)
+legendre_cpp <- function(l, m, x) {
+    .Call(`_earthtide_legendre_cpp`, l, m, x)
 }
 
 legendre_deriv_cpp <- function(l, m, x) {
