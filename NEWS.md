@@ -1,3 +1,11 @@
+# earthtide 0.1.2
+
+* default to single threaded
+
+# earthtide 0.1.1
+
+* removed BH dependency
+
 # earthtide 0.1.0
 
 * switched from RcppParallel to RcppEigen. Eigen performs well regardless 

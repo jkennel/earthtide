@@ -16,6 +16,7 @@ test_that("earthtide works", {
     wave_groups = wave_groups
   )
 
+  et$predict(method = "gravity")
   et$predict(method = "tidal_potential")
   et$predict(method = "tidal_tilt")
   et$predict(method = "vertical_displacement")

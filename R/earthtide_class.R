@@ -62,6 +62,8 @@
 #'   \item{return_matrix: }{For \code{predict} and \code{analyze}. Return a
 #'     matrix of tidal values instead of data.frame. The datetime column will
 #'     not be present in this case (logical).}
+#'   \item{n_thread: }{For \code{predict} and \code{analyze}. Number of threads
+#'     to use for parallel processing.}
 #' }
 #'
 #' @section Details:
@@ -405,16 +407,18 @@ Earthtide <- R6Class(
       self$station$dgk <- self$station$dgk * dfak
       self$pk[] <- 0.0
     },
-    predict = function(method = "gravity", return_matrix = FALSE) {
+    predict = function(method = "gravity",
+                       return_matrix = FALSE,
+                       n_thread = 1) {
       self$apply_method(method)
       if (return_matrix) {
-        mat <- self$calculate(predict = TRUE)
+        mat <- self$calculate(predict = TRUE, n_thread = n_thread)
         colnames(mat) <- method
         return(mat)
       } else {
         self$tides[[method]] <-
           as.numeric(self$calculate(
-            predict = TRUE
+            predict = TRUE, n_thread = n_thread
           ))
       }
 
@@ -432,10 +436,11 @@ Earthtide <- R6Class(
     },
     analyze = function(method = "gravity",
                        return_matrix = FALSE,
-                       scale = TRUE) {
+                       scale = TRUE,
+                       n_thread = 1) {
       self$apply_method(method)
 
-      mat <- self$calculate(predict = FALSE, scale = scale)
+      mat <- self$calculate(predict = FALSE, scale = scale, n_thread = n_thread)
 
       # reset parameters after calculation
       self$prepare_station(
@@ -484,7 +489,14 @@ Earthtide <- R6Class(
         self$volume_strain()
       }
     },
-    calculate = function(predict = TRUE, scale = TRUE) {
+    calculate = function(predict = TRUE, scale = TRUE, n_thread = 1) {
+
+      if(n_thread > RcppThread::detectCores()) {
+        warning("number of threads is more than the number of cores, setting
+                n_thread equal to the maximum number of cores.")
+        n_thread <- RcppThread::detectCores()
+      }
+
       et_calculate(
         self$astro$astro,
         self$astro$astro_der,
@@ -502,7 +514,8 @@ Earthtide <- R6Class(
         self$catalog$id,
         self$catalog$wave_groups$multiplier,
         predict,
-        scale
+        scale,
+        n_thread
       )
     },
     pole_tide = function() {

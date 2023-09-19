@@ -72,6 +72,8 @@ et$print()
   \item{return_matrix: }{For \code{predict} and \code{analyze}. Return a
     matrix of tidal values instead of data.frame. The datetime column will
     not be present in this case (logical).}
+  \item{n_thread: }{For \code{predict} and \code{analyze}. Number of threads
+    to use for parallel processing.}
 }
 }
 

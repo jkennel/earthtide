@@ -4,7 +4,6 @@
 #include <RcppEigen.h>
 #include <RcppThread.h>
 
-
 using namespace Eigen;
 
 using Eigen::MatrixXd;
@@ -494,9 +493,11 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
                              const Eigen::VectorXi& index,
                              const Eigen::ArrayXd& multiplier,
                              bool predict,
-                             bool scale) {
+                             bool scale,
+                             int n_thread) {
 
 
+  RcppThread::ThreadPool pool(n_thread);
 
   Eigen::ArrayXd::Index max_elem = 0;
   int i_max = 0;
@@ -551,7 +552,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
 
     if (predict) {
       // single curve - subset for each time
-      RcppThread::parallelFor(0, nt, [&] (int k) {
+      pool.parallelFor(0, nt, [&] (int k) {
 
         output(k) += mult * et_predict_one(
           astro.col(k),
@@ -571,7 +572,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
       });
     } else {
       // separate curves - subset for each time
-      RcppThread::parallelFor(0, nt, [&] (int k) {
+      pool.parallelFor(0, nt, [&] (int k) {
 
         output.block(k, j * 2, 1, 2) = mult * et_analyze_one(
           astro.col(k),
@@ -591,6 +592,7 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
           scale);
       });
     }
+    pool.join();
   }
 
   return(output);
