@@ -90,6 +90,7 @@
 #' @docType class
 #' @aliases Earthtide-class
 #' @importFrom R6 R6Class
+#' @importFrom RcppThread detectCores
 #' @importFrom stats approx
 #' @importFrom utils read.table
 #' @importFrom utils read.fwf
@@ -490,11 +491,11 @@ Earthtide <- R6Class(
       }
     },
     calculate = function(predict = TRUE, scale = TRUE, n_thread = 1) {
-
-      if(n_thread > RcppThread::detectCores()) {
+      n_cores <- detectCores()
+      if(n_thread > n_cores) {
         warning("number of threads is more than the number of cores, setting
                 n_thread equal to the maximum number of cores.")
-        n_thread <- RcppThread::detectCores()
+        n_thread <- n_cores
       }
 
       et_calculate(
