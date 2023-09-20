@@ -79,7 +79,7 @@ The datetime column will not be present in this case (logical).}
 \item{...}{Currently not used.}
 }
 \value{
-data.frame of tidal results
+data.frame or matrix of tidal results
 }
 \description{
 This is a wrapper to the Earthtide R6 class for the prediction

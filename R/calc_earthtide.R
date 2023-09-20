@@ -39,7 +39,7 @@
 #' @param n_thread Number of threads to use for parallel processing (integer).
 #' @param ... Currently not used.
 #'
-#' @return data.frame of tidal results
+#' @return data.frame or matrix of tidal results
 #' @export
 #'
 #' @examples
