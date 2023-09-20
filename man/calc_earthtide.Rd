@@ -21,6 +21,7 @@ calc_earthtide(
   eop = NULL,
   return_matrix = FALSE,
   scale = TRUE,
+  n_thread = 1,
   ...
 )
 }
@@ -73,6 +74,8 @@ The datetime column will not be present in this case (logical).}
 
 \item{scale}{Scale results when do_predict is FALSE}
 
+\item{n_thread}{Number of threads to use for parallel processing (integer).}
+
 \item{...}{Currently not used.}
 }
 \value{
@@ -97,6 +100,7 @@ et <- calc_earthtide(
   gravity = 9.8127,
   cutoff = 1.0e-5,
   catalog = "ksm04",
-  wave_groups = wave_groups
+  wave_groups = wave_groups,
+  n_thread = 1
 )
 }

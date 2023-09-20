@@ -13,8 +13,8 @@
 #'   catalog = "ksm04",
 #'   wave_groups = data.frame(start = 0.0, end = 6.0))
 #'
-#' et$predict(method = "gravity")
-#' et$analyze(method = "gravity")
+#' et$predict(method = "gravity", n_thread = 1)
+#' et$analyze(method = "gravity", n_thread = 1)
 #' et$lod_tide()
 #' et$pole_tide()
 #' et$tide()

@@ -1,6 +1,7 @@
 # earthtide 0.1.2
 
 * default to single threaded
+* fix valgrind issue to get back on CRAN
 
 # earthtide 0.1.1
 

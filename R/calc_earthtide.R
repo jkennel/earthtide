@@ -36,6 +36,7 @@
 #' @param return_matrix Return a matrix of tidal values instead of data.frame.
 #'     The datetime column will not be present in this case (logical).
 #' @param scale Scale results when do_predict is FALSE
+#' @param n_thread Number of threads to use for parallel processing (integer).
 #' @param ... Currently not used.
 #'
 #' @return data.frame of tidal results
@@ -55,7 +56,8 @@
 #'   gravity = 9.8127,
 #'   cutoff = 1.0e-5,
 #'   catalog = "ksm04",
-#'   wave_groups = wave_groups
+#'   wave_groups = wave_groups,
+#'   n_thread = 1
 #' )
 calc_earthtide <- function(utc,
                            do_predict = TRUE,
@@ -73,6 +75,7 @@ calc_earthtide <- function(utc,
                            eop = NULL,
                            return_matrix = FALSE,
                            scale = TRUE,
+                           n_thread = 1,
                            ...) {
   et <- Earthtide$new(
     utc = utc,
@@ -102,22 +105,28 @@ calc_earthtide <- function(utc,
       et$lod_tide()
     } else if (do_predict) {
       if (return_matrix) {
-        return(et$predict(method = method[i], return_matrix = return_matrix))
+        return(et$predict(method = method[i],
+                          return_matrix = return_matrix,
+                          n_thread = n_thread))
       } else {
-        et$predict(method = method[i], return_matrix = return_matrix)
+        et$predict(method = method[i],
+                   return_matrix = return_matrix,
+                   n_thread = n_thread)
       }
     } else {
       if (return_matrix) {
         return(et$analyze(
           method = method[i],
           return_matrix = return_matrix,
-          scale = scale
+          scale = scale,
+          n_thread = n_thread
         ))
       } else {
         et$analyze(
           method = method[i],
           return_matrix = return_matrix,
-          scale = scale
+          scale = scale,
+          n_thread = n_thread
         )
       }
     }

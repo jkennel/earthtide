@@ -284,3 +284,33 @@ test_that("earthtide works", {
 
 
 })
+
+context("test-earthtide-threads")
+test_that("earthtide works", {
+
+  testthat::skip_on_cran()
+  testthat::skip_on_travis()
+
+    tms <- as.POSIXct("1990-01-01", tz = "UTC") + c(0, 3600)
+
+  wave_groups <- data.frame(start = 0, end = 8)
+
+  et <- Earthtide$new(
+    utc = tms,
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  )
+
+  et$predict(method = "gravity", n_thread = 1)
+  tide_1_threads <- et$tide()
+  et$predict(method = "gravity", n_thread = 2)
+  tide_2_threads <- et$tide()
+
+  expect_equal(tide_1_threads, tide_2_threads)
+
+})
