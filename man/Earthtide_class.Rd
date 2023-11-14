@@ -33,7 +33,7 @@ et$print()
 \section{Arguments}{
 
 \code{Earthtide$new}
-\itemize{
+\describe{
   \item{et: }{An \code{Earthtide} object.}
   \item{utc: }{The date-time in UTC (POSIXct vector).}
   \item{latitude: }{The station latitude (WGS84) (degree) (numeric)
@@ -63,7 +63,7 @@ et$print()
 }
 
 \code{Earthtide$predict, Earthtide$analyze}
-\itemize{
+\describe{
   \item{method: }{For \code{predict} and \code{analyze}. One of "gravity",
     "tidal_potential", "tidal_tilt", "vertical_displacement",
     "horizontal_displacement", "n_s_displacement", "e_w_displacement",
