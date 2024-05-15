@@ -1,3 +1,7 @@
+# earthtide 0.1.3
+
+* update data
+
 # earthtide 0.1.2
 
 * default to single threaded
