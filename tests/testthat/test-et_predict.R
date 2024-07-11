@@ -15,7 +15,8 @@ test_that("et_predict works", {
     catalog = "hw95s",
     wave_groups = wave_groups
   )
-  et$predict(method = "gravity")
+  tmp <- et$predict(method = "gravity")
+
   tide <- et$tide()
 
 
@@ -60,4 +61,56 @@ test_that("et_predict works", {
     c(-448.648, -564.549),
     tolerance = 0.01
   )
+
+
+  tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:1800
+  et <- Earthtide$new(
+    utc = tms,
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "hw95s",
+    wave_groups = wave_groups
+  )
+
+
+  tmp1 <- et$predict(method = "gravity", astro_update = 1L)
+  tmp300 <- et$predict(method = "gravity", astro_update = 300L)
+  expect_equal(tmp1$tide(), tmp300$tide())
+
+
+  tmp2 <- et$predict(method = "gravity", n_thread = 2)
+  expect_equal(tmp1$tide(), tmp2$tide())
+
+
+
 })
+
+
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(86400)
+wave_groups <- data.frame(start = 0, end = 8)
+
+et <- Earthtide$new(
+  utc = tms,
+  latitude = 52.3868,
+  longitude = 9.7144,
+  elevation = 110,
+  gravity = 9.8127,
+  cutoff = 1.0e-10,
+  wave_groups = wave_groups
+)
+
+bench::mark(
+et$predict(method = "gravity", astro_update = 3600, n_thread = 12),
+et$predict(method = "gravity", astro_update = 1800, n_thread = 12),
+et$predict(method = "gravity", astro_update = 900, n_thread = 12),
+et$predict(method = "gravity", astro_update = 600, n_thread = 12),
+et$predict(method = "gravity", astro_update = 300, n_thread = 12)
+)
+
+system.time(et$predict(method = "gravity", astro_update = 300, n_thread = 8))
+
+

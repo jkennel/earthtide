@@ -57,12 +57,16 @@ unique_eigen <- function(index) {
     .Call(`_earthtide_unique_eigen`, index)
 }
 
-calc_dc2 <- function(k_mat, astro, pk) {
-    .Call(`_earthtide_calc_dc2`, k_mat, astro, pk)
+calc_dc2 <- function(k_mat, astro, pk, to_rad) {
+    .Call(`_earthtide_calc_dc2`, k_mat, astro, pk, to_rad)
 }
 
-set_fac <- function(body, body_inds, k_mat, astro_der, delta, deltar, o1, resonance, max_amp) {
-    .Call(`_earthtide_set_fac`, body, body_inds, k_mat, astro_der, delta, deltar, o1, resonance, max_amp)
+calc_dc3 <- function(k_mat, astro_der) {
+    .Call(`_earthtide_calc_dc3`, k_mat, astro_der)
+}
+
+set_fac <- function(body, body_inds, k_mat, astro_der, dc3, delta, deltar, o1, resonance, max_amp) {
+    .Call(`_earthtide_set_fac`, body, body_inds, k_mat, astro_der, dc3, delta, deltar, o1, resonance, max_amp)
 }
 
 et_analyze_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, scale) {
@@ -75,5 +79,13 @@ et_predict_one <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, 
 
 et_calculate <- function(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale, n_thread) {
     .Call(`_earthtide_et_calculate`, astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale, n_thread)
+}
+
+et_predict_n <- function(astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef) {
+    .Call(`_earthtide_et_predict_n`, astro, astro_der, k_mat, pk, body, body_inds, delta, deltar, x, y, j2000, o1, resonance, max_amp, update_coef)
+}
+
+et_calculate_n <- function(astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale, n_thread, astro_update, update_coef) {
+    .Call(`_earthtide_et_calculate_n`, astro, astro_der, k_mat, phases, delta, deltar, cc, ss, dgk, jcof, j2000, o1, resonance, index, multiplier, predict, scale, n_thread, astro_update, update_coef)
 }
 
