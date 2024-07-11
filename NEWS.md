@@ -1,6 +1,11 @@
 # earthtide 0.1.3
 
 * update data
+* add astro_update to eigen branch
+
+# earthtide 0.1.3
+
+* update data
 
 # earthtide 0.1.2
 

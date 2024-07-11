@@ -438,7 +438,7 @@ Earthtide <- R6Class(
 
       self$apply_method(method)
       astro_update <- self$check_time_increment(astro_update)
-      print(astro_update)
+
       if (return_matrix) {
         mat <- self$calculate(
           astro_update = astro_update,
@@ -536,7 +536,6 @@ Earthtide <- R6Class(
                 n_thread equal to the maximum number of cores.")
         n_thread <- n_cores
       }
-      print(astro_update)
 
       et_calculate_n(
         self$astro$astro,

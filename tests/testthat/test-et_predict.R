@@ -103,14 +103,14 @@ et <- Earthtide$new(
   wave_groups = wave_groups
 )
 
-bench::mark(
-et$predict(method = "gravity", astro_update = 3600, n_thread = 12),
-et$predict(method = "gravity", astro_update = 1800, n_thread = 12),
-et$predict(method = "gravity", astro_update = 900, n_thread = 12),
-et$predict(method = "gravity", astro_update = 600, n_thread = 12),
-et$predict(method = "gravity", astro_update = 300, n_thread = 12)
-)
 
-system.time(et$predict(method = "gravity", astro_update = 300, n_thread = 8))
+system.time(a <- et$predict(method = "gravity", astro_update = 300, n_thread = 8))
 
 
+# bench::mark(
+# et$predict(method = "gravity", astro_update = 3600, n_thread = 12),
+# et$predict(method = "gravity", astro_update = 1800, n_thread = 12),
+# et$predict(method = "gravity", astro_update = 900, n_thread = 12),
+# et$predict(method = "gravity", astro_update = 600, n_thread = 12),
+# et$predict(method = "gravity", astro_update = 300, n_thread = 12)
+# )
