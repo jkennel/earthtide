@@ -21,7 +21,8 @@ calc_earthtide(
   eop = NULL,
   return_matrix = FALSE,
   scale = TRUE,
-  n_thread = 1,
+  n_thread = 1L,
+  astro_update = 1L,
   ...
 )
 }

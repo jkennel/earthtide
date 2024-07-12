@@ -2,8 +2,8 @@
 % Please edit documentation in R/earthtide-package.R
 \docType{package}
 \name{earthtide-package}
+\alias{earthtide}
 \alias{earthtide-package}
-\alias{_PACKAGE}
 \title{earthtide: R port of the earth tide processing package ETERNA
 (by Hans-Georg Wenzel) including the Kudryavtsev wave catalog.}
 \description{

@@ -69,6 +69,9 @@ et$print()
     "horizontal_displacement", "n_s_displacement", "e_w_displacement",
     "vertical_strain", "areal_strain", "volume_strain", "horizontal_strain"
     or "ocean_tides".}
+  \item{astro_update: }{For \code{predict} and \code{analyze}. How often to
+  update astro parameters. This speeds up code but may make it slightly less
+  accurate}
   \item{return_matrix: }{For \code{predict} and \code{analyze}. Return a
     matrix of tidal values instead of data.frame. The datetime column will
     not be present in this case (logical).}
