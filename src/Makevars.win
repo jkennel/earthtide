@@ -1,2 +1,3 @@
 
+CPPFLAGS = -O3 -fopenmp
 CXX_STD = CXX17
