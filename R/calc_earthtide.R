@@ -37,6 +37,8 @@
 #'     The datetime column will not be present in this case (logical).
 #' @param scale Scale results when do_predict is FALSE
 #' @param n_thread Number of threads to use for parallel processing (integer).
+#' @param astro_update How often to update astro parameters in number of
+#' samples. This speeds up code but may make it slightly less accurate.
 #' @param ... Currently not used.
 #'
 #' @return data.frame or matrix of tidal results
