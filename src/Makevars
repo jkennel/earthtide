@@ -1,4 +1,2 @@
-
-CPPFLAGS = -O3 -fopenmp
 CXX_STD = CXX17
 PKG_LIBS = `"$(R_HOME)/bin/Rscript" -e "RcppThread::LdFlags()"`
