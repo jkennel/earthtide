@@ -24,7 +24,7 @@ Eigen::MatrixXd time_mat(const Eigen::ArrayXd& time) {
 
   const size_t n = time.size();
 
-  if(n == 0) {
+  if (n == 0) {
     Rcpp::stop("time_mat: There should be one or more times");
   }
 
@@ -44,7 +44,7 @@ Eigen::MatrixXd time_der_mat(const Eigen::ArrayXd& time) {
 
   const size_t n = time.size();
 
-  if(n == 0) {
+  if (n == 0) {
     Rcpp::stop("time_der_mat: There should be one or more times");
   }
 
@@ -187,7 +187,7 @@ Eigen::MatrixXd legendre(size_t l_max, double x) {
 
   int n = VectorXi::LinSpaced(l_max - 1, 3, l_max + 1).sum();
 
-  if(n == 0) {
+  if (n == 0) {
     Rcpp::stop("legendre: l_max leads to a zero row matrix. select a larger value");
   }
 
@@ -260,11 +260,11 @@ Eigen::MatrixXi get_catalog_indices(const Eigen::VectorXi& index,
 
   const size_t nw = index.size();
 
-  if(ng == 0) {
+  if (ng == 0) {
     Rcpp::stop("get_catalog_indices: There should at least one group");
   };
 
-  if(nw == 0) {
+  if (nw == 0) {
     Rcpp::stop("get_catalog_indices: There should be one wave in the group");
   }
 
@@ -296,7 +296,7 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
   size_t counter = 0;
   VectorXi out_empty = VectorXi::Zero(0);
   VectorXi out = VectorXi::Zero(n);
-  if(n == 0) {
+  if (n == 0) {
     return(out_empty);
   }
 
@@ -309,7 +309,7 @@ Eigen::VectorXi subset_2_eigen(const Eigen::VectorXi& input)
     }
   }
 
-  if(counter == 0) {
+  if (counter == 0) {
     return(out_empty);
   }
 
@@ -341,7 +341,7 @@ Eigen::ArrayXd subset_eigen(const Eigen::ArrayXd& input,
 
   size_t n = subs.size();
 
-  if(n == 0) {
+  if (n == 0) {
     Rcpp::stop("subset_eigen: There should be at least one value to subset");
   }
 
@@ -391,10 +391,9 @@ Eigen::ArrayXd calc_dc3(const Eigen::MatrixXd& k_mat,
 
 
   // is there a way to vectorize this?  matrix size issue
-  ArrayXd dc3 = (k_mat * astro_der);
 
 
-  return(dc3);
+  return(k_mat * astro_der);
 }
 
 
@@ -409,11 +408,11 @@ Eigen::ArrayXd set_fac(const Eigen::ArrayXd& body,
                        const double deltar,
                        const double o1,
                        const double resonance,
-                       size_t max_amp
+                       const size_t max_amp
 )
 {
 
-  ArrayXd out = body;
+  Eigen::ArrayXd out = body;
 
   const size_t n = body_inds.size();
 
@@ -421,12 +420,7 @@ Eigen::ArrayXd set_fac(const Eigen::ArrayXd& body,
     return(out / out(max_amp));
   }
 
-  // double dc3 = 0.0;
-
-  // for (size_t i = 0; i < n; ++i) {
-    // dc3 = k_mat.row(body_inds(i)) * astro_der;
-    out(body_inds) = delta + deltar * (dc3(body_inds) - o1) / (resonance - dc3(body_inds));
-  // }
+  out(body_inds) = delta + deltar * (dc3(body_inds) - o1) / (resonance - dc3(body_inds));
 
   out /= out(max_amp);
 
@@ -448,7 +442,7 @@ Eigen::MatrixXd et_analyze_one(const Eigen::VectorXd& astro,
                                const double j2000,
                                const double o1,
                                const double resonance,
-                               const int max_amp,
+                               const size_t max_amp,
                                bool scale) {
 
 
@@ -510,7 +504,7 @@ double et_predict_one(const Eigen::VectorXd& astro,
                       const double j2000,
                       const double o1,
                       const double resonance,
-                      int max_amp) {
+                      const size_t max_amp) {
 
 
   const double to_rad = M_PI / 180.0;
@@ -580,10 +574,10 @@ Eigen::MatrixXd et_calculate(const Eigen::MatrixXd& astro,
   size_t ng = un.size();
   size_t start_seg, n_seg;
 
-  if(nt == 0) {
+  if (nt == 0) {
     Rcpp::stop("et_calculate: There should be at least one time");
   }
-  if(ng == 0) {
+  if (ng == 0) {
     Rcpp::stop("et_calculate: There should be at least one group");
   }
 
@@ -689,13 +683,13 @@ Eigen::MatrixXd et_analyze_n(const Eigen::VectorXd& astro,
                              const Eigen::VectorXd& j2000,
                              const double o1,
                              const double resonance,
-                             const int max_amp,
+                             const size_t max_amp,
                              bool scale,
                              const double update_coef) {
 
 
   const double to_rad = M_PI / 180.0;
-  unsigned int nt = j2000.size();
+  size_t nt = j2000.size();
   const int nr = k_mat.rows();  // number of constituents
 
   Eigen::MatrixXd output = Eigen::MatrixXd::Zero(nt, 2);
@@ -755,7 +749,7 @@ Eigen::MatrixXd et_analyze_n(const Eigen::VectorXd& astro,
     cos_c = dc3.cos();
     sin_c = dc3.sin();
 
-    for (unsigned int k = 0; k < nt; k++) {
+    for (size_t k = 0; k < nt; k++) {
       cc = dtham.matrix().dot(cos_dc2.matrix());
       ss = dtham.matrix().dot(sin_dc2.matrix());
 
@@ -784,7 +778,7 @@ Eigen::MatrixXd et_analyze_n(const Eigen::VectorXd& astro,
 
 
 // [[Rcpp::export]]
-Eigen::MatrixXd et_predict_n(const Eigen::VectorXd& astro,
+Eigen::VectorXd et_predict_n(const Eigen::VectorXd& astro,
                              const Eigen::VectorXd& astro_der,
                              const Eigen::MatrixXd& k_mat,
                              const Eigen::ArrayXd& pk,
@@ -797,12 +791,11 @@ Eigen::MatrixXd et_predict_n(const Eigen::VectorXd& astro,
                              const Eigen::VectorXd& j2000,
                              const double o1,
                              const double resonance,
-                             int max_amp,
+                             const size_t max_amp,
                              const double update_coef) {
 
 
   const int nr = k_mat.rows();  // number of constituents
-  // const int nt = astro.cols();  // number of times
   const int nt = j2000.size();  // number of times
 
   const double to_rad = M_PI / 180.0;
@@ -810,8 +803,6 @@ Eigen::MatrixXd et_predict_n(const Eigen::VectorXd& astro,
   const ArrayXd dc2 = calc_dc2(k_mat, astro, pk, to_rad);
   ArrayXd dc3 = calc_dc3(k_mat, astro_der);
 
-//   const ArrayXd dc2 = calc_dc2(k_mat, astro.col(0), pk, to_rad);
-//   ArrayXd dc3 = calc_dc3(k_mat, astro_der.col(0));
 
   const ArrayXd fac = set_fac(body,
                               body_inds,
@@ -831,12 +822,15 @@ Eigen::MatrixXd et_predict_n(const Eigen::VectorXd& astro,
   Eigen::ArrayXd cos_c = Eigen::ArrayXd(nr);
   Eigen::ArrayXd sin_c = Eigen::ArrayXd(nr);
 
-  Eigen::Vector3d v;
+  Eigen::Vector3d v = Eigen::Vector3d::Ones();
 
-  Eigen::MatrixXd output(nt, 1);
+  Eigen::VectorXd output(nt);
 
   if (nt == 1) {
-    v << 1.0, j2000[0], j2000[0] * j2000[0];
+
+    v[1] = j2000[0];
+    v[2] = j2000[0] * j2000[0];
+
     output(0) = (fac * ((x * v).array().colwise() * cos_dc2 +
       (y * v).array().colwise() * sin_dc2)).sum();
 
@@ -850,7 +844,8 @@ Eigen::MatrixXd et_predict_n(const Eigen::VectorXd& astro,
     // loop through each time group
     for (int k = 0; k < nt; k++) {
 
-      v << 1.0, j2000[k], j2000[k] * j2000[k];
+      v[1] = j2000[k];
+      v[2] = j2000[k] * j2000[k];
 
       output(k) = (fac * ((x * v).array().colwise() * cos_dc2 +
         (y * v).array().colwise() * sin_dc2)).sum();
@@ -884,32 +879,32 @@ Eigen::MatrixXd et_calculate_n(const Eigen::MatrixXd& astro,
                                const double resonance,
                                const Eigen::VectorXi& index,
                                const Eigen::ArrayXd& multiplier,
-                               bool predict,
-                               bool scale,
-                               size_t n_thread,
-                               unsigned int astro_update,
+                               const bool predict,
+                               const bool scale,
+                               const size_t n_thread,
+                               const size_t astro_update,
                                const double update_coef) {
 
 
   RcppThread::ThreadPool pool(n_thread);
 
   Eigen::ArrayXd::Index max_elem = 0;
-  unsigned int i_max = 0;
+  size_t i_max = 0;
 
 
   // number of times
-  unsigned int nt = astro.cols();
+  const size_t nt = astro.cols();
 
 
   // number of wave groups
   const VectorXi un = unique_eigen(index);
-  unsigned int ng = un.size();
-  unsigned int start_seg, n_seg;
+  const size_t ng = un.size();
+  size_t start_seg, n_seg;
 
-  if(nt == 0) {
+  if (nt == 0) {
     Rcpp::stop("et_calculate: There should be at least one time");
   }
-  if(ng == 0) {
+  if (ng == 0) {
     Rcpp::stop("et_calculate: There should be at least one group");
   }
 
@@ -927,26 +922,18 @@ Eigen::MatrixXd et_calculate_n(const Eigen::MatrixXd& astro,
   const MatrixXi sub = get_catalog_indices(index, ng);
 
   Eigen::MatrixXd output;
-  if(predict) {
+  if (predict) {
     output = Eigen::MatrixXd::Zero(nt, 1);
   } else {
     output = Eigen::MatrixXd::Zero(nt, 2 * ng);
   };
 
-
-  // unsigned int astro_space = astro_update;
-  // unsigned int start = 0;
-  unsigned int n_time_sub = nt / astro_update;
+  size_t n_time_sub = nt / astro_update;
 
   if (n_time_sub * astro_update < nt) {
     n_time_sub += 1;
   }
 
-  // if (predict) {
-  //   output = MatrixXd::Zero(nt, 1);
-  // } else {
-  //   output = MatrixXd::Zero(nt, ng * 2);
-  // }
 
   // subset for each wave group
   for (size_t j = 0; j < ng; ++j) {
@@ -971,12 +958,12 @@ Eigen::MatrixXd et_calculate_n(const Eigen::MatrixXd& astro,
 
       pool.parallelFor(0, n_time_sub, [&] (size_t m) {
 
-        unsigned int start = m * astro_update;
-        unsigned int astro_space = std::min(astro_update, nt - start);
+        size_t start = m * astro_update;
+        size_t astro_space = std::min(astro_update, nt - start);
 
-        output.middleRows(start, astro_space) += mult * et_predict_n(
-          astro.col(start),//middleCols(start, astro_space),
-          astro_der.col(start),//middleCols(start, astro_space),
+        output.col(0).segment(start, astro_space) += mult * et_predict_n(
+          astro.col(start),
+          astro_der.col(start),
           k_mat_sub,
           pk,
           body,
@@ -996,12 +983,12 @@ Eigen::MatrixXd et_calculate_n(const Eigen::MatrixXd& astro,
 
       pool.parallelFor(0, n_time_sub, [&] (size_t m) {
 
-        unsigned int start = m * astro_update;
-        unsigned int astro_space = std::min(astro_update, nt - start);
+        size_t start = m * astro_update;
+        size_t astro_space = std::min(astro_update, nt - start);
 
-        output.middleRows(start, astro_space) += mult * et_analyze_n(
-          astro.col(start),//middleCols(start, astro_space),
-          astro_der.col(start),//middleCols(start, astro_space),
+        output.block(start, j * 2, astro_space, 2) = mult * et_analyze_n(
+          astro.col(start),
+          astro_der.col(start),
           k_mat_sub,
           pk,
           body,

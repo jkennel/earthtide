@@ -90,27 +90,4 @@ test_that("et_predict works", {
 
 
 
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(86400)
-wave_groups <- data.frame(start = 0, end = 8)
 
-et <- Earthtide$new(
-  utc = tms,
-  latitude = 52.3868,
-  longitude = 9.7144,
-  elevation = 110,
-  gravity = 9.8127,
-  cutoff = 1.0e-10,
-  wave_groups = wave_groups
-)
-
-
-system.time(a <- et$predict(method = "gravity", astro_update = 300, n_thread = 8))
-
-
-# bench::mark(
-# et$predict(method = "gravity", astro_update = 3600, n_thread = 12),
-# et$predict(method = "gravity", astro_update = 1800, n_thread = 12),
-# et$predict(method = "gravity", astro_update = 900, n_thread = 12),
-# et$predict(method = "gravity", astro_update = 600, n_thread = 12),
-# et$predict(method = "gravity", astro_update = 300, n_thread = 12)
-# )

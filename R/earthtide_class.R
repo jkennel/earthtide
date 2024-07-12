@@ -531,7 +531,7 @@ Earthtide <- R6Class(
     },
     calculate = function(astro_update = 1L, predict = TRUE, scale = TRUE, n_thread = 1L) {
       n_cores <- detectCores()
-      if(n_thread > n_cores) {
+      if (n_thread > n_cores) {
         warning("number of threads is more than the number of cores, setting
                 n_thread equal to the maximum number of cores.")
         n_thread <- n_cores

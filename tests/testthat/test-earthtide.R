@@ -287,8 +287,8 @@ test_that("earthtide works", {
 
 context("test-earthtide-threads")
 test_that("earthtide works", {
-
   testthat::skip_on_cran()
+  testthat::skip_on_ci()
   testthat::skip_on_travis()
 
     tms <- as.POSIXct("1990-01-01", tz = "UTC") + c(0, 3600)

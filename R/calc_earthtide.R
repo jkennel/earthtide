@@ -75,7 +75,8 @@ calc_earthtide <- function(utc,
                            eop = NULL,
                            return_matrix = FALSE,
                            scale = TRUE,
-                           n_thread = 1,
+                           n_thread = 1L,
+                           astro_update = 1L,
                            ...) {
   et <- Earthtide$new(
     utc = utc,
@@ -106,16 +107,19 @@ calc_earthtide <- function(utc,
     } else if (do_predict) {
       if (return_matrix) {
         return(et$predict(method = method[i],
+                          astro_update = astro_update,
                           return_matrix = return_matrix,
                           n_thread = n_thread))
       } else {
         et$predict(method = method[i],
+                   astro_update = astro_update,
                    return_matrix = return_matrix,
                    n_thread = n_thread)
       }
     } else {
       if (return_matrix) {
         return(et$analyze(
+          astro_update = astro_update,
           method = method[i],
           return_matrix = return_matrix,
           scale = scale,
@@ -123,6 +127,7 @@ calc_earthtide <- function(utc,
         ))
       } else {
         et$analyze(
+          astro_update = astro_update,
           method = method[i],
           return_matrix = return_matrix,
           scale = scale,
