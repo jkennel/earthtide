@@ -26,7 +26,6 @@ tide-generating potential. J. Geod. 77, 829–838.
 
 Wenzel, H.G. 1996: The nanogal software: Earth tide data processing
 package ETERNA 3.30. Bull. Inf. Marges Terrestres. 124, 9425-9439.
-\url(<https://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM>)
 
 ## Installation
 

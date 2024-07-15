@@ -18,7 +18,7 @@
 #'  \doi{10.1007/s00190-003-0361-2}
 #' @references Wenzel, H.G., 1996. The nanogal software: Earth tide data
 #'  processing package ETERNA 3.30. Bull. Inf. Marées Terrestres, 124,
-#'  pp.9425-9439. \url{https://www.eas.slu.edu/GGP/ETERNA34/MANUAL/ETERNA33.HTM}
+#'  pp.9425-9439.
 #'
 #' @useDynLib earthtide, .registration = TRUE
 #' @docType package
