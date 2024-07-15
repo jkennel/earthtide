@@ -92,6 +92,7 @@
 #'
 #' @docType class
 #' @aliases Earthtide-class
+#'
 #' @importFrom R6 R6Class
 #' @importFrom RcppThread detectCores
 #' @importFrom stats approx
@@ -99,7 +100,7 @@
 #' @importFrom utils read.fwf
 #' @importFrom utils download.file
 #' @importFrom utils data
-#' @format An \code{\link{R6Class}} generator object
+#' @format An \code{\link[R6]{R6Class}} generator object
 #'
 #'
 #' @references Hartmann, T., Wenzel, H.-G., 1995. The HW95 tidal potential catalogue. Geophys. Res. Lett. 22, 3553-3556. \doi{10.1029/95GL03324}

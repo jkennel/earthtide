@@ -6,7 +6,7 @@
 \alias{Earthtide-class}
 \title{Earthtide class}
 \format{
-An \code{\link{R6Class}} generator object
+An \code{\link[R6]{R6Class}} generator object
 }
 \description{
 Class to generate synthetic earthtide signals.
