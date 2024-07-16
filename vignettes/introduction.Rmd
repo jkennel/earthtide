@@ -185,7 +185,14 @@ plot(pole_tide~datetime, tide,
 
 ## Speed for large datasets
 
-The speed of generating the tidal datasets can be achieved by reducing the number of waves used.  The **cutoff** parameter controls how many waves are used. In general, the speed should be as good as or better than the fortran version of ETERNA, given the parallel computation.  The **cutoff** parameter determines the number of waves used in the analysis.  A larger cutoff value means fewer waves will be used leading to a faster but less accurate result.
+Speeding up the generation of tidal datasets can be achieved in a few ways:
+- reduce the number of waves used.  The **cutoff** parameter controls how many waves are used. A larger cutoff value means fewer waves will be used leading to a faster but less accurate result.
+- use a higher number for astro_update.  This introduces an approximation for when astronomical parameters are updated and can provide significant speed-ups.  By default a value of 1 is used.
+- interpolate values using the *utc_interp* parameter to _calc_earthtide_.  For example you can generate you series every 60 seconds and interpolate to 1 second.
+- use more threads.  This can be done by setting *n_thread* argument to _calc_earthtide_
+- a combination of above
+
+In general, the speed should be as good as or better than the fortran version of ETERNA if similar parameters are used.
 
 
 ## References
