@@ -314,3 +314,103 @@ test_that("earthtide works", {
   expect_equal(tide_1_threads, tide_2_threads)
 
 })
+
+
+context("test-earthtide-interpolation")
+test_that("earthtide works", {
+  testthat::skip_on_cran()
+
+  tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:1800
+
+  wave_groups <- data.frame(start = 0, end = 8)
+
+    et <- Earthtide$new(
+      utc = tms,
+      latitude = 52.3868,
+      longitude = 9.7144,
+      elevation = 110,
+      gravity = 9.8127,
+      cutoff = 1.0e-10,
+      catalog = "ksm04",
+      wave_groups = wave_groups
+    )
+
+    et$predict(method = "gravity")
+    tide_1 <- et$tide()
+
+
+
+  tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 10)
+
+    et <- Earthtide$new(
+      utc = tms_interp,
+      latitude = 52.3868,
+      longitude = 9.7144,
+      elevation = 110,
+      gravity = 9.8127,
+      cutoff = 1.0e-10,
+      catalog = "ksm04",
+      wave_groups = wave_groups
+    )
+    et$predict(method = "gravity")
+    et$interpolate(tms)
+    tide_1_interp <- et$tide()
+
+  expect_equal(tide_1, tide_1_interp, tolerance = 1e-6)
+
+
+
+
+  tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:1800
+
+  wave_groups <- data.frame(start = 0, end = 8)
+
+  et <- Earthtide$new(
+    utc = tms,
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  )
+
+  et$analyze(method = "gravity")
+  tide_1 <- et$tide()
+
+  tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 10)
+
+  et <- Earthtide$new(
+    utc = tms_interp,
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  )
+  et$analyze(method = "gravity")
+  et$interpolate(tms)
+  tide_1_interp <- et$tide()
+
+  expect_equal(tide_1, tide_1_interp, tolerance = 1e-6)
+
+
+  et <- Earthtide$new(
+    utc = tms_interp,
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  )
+  et$predict(method = "gravity", return_matrix = TRUE)
+  expect_error(et$interpolate(tms))
+
+
+
+})

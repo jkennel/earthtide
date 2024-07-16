@@ -90,4 +90,48 @@ test_that("et_predict works", {
 
 
 
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:86400
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+et <- Earthtide$new(
+  utc = tms,
+  latitude = 52.3868,
+  longitude = 9.7144,
+  elevation = 110,
+  gravity = 9.8127,
+  cutoff = 1.0e-10,
+  catalog = "hw95s",
+  wave_groups = wave_groups
+)
+
+system.time(
+tmp <- et$predict(method = "gravity", n_thread = 10, astro_update = 300)
+)
+
+
+tms10 <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400, 10)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+et <- Earthtide$new(
+  utc = tms10,
+  latitude = 52.3868,
+  longitude = 9.7144,
+  elevation = 110,
+  gravity = 9.8127,
+  cutoff = 1.0e-10,
+  catalog = "hw95s",
+  wave_groups = wave_groups
+)
+
+system.time({
+    et$predict(method = "gravity", n_thread = 10, astro_update = 30)
+    tmp <- et$interpolate(tms)
+})
+
+tide <- et$tide()
+
+
+
 

@@ -94,6 +94,9 @@ and times.
 \code{$analyze(method, astro_argument, return_matrix, scale)} generate
   components of the Earth tide for analysis.
 
+\code{$interpolate(utc)} interpolate earth tides. This is primarily used
+  to improve speed at the loss of some precision. It is run after predict.
+
 \code{$lod_tide()} generate components of the LOD (Length Of Day) tide.
 
 \code{$pole_tide()} generate components of the pole tide.
