@@ -39,6 +39,8 @@
 #' @param n_thread Number of threads to use for parallel processing (integer).
 #' @param astro_update How often to update astro parameters in number of
 #' samples. This speeds up code but may make it slightly less accurate.
+#' @param utc_interp The date-time in UTC (POSIXct vector) to interpolate from
+#'      the initial utc values.
 #' @param ... Currently not used.
 #'
 #' @return data.frame or matrix of tidal results
@@ -79,6 +81,7 @@ calc_earthtide <- function(utc,
                            scale = TRUE,
                            n_thread = 1L,
                            astro_update = 1L,
+                           utc_interp = NULL,
                            ...) {
   et <- Earthtide$new(
     utc = utc,
@@ -135,8 +138,13 @@ calc_earthtide <- function(utc,
           scale = scale,
           n_thread = n_thread
         )
+
       }
     }
+  }
+
+  if (inherits(utc_interp, "POSIXct")) {
+    et$interpolate(utc_interp)
   }
 
   return(et$tide())

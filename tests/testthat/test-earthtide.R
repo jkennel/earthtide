@@ -360,42 +360,32 @@ test_that("earthtide works", {
 
 
 
-
-  tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:1800
-
-  wave_groups <- data.frame(start = 0, end = 8)
-
-  et <- Earthtide$new(
+  et_fun <- calc_earthtide(
     utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
     gravity = 9.8127,
-    cutoff = 1.0e-10,
+    cutoff = 1.0e-5,
     catalog = "ksm04",
     wave_groups = wave_groups
   )
-
-  et$analyze(method = "gravity")
-  tide_1 <- et$tide()
-
-  tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 10)
-
-  et <- Earthtide$new(
+  et_fun_interp <- calc_earthtide(
     utc = tms_interp,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
     latitude = 52.3868,
     longitude = 9.7144,
     elevation = 110,
     gravity = 9.8127,
-    cutoff = 1.0e-10,
+    cutoff = 1.0e-5,
     catalog = "ksm04",
-    wave_groups = wave_groups
+    wave_groups = wave_groups,
+    utc_interp = tms
   )
-  et$analyze(method = "gravity")
-  et$interpolate(tms)
-  tide_1_interp <- et$tide()
-
-  expect_equal(tide_1, tide_1_interp, tolerance = 1e-6)
+  expect_equal(et_fun, et_fun_interp, tolerance = 1e-6)
 
 
   et <- Earthtide$new(

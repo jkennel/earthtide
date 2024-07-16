@@ -23,6 +23,7 @@ calc_earthtide(
   scale = TRUE,
   n_thread = 1L,
   astro_update = 1L,
+  utc_interp = NULL,
   ...
 )
 }
@@ -79,6 +80,9 @@ The datetime column will not be present in this case (logical).}
 
 \item{astro_update}{How often to update astro parameters in number of
 samples. This speeds up code but may make it slightly less accurate.}
+
+\item{utc_interp}{The date-time in UTC (POSIXct vector) to interpolate from
+the initial utc values.}
 
 \item{...}{Currently not used.}
 }
