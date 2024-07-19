@@ -20,6 +20,63 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(earthtide)
 library(bench)
+
+
+eval_chunks <- TRUE # may not want to run on CRAN because of threads and running time
+```
+
+This vignette describes a few ways to speed up the computation of Earth tides and in some cases reduce memory consumption.
+
+
+The following techniques are presented below:
+- Irregular time steps
+- Change wave catalog
+- Change wave amplitude cutoff
+- Change how often astronomical parameters are updated
+- Use parallel computation
+- Interpolations
+
+
+# Irregular time steps
+
+Some times you may not need to predict at regular time steps. Irregular time steps are allowed, however, the \code{astro_update} parameter should be set to 1L if you are not using a regular time series.
+
+```{r irregular, eval = eval_chunks}
+set.seed(123)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+indices <- sort(sample(0:1800, 100, replace = FALSE)) 
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+check_fun <- function(target, current) (all.equal(target, current, check.attributes = FALSE))
+
+bench::mark(
+  et <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  )[indices, ],
+  et_irregular <- calc_earthtide(
+    utc = tms[indices],
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ), check = check_fun
+)
+
 ```
 
 
@@ -27,14 +84,14 @@ library(bench)
 
 Using a catalog with fewer waves will be faster. Here we compare ksm04 and hw95s.
 
-```{r catalog}
+```{r catalog, eval = eval_chunks}
 
 tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
 bench::mark(
-  et_fun <- calc_earthtide(
+  et <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -46,7 +103,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups
   ),
-  et_fun_threads <- calc_earthtide(
+  et_catalog <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -65,17 +122,17 @@ bench::mark(
 
 # cutoff parameter
 
-Increasing the cutoff will decrease the number of wave groups and thus the speed
+Increasing the cutoff will decrease the number of waves and thus the speed
 increases. Results will not be the same.
 
-```{r cutoff}
+```{r cutoff, eval = eval_chunks}
 
 tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
 bench::mark(
-  et_fun <- calc_earthtide(
+  et <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -87,7 +144,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups
   ),
-  et_fun_threads <- calc_earthtide(
+  et_cutoff <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -109,16 +166,17 @@ bench::mark(
 
 Increasing the \code{astro_update} parameter leads to an approximation that may 
 speed up computation. Results will not be exactly the same but can be very close 
-as in the following example.
+as in the following example.  The default is that parameters are updated for 
+every time-step.
 
-```{r astro_update}
+```{r astro_update, eval = eval_chunks}
 
 tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
 bench::mark(
-  et_fun <- calc_earthtide(
+  et <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -130,7 +188,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups
   ),
-  et_fun_threads <- calc_earthtide(
+  et_astro <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -153,14 +211,14 @@ bench::mark(
 Adjust the number of threads used for parallel computation. This should result
 in equivalent values.
 
-```{r threads}
+```{r threads, eval = eval_chunks}
 
 tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
 bench::mark(
-  et_fun <- calc_earthtide(
+  et <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -172,7 +230,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups
   ),
-  et_fun_threads <- calc_earthtide(
+  et_threads <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -193,12 +251,13 @@ bench::mark(
 # Predict and interpolate
 
 For one second output you can predict every minute and interpolate.  
-Interpolation is done via \code{stat::spline}. This can also be done with longer
-time intervals but the number of samples skipped may need to be adjusted. 
+Interpolation is done via \code{stat::spline} which achieves good accuracy with 
+larger approximations. The number of samples skipped may need to be adjusted 
+depending on the size of your time step. 
 Results will not be the exactly the same but can be very close as in 
 the following example.
 
-```{r predictinterp}
+```{r predictinterp, eval = eval_chunks}
 
 tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
 tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 180)
@@ -206,7 +265,7 @@ tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 180)
 wave_groups <- data.frame(start = 0, end = 8)
 
 bench::mark(
-  et_fun <- calc_earthtide(
+  et <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -218,7 +277,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups
   ),
-  et_fun_interp <- calc_earthtide(
+  et_interp <- calc_earthtide(
     utc = tms_interp,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -239,11 +298,11 @@ bench::mark(
 
 # Combination of the above
 
-We will use a larger dataset to compare a few approximation methods. In general, 
+We will use a larger dataset to compare  approximation methods. In general, 
 interpolation will give the best speed-up to accuracy if your time-steps are 
 small (seconds).
 
-```{r combination}
+```{r combination, eval = eval_chunks}
 
 tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(86400 * 2)
 tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400 * 2, 180)
@@ -251,7 +310,7 @@ tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400 * 2, 180)
 wave_groups <- data.frame(start = 0, end = 8)
 
 bench::mark(
-  et_fun_astro_threads <- calc_earthtide(
+  et_astro_threads <- calc_earthtide(
     utc = tms,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
@@ -265,7 +324,7 @@ bench::mark(
     astro_update = 60L,
     n_thread = 10L
   ),
-  et_fun_interp_threads <- calc_earthtide(
+  et_interp_threads <- calc_earthtide(
     utc = tms_interp,
     do_predict = TRUE,
     method = c("tidal_potential", "lod_tide", "pole_tide"),
