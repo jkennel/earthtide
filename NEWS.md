@@ -1,3 +1,7 @@
+# earthtide 0.1.6
+
+* add utc_interp argument to interpolate earthtides
+
 # earthtide 0.1.4
 
 * update data

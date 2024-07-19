@@ -405,7 +405,3 @@ test_that("earthtide works", {
 
 })
 
-
-
-
-

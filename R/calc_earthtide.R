@@ -83,6 +83,7 @@ calc_earthtide <- function(utc,
                            astro_update = 1L,
                            utc_interp = NULL,
                            ...) {
+
   et <- Earthtide$new(
     utc = utc,
     latitude = latitude,
@@ -143,7 +144,12 @@ calc_earthtide <- function(utc,
     }
   }
 
+  print(utc_interp)
+  print(str(utc_interp))
+
   if (inherits(utc_interp, "POSIXct")) {
+    print("here")
+
     et$interpolate(utc_interp)
   }
 
