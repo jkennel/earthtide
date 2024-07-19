@@ -570,7 +570,7 @@ Earthtide <- R6Class(
     interpolate = function(utc) {
 
       if (ncol(self$tides) <= 1L) {
-        stop("please calculate tides before interpolation (did you calculate with return_matrix = TRUE?)")
+        stop("please calculate tides before interpolation (did you calculate with return_matrix = TRUE?).")
       }
 
       out <- data.frame(datetime = utc)
@@ -584,7 +584,8 @@ Earthtide <- R6Class(
       }
 
       for (i in seq_along(nms)) {
-        out[[nms[i]]] <- approx(x = self$datetime$utc, y = self$tides[[i + adj]], xout = utc)[["y"]]
+        out[[nms[i]]] <- stats::spline(x = self$datetime$utc, y = self$tides[[i + adj]],
+                      xout = utc, ties = "ordered")$y
       }
 
       self$tides <- out

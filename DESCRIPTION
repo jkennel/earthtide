@@ -26,6 +26,7 @@ LinkingTo:
     RcppEigen
 Suggests: 
     testthat (>= 2.1.0),
+    bench,
     knitr,
     rmarkdown,
     covr

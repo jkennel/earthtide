@@ -99,6 +99,8 @@ calc_earthtide <- function(utc,
     earth_eccen = earth_eccen
   )
 
+
+
   if (length(method) > 1) {
     if (!do_predict) {
       stop("If do_predict is FALSE only one method can be provided.")
@@ -144,12 +146,8 @@ calc_earthtide <- function(utc,
     }
   }
 
-  print(utc_interp)
-  print(str(utc_interp))
 
   if (inherits(utc_interp, "POSIXct")) {
-    print("here")
-
     et$interpolate(utc_interp)
   }
 

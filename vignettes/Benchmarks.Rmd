@@ -1,0 +1,286 @@
+---
+title: "Benchmarks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Benchmarks}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(earthtide)
+library(bench)
+```
+
+
+# Catalog
+
+Using a catalog with fewer waves will be faster. Here we compare ksm04 and hw95s.
+
+```{r catalog}
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+bench::mark(
+  et_fun <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ),
+  et_fun_threads <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "hw95s",
+    wave_groups = wave_groups
+  ), check = FALSE
+)
+
+```
+
+
+# cutoff parameter
+
+Increasing the cutoff will decrease the number of wave groups and thus the speed
+increases. Results will not be the same.
+
+```{r cutoff}
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+bench::mark(
+  et_fun <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ),
+  et_fun_threads <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-5,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ), check = FALSE
+)
+
+```
+
+
+
+# astro_update parameter
+
+Increasing the \code{astro_update} parameter leads to an approximation that may 
+speed up computation. Results will not be exactly the same but can be very close 
+as in the following example.
+
+```{r astro_update}
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+bench::mark(
+  et_fun <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ),
+  et_fun_threads <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups,
+    astro_update = 30L
+  )
+)
+
+
+```
+
+# n_thread parameter
+
+Adjust the number of threads used for parallel computation. This should result
+in equivalent values.
+
+```{r threads}
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+bench::mark(
+  et_fun <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ),
+  et_fun_threads <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups,
+    n_thread = 10L
+  )
+)
+
+
+```
+
+# Predict and interpolate
+
+For one second output you can predict every minute and interpolate.  
+Interpolation is done via \code{stat::spline}. This can also be done with longer
+time intervals but the number of samples skipped may need to be adjusted. 
+Results will not be the exactly the same but can be very close as in 
+the following example.
+
+```{r predictinterp}
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 180)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+bench::mark(
+  et_fun <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups
+  ),
+  et_fun_interp <- calc_earthtide(
+    utc = tms_interp,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups,
+    utc_interp = tms
+  )
+)
+
+  
+```
+
+
+# Combination of the above
+
+We will use a larger dataset to compare a few approximation methods. In general, 
+interpolation will give the best speed-up to accuracy if your time-steps are 
+small (seconds).
+
+```{r combination}
+
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(86400 * 2)
+tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400 * 2, 180)
+
+wave_groups <- data.frame(start = 0, end = 8)
+
+bench::mark(
+  et_fun_astro_threads <- calc_earthtide(
+    utc = tms,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups,
+    astro_update = 60L,
+    n_thread = 10L
+  ),
+  et_fun_interp_threads <- calc_earthtide(
+    utc = tms_interp,
+    do_predict = TRUE,
+    method = c("tidal_potential", "lod_tide", "pole_tide"),
+    latitude = 52.3868,
+    longitude = 9.7144,
+    elevation = 110,
+    gravity = 9.8127,
+    cutoff = 1.0e-10,
+    catalog = "ksm04",
+    wave_groups = wave_groups,
+    utc_interp = tms,
+    n_thread = 10L
+  ),
+)
+
+  
+```
+

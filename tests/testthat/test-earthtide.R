@@ -340,7 +340,7 @@ test_that("earthtide works", {
 
 
 
-  tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 10)
+  tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 100)
 
     et <- Earthtide$new(
       utc = tms_interp,
@@ -356,8 +356,7 @@ test_that("earthtide works", {
     et$interpolate(tms)
     tide_1_interp <- et$tide()
 
-  expect_equal(tide_1, tide_1_interp, tolerance = 1e-6)
-
+  expect_equal(tide_1, tide_1_interp)
 
 
   et_fun <- calc_earthtide(
@@ -368,7 +367,7 @@ test_that("earthtide works", {
     longitude = 9.7144,
     elevation = 110,
     gravity = 9.8127,
-    cutoff = 1.0e-5,
+    cutoff = 1.0e-10,
     catalog = "ksm04",
     wave_groups = wave_groups
   )
@@ -380,12 +379,13 @@ test_that("earthtide works", {
     longitude = 9.7144,
     elevation = 110,
     gravity = 9.8127,
-    cutoff = 1.0e-5,
+    cutoff = 1.0e-10,
     catalog = "ksm04",
     wave_groups = wave_groups,
     utc_interp = tms
   )
-  expect_equal(et_fun, et_fun_interp, tolerance = 1e-6)
+
+expect_equal(et_fun, et_fun_interp)
 
 
   et <- Earthtide$new(

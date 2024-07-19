@@ -9,3 +9,4 @@ src/*.dll
 ^\.Rproj\.user$
 ^\.Rproj\.user$
 earthtide\.Rproj
+inst/doc
