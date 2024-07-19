@@ -25,7 +25,7 @@ library(bench)
 eval_chunks <- TRUE # may not want to run on CRAN because of threads and running time
 ```
 
-This vignette describes a few ways to speed up the computation of Earth tides and in some cases reduce memory consumption.
+This vignette describes a few ways to speed up the computation of Earth tides and in some cases reduce memory consumption.  The examples below are kept small to minimize computation time for CRAN, but the methods can scale to larger problems.
 
 
 The following techniques are presented below:
@@ -43,8 +43,8 @@ Some times you may not need to predict at regular time steps. Irregular time ste
 
 ```{r irregular, eval = eval_chunks}
 set.seed(123)
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
-indices <- sort(sample(0:1800, 100, replace = FALSE)) 
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(900)
+indices <- sort(sample(0:900, 100, replace = FALSE)) 
 
 wave_groups <- data.frame(start = 0, end = 8)
 
@@ -74,7 +74,7 @@ bench::mark(
     cutoff = 1.0e-10,
     catalog = "ksm04",
     wave_groups = wave_groups
-  ), check = check_fun
+  ), check = check_fun, iterations = 1
 )
 
 ```
@@ -86,7 +86,7 @@ Using a catalog with fewer waves will be faster. Here we compare ksm04 and hw95s
 
 ```{r catalog, eval = eval_chunks}
 
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(900)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
@@ -114,7 +114,7 @@ bench::mark(
     cutoff = 1.0e-10,
     catalog = "hw95s",
     wave_groups = wave_groups
-  ), check = FALSE
+  ), check = FALSE, iterations = 1
 )
 
 ```
@@ -155,7 +155,7 @@ bench::mark(
     cutoff = 1.0e-5,
     catalog = "ksm04",
     wave_groups = wave_groups
-  ), check = FALSE
+  ), check = FALSE, iterations = 1
 )
 
 ```
@@ -171,7 +171,7 @@ every time-step.
 
 ```{r astro_update, eval = eval_chunks}
 
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(900)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
@@ -200,7 +200,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups,
     astro_update = 30L
-  )
+  ), iterations = 1
 )
 
 
@@ -213,7 +213,7 @@ in equivalent values.
 
 ```{r threads, eval = eval_chunks}
 
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(900)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
@@ -242,7 +242,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups,
     n_thread = 10L
-  )
+  ), iterations = 1
 )
 
 
@@ -259,8 +259,8 @@ the following example.
 
 ```{r predictinterp, eval = eval_chunks}
 
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(1800)
-tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 1800, 180)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(900)
+tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 900, 180)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
@@ -289,7 +289,7 @@ bench::mark(
     catalog = "ksm04",
     wave_groups = wave_groups,
     utc_interp = tms
-  )
+  ), iterations = 1
 )
 
   
@@ -304,8 +304,8 @@ small (seconds).
 
 ```{r combination, eval = eval_chunks}
 
-tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(86400 * 2)
-tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400 * 2, 180)
+tms <- as.POSIXct("1990-01-01", tz = "UTC") + 0:(86400)
+tms_interp <- as.POSIXct("1990-01-01", tz = "UTC") + seq(0, 86400, 180)
 
 wave_groups <- data.frame(start = 0, end = 8)
 
@@ -337,7 +337,7 @@ bench::mark(
     wave_groups = wave_groups,
     utc_interp = tms,
     n_thread = 10L
-  ),
+  ), iterations = 1
 )
 
   
