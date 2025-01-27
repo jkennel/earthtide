@@ -61,16 +61,16 @@
 #'   cutoff = 1.0e-5,
 #'   catalog = "ksm04",
 #'   wave_groups = wave_groups,
-#'   n_thread = 1
+#'   n_thread = 1L
 #' )
 calc_earthtide <- function(utc,
                            do_predict = TRUE,
                            method = "gravity",
-                           latitude = 0,
-                           longitude = 0,
-                           elevation = 0,
-                           azimuth = 0,
-                           gravity = 0,
+                           latitude = 0.0,
+                           longitude = 0.0,
+                           elevation = 0.0,
+                           azimuth = 0.0,
+                           gravity = 0.0,
                            earth_radius = 6378136.3,
                            earth_eccen = 6.69439795140e-3,
                            cutoff = 1e-6,
