@@ -18,8 +18,7 @@ Depends:
     R (>= 3.5)
 Imports: 
     Rcpp (>= 1.0.0),
-    R6 (>= 2.3.0),
-    RcppThread 
+    R6 (>= 2.3.0)
 LinkingTo: 
     Rcpp (>= 1.0.0), 
     RcppThread, 
