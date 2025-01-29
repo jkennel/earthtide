@@ -109,6 +109,6 @@ et <- calc_earthtide(
   cutoff = 1.0e-5,
   catalog = "ksm04",
   wave_groups = wave_groups,
-  n_thread = 1
+  n_thread = 1L
 )
 }
