@@ -52,8 +52,6 @@
 # hw95s
 # 'hw95s'
 
-
-
 # @title Kudryavtsev, S M (2004) tidal potential catalogue
 # @format A \code{data.frame} The columns are:
 # \describe{
@@ -91,8 +89,6 @@
 # ksm04
 # 'ksm04'
 
-
-
 # @title Simon 1994 astronomical constants
 # @format A \code{data.frame} The columns are:
 # \describe{
@@ -112,7 +108,6 @@
 #
 # 'simon_coef_1994'
 
-
 # @title dut1
 # @format A \code{data.frame} The columns are:
 # \describe{
@@ -130,8 +125,6 @@
 # @examples
 # dut1
 # 'dut1'
-
-
 
 # download leap second data
 get_tai_utc <- function(tai_utc_path) {
@@ -159,8 +152,9 @@ mjd_tai_utc <- function(mjd, tai_utc_path) {
 
     wh <- max(which(di >= 0))
 
-    tu[i] <- tai_utc$tai_utc[wh] + (mjd[i] - tai_utc$minus_date[wh]) *
-      tai_utc$factor[wh]
+    tu[i] <- tai_utc$tai_utc[wh] +
+      (mjd[i] - tai_utc$minus_date[wh]) *
+        tai_utc$factor[wh]
   }
 
   tu
@@ -172,17 +166,32 @@ get_iers_b <- function(b_path, tai_utc_path) {
   tf <- tempfile()
   utils::download.file(b_path, tf)
 
-  dut1 <- utils::read.table(tf,
-    skip = 14, stringsAsFactors = FALSE,
+  dut1 <- utils::read.table(
+    tf,
+    skip = 14,
+    stringsAsFactors = FALSE,
     col.names = c(
-      "year", "month", "day", "mjd",
-      "x", "y", "ut1_utc", "lod",
-      "dx", "dy", "x_sig", "y_sig",
-      "ut1_utc_sig", "lod_sig",
-      "dx_sig", "dy_sig"
+      "year",
+      "month",
+      "day",
+      "mjd",
+      "x",
+      "y",
+      "ut1_utc",
+      "lod",
+      "dx",
+      "dy",
+      "x_sig",
+      "y_sig",
+      "ut1_utc_sig",
+      "lod_sig",
+      "dx_sig",
+      "dy_sig"
     ),
     colClasses = c(
-      "integer", "integer", "integer",
+      "integer",
+      "integer",
+      "integer",
       rep("numeric", 13)
     )
   )
@@ -192,10 +201,15 @@ get_iers_b <- function(b_path, tai_utc_path) {
   # equation from http://maia.usno.navy.mil/
   dut1$ddt <- 32.184 + (mjd_tai_utc(dut1$mjd, tai_utc_path) - dut1$ut1_utc)
 
-
   dut1 <- dut1[, c(
-    "datetime", "ddt", "ut1_utc", "lod", "x", "y",
-    "dx", "dy"
+    "datetime",
+    "ddt",
+    "ut1_utc",
+    "lod",
+    "x",
+    "y",
+    "dx",
+    "dy"
   )]
 }
 
@@ -203,9 +217,39 @@ get_iers_b <- function(b_path, tai_utc_path) {
 # Bulletin A
 get_iers_a <- function(a_path, daily_path, tai_utc_path) {
   widths <- c(
-    2, 2, 2, 1, 8, 1, 1, 1, 9, 9, 1, 9, 9, 2, 1,
-    10, 10, 1, 7, 7, 2, 1, 1, 9, 9, 1, 9, 9, 10,
-    10, 11, 10, 10
+    2,
+    2,
+    2,
+    1,
+    8,
+    1,
+    1,
+    1,
+    9,
+    9,
+    1,
+    9,
+    9,
+    2,
+    1,
+    10,
+    10,
+    1,
+    7,
+    7,
+    2,
+    1,
+    1,
+    9,
+    9,
+    1,
+    9,
+    9,
+    10,
+    10,
+    11,
+    10,
+    10
   )
 
   # historical
@@ -220,13 +264,19 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path) {
   iers_all$dx <- iers_all$dx / 1000.0
   iers_all$dy <- iers_all$dy / 1000.0
   iers_all$lod <- iers_all$lod / 1000.0
-  iers_all$ddt <- 32.184 + (mjd_tai_utc(iers_all$mjd, tai_utc_path) -
-    iers_all$ut1_utc)
+  iers_all$ddt <- 32.184 +
+    (mjd_tai_utc(iers_all$mjd, tai_utc_path) -
+      iers_all$ut1_utc)
   iers_all <- iers_all[, c(
-    "datetime", "ddt", "ut1_utc", "lod", "x", "y",
-    "dx", "dy"
+    "datetime",
+    "ddt",
+    "ut1_utc",
+    "lod",
+    "x",
+    "y",
+    "dx",
+    "dy"
   )]
-
 
   # daily set for update
   tf_daily <- tempfile()
@@ -238,11 +288,18 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path) {
   iers_daily$dx <- iers_daily$dx / 1000.0
   iers_daily$dy <- iers_daily$dy / 1000.0
   iers_daily$lod <- iers_daily$lod / 1000.0
-  iers_daily$ddt <- 32.184 + (mjd_tai_utc(iers_daily$mjd, tai_utc_path) -
-    iers_daily$ut1_utc)
+  iers_daily$ddt <- 32.184 +
+    (mjd_tai_utc(iers_daily$mjd, tai_utc_path) -
+      iers_daily$ut1_utc)
   iers_daily <- iers_daily[, c(
-    "datetime", "ddt", "ut1_utc", "lod", "x", "y",
-    "dx", "dy"
+    "datetime",
+    "ddt",
+    "ut1_utc",
+    "lod",
+    "x",
+    "y",
+    "dx",
+    "dy"
   )]
 
   iers_all <- iers_all[iers_all$datetime < min(iers_daily$datetime), ]
@@ -277,10 +334,11 @@ get_iers_a <- function(a_path, daily_path, tai_utc_path) {
 #' }
 #'
 get_iers <- function(
-    a_path = NULL,
-    b_path = NULL,
-    daily_path = NULL,
-    tai_utc_path = NULL) {
+  a_path = NULL,
+  b_path = NULL,
+  daily_path = NULL,
+  tai_utc_path = NULL
+) {
   if (is.null(a_path)) {
     a_path <- "https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all"
   }
@@ -307,9 +365,6 @@ get_iers <- function(
   bull_ab
 }
 
-
-
-
 # library(earthtide)
 # # a_path = 'https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all'
 # # b_path ='http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now'
@@ -320,8 +375,8 @@ get_iers <- function(
 # ksm04 <- earthtide:::ksm04
 # hw95s <- earthtide:::hw95s
 # usethis::use_data(dut1,
-#                   simon_coef_1994,
-#                   ksm04,
-#                   hw95s,
-#                   internal = TRUE,
-#                   overwrite = TRUE)
+#                    simon_coef_1994,
+#                    ksm04,
+#                    hw95s,
+#                    internal = TRUE,
+#                    overwrite = TRUE)
